@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:maison_mate/login/reset_password.dart';
+import 'package:maison_mate/login/sign_up.dart';
 
 class SignInWidget extends StatefulWidget {
   const SignInWidget({Key? key}) : super(key: key);
@@ -9,7 +10,7 @@ class SignInWidget extends StatefulWidget {
 }
 
 class _SignInWidgetState extends State<SignInWidget> {
-  TextEditingController nameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
   @override
@@ -39,7 +40,7 @@ class _SignInWidgetState extends State<SignInWidget> {
                 child: Container(
                   padding: const EdgeInsets.all(10),
                   child: TextField(
-                    controller: nameController,
+                    controller: emailController,
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(8))),
@@ -80,7 +81,7 @@ class _SignInWidgetState extends State<SignInWidget> {
                 padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                 child: ElevatedButton(
                     onPressed: () {
-                      // print(nameController.text);
+                      // print(emailController.text);
                       // print(passwordController.text);
                     },
                     style: ButtonStyle(
@@ -105,7 +106,11 @@ class _SignInWidgetState extends State<SignInWidget> {
                         fontSize: 17, color: Colors.black.withOpacity(0.6)),
                   ),
                   onPressed: () {
-                    //signup screen
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const SignUpWidget()),
+                    );
                   },
                 )
               ],

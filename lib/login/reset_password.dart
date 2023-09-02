@@ -10,13 +10,13 @@ class ResetPasswordWidget extends StatefulWidget {
 class _ResetPasswordWidgetState extends State<ResetPasswordWidget> {
   @override
   Widget build(BuildContext context) {
-    TextEditingController nameController = TextEditingController();
+    TextEditingController emailController = TextEditingController();
     return Scaffold(
-      body: showModal(nameController),
+      body: renderModal(emailController),
     );
   }
 
-  showModal(TextEditingController nameController) {
+  renderModal(TextEditingController emailController) {
     return Padding(
         padding: const EdgeInsets.all(10),
         child: ListView(children: [
@@ -53,7 +53,7 @@ class _ResetPasswordWidgetState extends State<ResetPasswordWidget> {
               child: Container(
                 padding: const EdgeInsets.all(10),
                 child: TextField(
-                  controller: nameController,
+                  controller: emailController,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(8))),
@@ -67,7 +67,7 @@ class _ResetPasswordWidgetState extends State<ResetPasswordWidget> {
               padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
               child: ElevatedButton(
                   onPressed: () {
-                    // print(nameController.text);
+                    // print(emailController.text);
                     // print(passwordController.text);
                   },
                   style: ButtonStyle(
