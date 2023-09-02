@@ -26,13 +26,6 @@ class _SignUpWidgetState extends State<SignUpWidget> {
     return Padding(
         padding: const EdgeInsets.all(10),
         child: ListView(children: [
-          // Align(
-          //   alignment: Alignment.topLeft,
-          //   child: IconButton(
-          //     icon: const Icon(Icons.arrow_back, color: Colors.black),
-          //     onPressed: () => Navigator.of(context).pop(),
-          //   ),
-          // ),
           const SizedBox(height: 80),
           Align(
               alignment: Alignment.center,
@@ -146,7 +139,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
           ),
           const SizedBox(height: 10),
           Row(
-            // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               Checkbox(
                 value: cValue,
@@ -156,8 +149,11 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                   });
                 },
               ),
-              const Text("I accept Terms & Conditions and Privacy Policies",
-                  style: TextStyle(fontSize: 13)),
+              const Text(
+                "I accept Terms & Conditions and Privacy Policies",
+                style: TextStyle(fontSize: 13),
+                textAlign: TextAlign.justify,
+              ),
             ],
           ),
           const SizedBox(height: 10),
@@ -165,10 +161,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
               height: 50,
               padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
               child: ElevatedButton(
-                  onPressed: () {
-                    // print(nameController.text);
-                    // print(passwordController.text);
-                  },
+                  onPressed: () {},
                   style: ButtonStyle(
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
