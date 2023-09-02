@@ -39,7 +39,7 @@ class _SignInWidgetState extends State<SignInWidget> {
                   alignment: Alignment.center,
                   child: const Text('To access the portal'),
                 ),
-                const SizedBox(height: 15),
+                const SizedBox(height: 40),
                 Opacity(
                     opacity: 0.3,
                     child: Container(

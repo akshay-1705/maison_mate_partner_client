@@ -51,7 +51,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                   textAlign: TextAlign.center,
                 ),
               ),
-              const SizedBox(height: 15),
+              const SizedBox(height: 40),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
@@ -66,7 +66,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                               border: OutlineInputBorder(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(8))),
-                              labelText: 'First Name',
+                              labelText: 'First Name*',
                             ),
                           ),
                         )),
