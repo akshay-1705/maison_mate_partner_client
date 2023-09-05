@@ -58,7 +58,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                 children: <Widget>[
                   Flexible(
                     child: Opacity(
-                        opacity: 0.3,
+                        opacity: 0.5,
                         child: Container(
                           padding: const EdgeInsets.all(10),
                           child: TextField(
@@ -74,7 +74,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                   ),
                   Flexible(
                     child: Opacity(
-                        opacity: 0.3,
+                        opacity: 0.5,
                         child: Container(
                           padding: const EdgeInsets.all(10),
                           child: TextField(
@@ -91,7 +91,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                 ],
               ),
               Opacity(
-                  opacity: 0.3,
+                  opacity: 0.5,
                   child: Container(
                     padding: const EdgeInsets.all(10),
                     child: TextField(
@@ -108,7 +108,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                 children: <Widget>[
                   Flexible(
                     child: Opacity(
-                        opacity: 0.3,
+                        opacity: 0.5,
                         child: Container(
                           padding: const EdgeInsets.all(10),
                           child: TextField(
@@ -125,7 +125,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                   ),
                   Flexible(
                     child: Opacity(
-                        opacity: 0.3,
+                        opacity: 0.5,
                         child: Container(
                           padding: const EdgeInsets.all(10),
                           child: TextField(
