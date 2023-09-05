@@ -1,8 +1,9 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:maison_mate/widgets/login/reset_password.dart';
 import 'package:maison_mate/widgets/login/sign_up.dart';
-import 'package:http/http.dart' as http;
+// ignore: depend_on_referenced_packages
+import 'package:dio/dio.dart';
+import 'package:maison_mate/network/auth_service.dart';
 
 class SignInWidget extends StatefulWidget {
   const SignInWidget({Key? key}) : super(key: key);
@@ -16,6 +17,14 @@ class _SignInWidgetState extends State<SignInWidget> {
   TextEditingController passwordController = TextEditingController();
   bool isLoading = false;
   String errorMessage = '';
+  late AuthService authService;
+
+  @override
+  void initState() {
+    super.initState();
+    final dio = Dio(); // Create a Dio instance
+    authService = AuthService(dio); // Create ApiService instance
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -113,29 +122,15 @@ class _SignInWidgetState extends State<SignInWidget> {
                                   });
 
                                   try {
-                                    final response = await http.post(
-                                      Uri.parse(
-                                          'http://192.168.1.7:3000/api/v1/partner/login'),
-                                      headers: <String, String>{
-                                        'Content-Type':
-                                            'application/json; charset=UTF-8',
-                                      },
-                                      body: jsonEncode(<String, String>{
-                                        'email': emailController.text,
-                                        'password': passwordController.text,
-                                      }),
+                                    final response = await authService.login(
+                                      emailController.text,
+                                      passwordController.text,
                                     );
+                                    print(response);
 
-                                    if (response.statusCode == 201) {
-                                      // If the server did return a 201 CREATED response,
-                                      // then parse the JSON.
-                                      print('Logged in successfully');
-                                    } else {
-                                      print(response.statusCode);
-                                      // If the server did not return a 201 CREATED response,
-                                      // then throw an exception.
-                                      throw Exception('Failed to login');
-                                    }
+                                    // If the server did return a 201 CREATED response,
+                                    // then parse the JSON.
+                                    print('Logged in successfully');
                                   } catch (e) {
                                     setState(() {
                                       errorMessage =
