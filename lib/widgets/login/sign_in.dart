@@ -26,6 +26,19 @@ class _SignInWidgetState extends State<SignInWidget> {
     authService = AuthService(dio); // Create ApiService instance
   }
 
+  bool isEmailValid(String email) {
+    // Add your email validation logic here
+    // For example, you can use a regular expression to check for a valid email format
+    final emailRegExp = RegExp(r'^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$');
+    return emailRegExp.hasMatch(email);
+  }
+
+  bool isPasswordValid(String password) {
+    // Add your password validation logic here
+    // For example, you can check if it's at least 6 characters long
+    return password.length >= 6;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -121,6 +134,24 @@ class _SignInWidgetState extends State<SignInWidget> {
                                     errorMessage = '';
                                   });
 
+                                  final email = emailController.text;
+                                  final password = passwordController.text;
+
+                                  if (!isEmailValid(email)) {
+                                    setState(() {
+                                      errorMessage = 'Enter a valid email';
+                                      isLoading = false;
+                                    });
+                                    return;
+                                  } else if (!isPasswordValid(password)) {
+                                    setState(() {
+                                      errorMessage =
+                                          'Password must be at least 6 characters';
+                                      isLoading = false;
+                                    });
+                                    return;
+                                  }
+
                                   try {
                                     final response = await authService.login(
                                       emailController.text,
@@ -134,7 +165,7 @@ class _SignInWidgetState extends State<SignInWidget> {
                                   } catch (e) {
                                     setState(() {
                                       errorMessage =
-                                          'Failed to login. Please check your credentials.';
+                                          'Invalid email or password.';
                                     });
                                   } finally {
                                     setState(() {
@@ -154,7 +185,7 @@ class _SignInWidgetState extends State<SignInWidget> {
                                     backgroundColor:
                                         MaterialStateProperty.all<Color>(
                                             const Color(0xff2cc48a))),
-                                child: const Text('Logiin',
+                                child: const Text('Login',
                                     style: TextStyle(color: Colors.white)))),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
