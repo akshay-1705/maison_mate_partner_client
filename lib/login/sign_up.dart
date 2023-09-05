@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:maison_mate/login/sign_in.dart';
 
 class SignUpWidget extends StatefulWidget {
   const SignUpWidget({Key? key}) : super(key: key);
@@ -189,7 +190,11 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                       style: TextStyle(
                           fontSize: 17, color: Colors.black.withOpacity(0.6)),
                     ),
-                    onPressed: () => Navigator.of(context).pop(),
+                    onPressed: () => Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const SignInWidget()),
+                    ),
                   )
                 ],
               ),

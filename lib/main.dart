@@ -11,14 +11,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: _title,
-        home: Scaffold(
-          appBar: AppBar(title: const Text(_title)),
-          body: const SignInWidget(),
-        ),
-        theme: ThemeData(
-          useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xff2cc48a)),
-        ));
+      title: _title,
+      home: Scaffold(
+        appBar: AppBar(title: const Text(_title)),
+        body: const SignInWidget(),
+      ),
+      theme: ThemeData(
+        useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xff2cc48a)),
+      ),
+    );
   }
 }
