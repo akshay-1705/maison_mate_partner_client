@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:maison_mate/login/sign_in.dart';
+import 'package:maison_mate/widgets/login/sign_in.dart';
 
 void main() => runApp(const MyApp());
 

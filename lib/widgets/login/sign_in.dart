@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:maison_mate/login/reset_password.dart';
-import 'package:maison_mate/login/sign_up.dart';
+import 'package:maison_mate/widgets/login/reset_password.dart';
+import 'package:maison_mate/widgets/login/sign_up.dart';
 import 'package:http/http.dart' as http;
 
 class SignInWidget extends StatefulWidget {
