@@ -1,77 +1,10 @@
 import 'dart:convert';
 
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:maison_mate/widgets/login/sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:maison_mate/states/sign_up.dart';
 import 'package:provider/provider.dart';
-import 'package:webview_flutter/webview_flutter.dart';
-
-class TermsAndConditionsPage extends StatefulWidget {
-  const TermsAndConditionsPage({super.key});
-
-  @override
-  State<TermsAndConditionsPage> createState() => _TermsAndConditionsPageState();
-}
-
-class _TermsAndConditionsPageState extends State<TermsAndConditionsPage> {
-  late final WebViewController controller;
-
-  @override
-  void initState() {
-    super.initState();
-    controller = WebViewController()
-      ..loadFlutterAsset(
-        ('assets/terms.html'),
-      );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Terms and Conditions'),
-      ),
-      body: WebViewWidget(
-        controller: controller,
-      ),
-    );
-  }
-}
-
-class PrivacyPolicyPage extends StatefulWidget {
-  const PrivacyPolicyPage({super.key});
-
-  @override
-  State<PrivacyPolicyPage> createState() => _PrivacyPolicyPageState();
-}
-
-class _PrivacyPolicyPageState extends State<PrivacyPolicyPage> {
-  late final WebViewController controller;
-
-  @override
-  void initState() {
-    super.initState();
-    controller = WebViewController()
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..loadFlutterAsset(
-        ('assets/privacy.html'),
-      );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Privacy Policy'),
-      ),
-      body: WebViewWidget(
-        controller: controller,
-      ),
-    );
-  }
-}
 
 class SignUpWidget extends StatefulWidget {
   const SignUpWidget({Key? key}) : super(key: key);
@@ -153,8 +86,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text(
-                          'Please accept the Terms & Conditions and Pricay Policy'),
+                      content: Text('Please accept the Terms & Conditions'),
                     ),
                   );
                 }
@@ -212,61 +144,16 @@ class _SignUpWidgetState extends State<SignUpWidget> {
         Checkbox(
           value: model.acceptedTerms,
           onChanged: (bool? value) {
-            model.setAcceptedTerms(value!);
+            setState(() {
+              model.setAcceptedTerms(value!);
+            });
           },
         ),
-        Expanded(
-          child: Text.rich(
-            TextSpan(
-              children: [
-                const TextSpan(
-                  text: "I accept ",
-                  style: TextStyle(fontSize: 13),
-                ),
-                TextSpan(
-                  text: "Terms & Conditions",
-                  style: const TextStyle(
-                    fontSize: 13,
-                    decoration: TextDecoration.underline,
-                    color: Colors.blue,
-                  ),
-                  recognizer: TapGestureRecognizer()
-                    ..onTap = () {
-                      // Navigate to the Terms of Service page
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              const TermsAndConditionsPage(), // Your terms page
-                        ),
-                      );
-                    },
-                ),
-                const TextSpan(
-                  text: " and ",
-                  style: TextStyle(fontSize: 13),
-                ),
-                TextSpan(
-                  text: "Privacy Policy",
-                  style: const TextStyle(
-                    fontSize: 13,
-                    decoration: TextDecoration.underline,
-                    color: Colors.blue,
-                  ),
-                  recognizer: TapGestureRecognizer()
-                    ..onTap = () {
-                      // Navigate to the Privacy Policy page
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              const PrivacyPolicyPage(), // Your privacy page
-                        ),
-                      );
-                    },
-                ),
-              ],
-            ),
-          ),
-        )
+        const Text(
+          "I accept Terms & Conditions and Privacy Policies",
+          style: TextStyle(fontSize: 13),
+          textAlign: TextAlign.justify,
+        ),
       ],
     );
   }
