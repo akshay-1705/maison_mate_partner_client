@@ -2,10 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:maison_mate/widgets/login/sign_in.dart';
+import 'package:maison_mate/widgets/auth/sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:maison_mate/states/sign_up.dart';
-import 'package:maison_mate/widgets/login/terms_and_conditions_page.dart';
+import 'package:maison_mate/widgets/auth/terms_and_conditions_page.dart';
 import 'package:provider/provider.dart';
 
 class SignUpWidget extends StatefulWidget {

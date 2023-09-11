@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 // import 'package:maison_mate/network/response/sign_in.dart';
 // import 'package:maison_mate/network/response/api_response.dart';
-import 'package:maison_mate/widgets/login/reset_password.dart';
-import 'package:maison_mate/widgets/login/sign_up.dart';
+import 'package:maison_mate/widgets/auth/reset_password.dart';
+import 'package:maison_mate/widgets/auth/sign_up.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
