@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:maison_mate/widgets/login/sign_in.dart';
-import 'package:maison_mate/states/sign_in_model.dart';
+import 'package:maison_mate/states/sign_in.dart';
+import 'package:maison_mate/states/sign_up.dart';
 import 'package:provider/provider.dart';
 
 void main() => runApp(const MyApp());
@@ -12,8 +13,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-        create: (_) => SignInModel(),
+    return MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => SignInModel()),
+          ChangeNotifierProvider(create: (_) => SignUpModel())
+        ],
         child: MaterialApp(
           title: _title,
           home: Scaffold(

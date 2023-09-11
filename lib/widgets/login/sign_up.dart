@@ -1,5 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:maison_mate/widgets/login/sign_in.dart';
+import 'package:http/http.dart' as http;
+import 'package:maison_mate/states/sign_up.dart';
+import 'package:provider/provider.dart';
 
 class SignUpWidget extends StatefulWidget {
   const SignUpWidget({Key? key}) : super(key: key);
@@ -14,16 +19,17 @@ class _SignUpWidgetState extends State<SignUpWidget> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
-  bool? cValue = false;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: renderModal(context),
+      body: renderForm(context),
     );
   }
 
-  renderModal(BuildContext context) {
+  renderForm(BuildContext context) {
+    final model = Provider.of<SignUpModel>(context);
     return GestureDetector(
         onTap: () {
           // Dismiss the keyboard when tapped on a non-actionable item
@@ -31,173 +37,275 @@ class _SignUpWidgetState extends State<SignUpWidget> {
         },
         child: Padding(
             padding: const EdgeInsets.all(10),
-            child: ListView(children: [
-              const SizedBox(height: 80),
-              Align(
-                  alignment: Alignment.center,
-                  child: Container(
-                      padding: const EdgeInsets.all(10),
-                      child: const Text(
-                        'Sign Up',
-                        style: TextStyle(
-                            color: Color(0xff000000),
-                            fontWeight: FontWeight.w400,
-                            fontSize: 30),
-                      ))),
-              Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.only(left: 20, right: 20),
-                child: const Text(
-                  "To access the portal",
-                  textAlign: TextAlign.center,
+            child: Form(
+                key: _formKey,
+                child: ListView(children: [
+                  const SizedBox(height: 80),
+                  header(),
+                  const SizedBox(height: 40),
+                  nameFields(),
+                  emailField(),
+                  passwordFields(),
+                  const SizedBox(height: 10),
+                  termsAndConditions(model),
+                  const SizedBox(height: 10),
+                  signUpButton(model),
+                  signInOption(context),
+                ]))));
+  }
+
+  Row signInOption(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        const Text("Already have an account?"),
+        TextButton(
+          child: Text(
+            'Sign In',
+            style:
+                TextStyle(fontSize: 17, color: Colors.black.withOpacity(0.6)),
+          ),
+          onPressed: () => Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const SignInWidget()),
+          ),
+        )
+      ],
+    );
+  }
+
+  Container signUpButton(SignUpModel model) {
+    return Container(
+        height: 50,
+        padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+        child: ElevatedButton(
+            onPressed: () async {
+              if (_formKey.currentState!.validate()) {
+                if (model.acceptedTerms) {
+                  await signUp();
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Please accept the Terms & Conditions'),
+                    ),
+                  );
+                }
+              }
+            },
+            style: ButtonStyle(
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      side: const BorderSide(color: Color(0xff2cc48a))),
                 ),
-              ),
-              const SizedBox(height: 40),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Flexible(
-                    child: Opacity(
-                        opacity: 0.5,
-                        child: Container(
-                          padding: const EdgeInsets.all(10),
-                          child: TextField(
-                            controller: firstNameController,
-                            decoration: const InputDecoration(
-                              border: OutlineInputBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(8))),
-                              labelText: 'First Name*',
-                            ),
-                          ),
-                        )),
+                backgroundColor:
+                    MaterialStateProperty.all<Color>(const Color(0xff2cc48a))),
+            child:
+                const Text('Sign Up', style: TextStyle(color: Colors.white))));
+  }
+
+  Future<void> signUp() async {
+    const String baseURL = 'http://192.168.1.3:3000/api/v1/partner/signup';
+    const String secretHeader = '1e802fb752174d1c3145cc657872b0a1';
+
+    try {
+      final response = await http.post(
+        Uri.parse(baseURL),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Secret-Header': secretHeader
+        },
+        body: jsonEncode(<String, String>{
+          'email': emailController.text,
+          'password': passwordController.text
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        // Successful login logic here
+        // model.setErrorMessage('');
+        // print(ApiResponse.fromJson(jsonDecode(response.body)).data.token);
+      } else if (response.statusCode == 401) {
+        // model.setErrorMessage('Invalid credentials');
+      } else {
+        // model.setErrorMessage('Network error');
+      }
+    } catch (e) {
+      // model.setErrorMessage('Network error');
+    } finally {
+      // model.setLoading(false);
+    }
+  }
+
+  Row termsAndConditions(SignUpModel model) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
+        Checkbox(
+          value: model.acceptedTerms,
+          onChanged: (bool? value) {
+            setState(() {
+              model.setAcceptedTerms(value!);
+            });
+          },
+        ),
+        const Text(
+          "I accept Terms & Conditions and Privacy Policies",
+          style: TextStyle(fontSize: 13),
+          textAlign: TextAlign.justify,
+        ),
+      ],
+    );
+  }
+
+  Row passwordFields() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Flexible(
+          child: Opacity(
+              opacity: 0.5,
+              child: Container(
+                padding: const EdgeInsets.all(10),
+                child: TextFormField(
+                  controller: passwordController,
+                  obscureText: true,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Password is required'; // Return an error message if the field is empty
+                    }
+                    return null; // Return null if the field is valid
+                  },
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(8))),
+                    labelText: 'Password*',
                   ),
-                  Flexible(
-                    child: Opacity(
-                        opacity: 0.5,
-                        child: Container(
-                          padding: const EdgeInsets.all(10),
-                          child: TextField(
-                            controller: lastNameController,
-                            decoration: const InputDecoration(
-                              border: OutlineInputBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(8))),
-                              labelText: 'Last Name',
-                            ),
-                          ),
-                        )),
-                  )
-                ],
-              ),
-              Opacity(
-                  opacity: 0.5,
-                  child: Container(
-                    padding: const EdgeInsets.all(10),
-                    child: TextField(
-                      controller: emailController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(8))),
-                        labelText: 'Email*',
-                      ),
-                    ),
-                  )),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Flexible(
-                    child: Opacity(
-                        opacity: 0.5,
-                        child: Container(
-                          padding: const EdgeInsets.all(10),
-                          child: TextField(
-                            controller: passwordController,
-                            obscureText: true,
-                            decoration: const InputDecoration(
-                              border: OutlineInputBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(8))),
-                              labelText: 'Password*',
-                            ),
-                          ),
-                        )),
+                ),
+              )),
+        ),
+        Flexible(
+          child: Opacity(
+              opacity: 0.5,
+              child: Container(
+                padding: const EdgeInsets.all(10),
+                child: TextFormField(
+                  controller: confirmPasswordController,
+                  obscureText: true,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Password is required'; // Return an error message if the field is empty
+                    }
+                    return null; // Return null if the field is valid
+                  },
+                  decoration: const InputDecoration(
+                    labelStyle: TextStyle(fontSize: 13),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(8))),
+                    labelText: 'Confirm Password*',
                   ),
-                  Flexible(
-                    child: Opacity(
-                        opacity: 0.5,
-                        child: Container(
-                          padding: const EdgeInsets.all(10),
-                          child: TextField(
-                            controller: confirmPasswordController,
-                            obscureText: true,
-                            decoration: const InputDecoration(
-                              labelStyle: TextStyle(fontSize: 13),
-                              border: OutlineInputBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(8))),
-                              labelText: 'Confirm Password*',
-                            ),
-                          ),
-                        )),
-                  )
-                ],
-              ),
-              const SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  Checkbox(
-                    value: cValue,
-                    onChanged: (bool? value) {
-                      setState(() {
-                        cValue = value!;
-                      });
-                    },
+                ),
+              )),
+        )
+      ],
+    );
+  }
+
+  Opacity emailField() {
+    return Opacity(
+        opacity: 0.5,
+        child: Container(
+          padding: const EdgeInsets.all(10),
+          child: TextFormField(
+            controller: emailController,
+            validator: (value) {
+              if (value!.isEmpty) {
+                return 'Email is required'; // Return an error message if the field is empty
+              }
+              return null; // Return null if the field is valid
+            },
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(8))),
+              labelText: 'Email*',
+            ),
+          ),
+        ));
+  }
+
+  Row nameFields() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Flexible(
+          child: Opacity(
+              opacity: 0.5,
+              child: Container(
+                padding: const EdgeInsets.all(10),
+                child: TextFormField(
+                  controller: firstNameController,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'First Name is required'; // Return an error message if the field is empty
+                    }
+                    return null; // Return null if the field is valid
+                  },
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(8))),
+                    labelText: 'First Name*',
                   ),
-                  const Text(
-                    "I accept Terms & Conditions and Privacy Policies",
-                    style: TextStyle(fontSize: 13),
-                    textAlign: TextAlign.justify,
+                ),
+              )),
+        ),
+        Flexible(
+          child: Opacity(
+              opacity: 0.5,
+              child: Container(
+                padding: const EdgeInsets.all(10),
+                child: TextFormField(
+                  controller: lastNameController,
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(8))),
+                    labelText: 'Last Name',
                   ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              Container(
-                  height: 50,
-                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                  child: ElevatedButton(
-                      onPressed: () {},
-                      style: ButtonStyle(
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                                side:
-                                    const BorderSide(color: Color(0xff2cc48a))),
-                          ),
-                          backgroundColor: MaterialStateProperty.all<Color>(
-                              const Color(0xff2cc48a))),
-                      child: const Text('Sign Up',
-                          style: TextStyle(color: Colors.white)))),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  const Text("Already have an account?"),
-                  TextButton(
-                    child: Text(
-                      'Sign In',
-                      style: TextStyle(
-                          fontSize: 17, color: Colors.black.withOpacity(0.6)),
-                    ),
-                    onPressed: () => Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const SignInWidget()),
-                    ),
-                  )
-                ],
-              ),
-            ])));
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Last Name is required'; // Return an error message if the field is empty
+                    }
+                    return null; // Return null if the field is valid
+                  },
+                ),
+              )),
+        )
+      ],
+    );
+  }
+
+  Column header() {
+    return Column(
+      children: [
+        Align(
+            alignment: Alignment.center,
+            child: Container(
+                padding: const EdgeInsets.all(10),
+                child: const Text(
+                  'Sign Up',
+                  style: TextStyle(
+                      color: Color(0xff000000),
+                      fontWeight: FontWeight.w400,
+                      fontSize: 30),
+                ))),
+        Container(
+          alignment: Alignment.center,
+          padding: const EdgeInsets.only(left: 20, right: 20),
+          child: const Text(
+            "To access the portal",
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ],
+    );
   }
 }

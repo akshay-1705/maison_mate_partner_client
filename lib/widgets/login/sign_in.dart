@@ -6,7 +6,7 @@ import 'package:maison_mate/widgets/login/sign_up.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
-import 'package:maison_mate/states/sign_in_model.dart';
+import 'package:maison_mate/states/sign_in.dart';
 
 class SignInWidget extends StatefulWidget {
   const SignInWidget({Key? key}) : super(key: key);
