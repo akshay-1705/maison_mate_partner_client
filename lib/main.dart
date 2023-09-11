@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:maison_mate/widgets/auth/sign_in.dart';
 import 'package:maison_mate/states/sign_in.dart';
 import 'package:maison_mate/states/sign_up.dart';
+import 'package:maison_mate/states/forgot_password.dart';
 import 'package:provider/provider.dart';
 
 void main() => runApp(const MyApp());
@@ -16,7 +17,8 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => SignInModel()),
-          ChangeNotifierProvider(create: (_) => SignUpModel())
+          ChangeNotifierProvider(create: (_) => SignUpModel()),
+          ChangeNotifierProvider(create: (_) => ForgotPasswordModel())
         ],
         child: MaterialApp(
           title: _title,
