@@ -156,7 +156,6 @@ class _ResetPasswordWidgetState extends State<ResetPasswordWidget> {
 
       if (response.statusCode == 200) {
         model.setErrorMessage('');
-        print(ApiResponse.fromJson(jsonDecode(response.body)).message);
         model.setsuccessMessage(
             ApiResponse.fromJson(jsonDecode(response.body)).message);
       } else if (response.statusCode == 404) {
