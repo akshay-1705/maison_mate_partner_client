@@ -173,6 +173,10 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                   validator: (value) {
                     if (value!.isEmpty) {
                       return 'Password is required'; // Return an error message if the field is empty
+                    } else if (value != confirmPasswordController.text) {
+                      return '';
+                    } else if (value.length < 6) {
+                      return '';
                     }
                     return null; // Return null if the field is valid
                   },
@@ -195,6 +199,21 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                   validator: (value) {
                     if (value!.isEmpty) {
                       return 'Password is required'; // Return an error message if the field is empty
+                    } else if (value != passwordController.text) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Passwords do not match'),
+                        ),
+                      );
+                      return '';
+                    } else if (value.length < 6) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                              'Password must be at least 6 characters long'),
+                        ),
+                      );
+                      return '';
                     }
                     return null; // Return null if the field is valid
                   },
@@ -221,6 +240,10 @@ class _SignUpWidgetState extends State<SignUpWidget> {
             validator: (value) {
               if (value!.isEmpty) {
                 return 'Email is required'; // Return an error message if the field is empty
+              } else if (!RegExp(
+                      r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$')
+                  .hasMatch(value)) {
+                return 'Email is invalid';
               }
               return null; // Return null if the field is valid
             },
