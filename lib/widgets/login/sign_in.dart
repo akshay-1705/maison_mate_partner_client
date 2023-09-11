@@ -16,6 +16,7 @@ class SignInWidget extends StatefulWidget {
 }
 
 class _SignInWidgetState extends State<SignInWidget> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
@@ -33,20 +34,23 @@ class _SignInWidgetState extends State<SignInWidget> {
                 },
                 child: Padding(
                     padding: const EdgeInsets.all(10),
-                    child: ListView(
-                      children: <Widget>[
-                        const SizedBox(height: 60),
-                        signInHeader(),
-                        const SizedBox(height: 40),
-                        if (model.errorMessage.isNotEmpty) errorMessage(model),
-                        formFields(model),
-                        const SizedBox(height: 10),
-                        forgotPassword(context),
-                        const SizedBox(height: 10),
-                        loginContainer(model),
-                        signUp(context),
-                      ],
-                    )))));
+                    child: Form(
+                        key: _formKey,
+                        child: ListView(
+                          children: <Widget>[
+                            const SizedBox(height: 60),
+                            signInHeader(),
+                            const SizedBox(height: 40),
+                            if (model.errorMessage.isNotEmpty)
+                              errorMessage(model),
+                            formFields(model),
+                            const SizedBox(height: 10),
+                            forgotPassword(context),
+                            const SizedBox(height: 10),
+                            loginContainer(model),
+                            signUp(context),
+                          ],
+                        ))))));
   }
 
   Column signInHeader() {
@@ -85,20 +89,27 @@ class _SignInWidgetState extends State<SignInWidget> {
             opacity: 0.5,
             child: Container(
               padding: const EdgeInsets.all(10),
-              child: TextField(
+              child: TextFormField(
                 controller: emailController,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(8))),
                   labelText: 'Email*',
                 ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Email is required';
+                  }
+                  // You can add more specific email format validation here if needed
+                  return null;
+                },
               ),
             )),
         Opacity(
           opacity: 0.5,
           child: Container(
             padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-            child: TextField(
+            child: TextFormField(
               obscureText: true,
               controller: passwordController,
               decoration: const InputDecoration(
@@ -107,6 +118,13 @@ class _SignInWidgetState extends State<SignInWidget> {
                 labelText: 'Password*',
                 labelStyle: TextStyle(color: Color(0xff000000)),
               ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Password is required';
+                }
+                // You can add more complex password validation here if needed
+                return null;
+              },
               style: const TextStyle(color: Color(0xff000000)),
             ),
           ),
@@ -136,7 +154,7 @@ class _SignInWidgetState extends State<SignInWidget> {
           ? const Center(child: CircularProgressIndicator())
           : ElevatedButton(
               onPressed: () async {
-                if (!model.isLoading) {
+                if (!model.isLoading && _formKey.currentState!.validate()) {
                   model.setErrorMessage('');
                   await login(model);
                 }
