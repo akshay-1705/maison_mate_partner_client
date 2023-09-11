@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:maison_mate/network/response/sign_in.dart';
+// import 'package:maison_mate/network/response/sign_in.dart';
+// import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/widgets/login/reset_password.dart';
 import 'package:maison_mate/widgets/login/sign_up.dart';
 import 'dart:convert';
@@ -38,9 +39,6 @@ class _SignInWidgetState extends State<SignInWidget> {
                         signInHeader(),
                         const SizedBox(height: 40),
                         if (model.errorMessage.isNotEmpty) errorMessage(model),
-                        // (_futureSignIn == null)
-                        //     ? const Center()
-                        //     : futureBuilder(),
                         formFields(model),
                         const SizedBox(height: 10),
                         forgotPassword(context),
@@ -158,12 +156,15 @@ class _SignInWidgetState extends State<SignInWidget> {
 
   Future<void> login(SignInModel model) async {
     model.setLoading(true);
+    const String baseURL = 'http://192.168.1.3:3000/api/v1/partner/login';
+    const String secretHeader = '1e802fb752174d1c3145cc657872b0a1';
 
     try {
       final response = await http.post(
-        Uri.parse('http://192.168.1.7:3000/api/v1/partner/login'),
+        Uri.parse(baseURL),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
+          'Secret-Header': secretHeader
         },
         body: jsonEncode(<String, String>{
           'email': emailController.text,
@@ -171,18 +172,16 @@ class _SignInWidgetState extends State<SignInWidget> {
         }),
       );
 
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200) {
         // Successful login logic here
         model.setErrorMessage('');
-        print(SignIn.fromJson(jsonDecode(response.body)));
+        // print(ApiResponse.fromJson(jsonDecode(response.body)).data.token);
       } else if (response.statusCode == 401) {
         model.setErrorMessage('Invalid credentials');
       } else {
-        // Handle login errors here
         model.setErrorMessage('Network error');
       }
     } catch (e) {
-      // Handle network errors here
       model.setErrorMessage('Network error');
     } finally {
       model.setLoading(false);
