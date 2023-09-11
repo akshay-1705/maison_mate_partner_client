@@ -193,8 +193,9 @@ class _SignInWidgetState extends State<SignInWidget> {
       if (response.statusCode == 200) {
         // Successful login logic here
         model.setErrorMessage('');
-        // print(ApiResponse.fromJson(jsonDecode(response.body)).data.token);
+        // print(ApiResponse.fromJson(jsonDecode(response.body)));
       } else if (response.statusCode == 401) {
+        // print(ApiResponse.fromJson(jsonDecode(response.body)).message);
         model.setErrorMessage('Invalid credentials');
       } else {
         model.setErrorMessage('Network error');
