@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:maison_mate/widgets/auth/sign_in.dart';
-import 'package:maison_mate/widgets/home/home_page.dart';
+import 'package:maison_mate/widgets/home_page.dart';
 import 'package:maison_mate/states/sign_in.dart';
 import 'package:maison_mate/states/sign_up.dart';
 import 'package:maison_mate/states/forgot_password.dart';

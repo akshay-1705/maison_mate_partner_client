@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/constants.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:maison_mate/widgets/home/home_page.dart';
+import 'package:maison_mate/widgets/home_page.dart';
 
 class SignUpWidget extends StatefulWidget {
   const SignUpWidget({Key? key}) : super(key: key);
