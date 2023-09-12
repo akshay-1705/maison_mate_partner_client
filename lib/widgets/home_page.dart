@@ -37,8 +37,8 @@ class _HomePageWidgetState extends State<HomePageWidget> {
           label: 'Payments',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.account_circle),
-          label: 'Account',
+          icon: Icon(Icons.favorite),
+          label: 'Favorites',
         ),
       ],
       selectedItemColor: const Color(0xff2cc48a), // Selected tab color
@@ -125,7 +125,7 @@ class LogoutButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
       icon: const Icon(
-        Icons.logout,
+        Icons.account_circle_outlined,
         color: Colors.white,
       ),
       onPressed: () async {
