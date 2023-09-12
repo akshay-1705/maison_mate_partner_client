@@ -37,17 +37,6 @@ class _ResetPasswordWidgetState extends State<ResetPasswordWidget> {
                 child: Form(
                     key: _formKey,
                     child: ListView(children: [
-                      Align(
-                        alignment: Alignment.topLeft,
-                        child: IconButton(
-                          icon:
-                              const Icon(Icons.arrow_back, color: Colors.black),
-                          onPressed: () {
-                            model.clearStates();
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                      ),
                       const SizedBox(height: 65),
                       header(),
                       const SizedBox(height: 40),
@@ -57,16 +46,38 @@ class _ResetPasswordWidgetState extends State<ResetPasswordWidget> {
                       if (model.successMessage.isEmpty)
                         emailField(emailController),
                       const SizedBox(height: 20),
+                      if (model.successMessage.isNotEmpty) signInButton(model),
                       if (model.successMessage.isEmpty)
                         forgotPasswordButton(model),
                     ])))));
+  }
+
+  Container signInButton(ForgotPasswordModel model) {
+    return Container(
+        height: 50,
+        padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+        child: ElevatedButton(
+            onPressed: () {
+              model.clearStates();
+              Navigator.of(context).pop();
+            },
+            style: ButtonStyle(
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      side: const BorderSide(color: Color(0xff2cc48a))),
+                ),
+                backgroundColor:
+                    MaterialStateProperty.all<Color>(const Color(0xff2cc48a))),
+            child:
+                const Text('Sign In', style: TextStyle(color: Colors.white))));
   }
 
   Center successMessage(ForgotPasswordModel model) {
     return Center(
       child: AnimatedContainer(
         duration:
-            const Duration(milliseconds: 500), // Set your desired duration
+            const Duration(milliseconds: 2000), // Set your desired duration
         height: model.showSuccessMessage ? 50.0 : 0.0, // Adjust the height
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -168,14 +179,6 @@ class _ResetPasswordWidgetState extends State<ResetPasswordWidget> {
       style: const TextStyle(color: Colors.red),
     ));
   }
-
-  // Center successMessage(ForgotPasswordModel model) {
-  //   return Center(
-  //       child: Text(
-  //     model.successMessage,
-  //     style: const TextStyle(color: Colors.green),
-  //   ));
-  // }
 
   Future<void> forgotPassword(ForgotPasswordModel model) async {
     model.setLoading(true);
