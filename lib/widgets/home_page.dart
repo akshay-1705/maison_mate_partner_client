@@ -18,9 +18,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
           child: Column(
         children: [
           header(),
-          const SizedBox(height: 240),
           completeOnboarding(),
-          const SizedBox(height: 240),
         ],
       )),
       bottomNavigationBar: bottomNavigation(),
@@ -51,6 +49,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
   Column completeOnboarding() {
     return Column(
       children: [
+        const SizedBox(height: 240),
         Container(
           alignment: Alignment.bottomLeft,
           child: Center(
@@ -86,6 +85,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
             ),
           ),
         ),
+        const SizedBox(height: 240),
       ],
     );
   }
