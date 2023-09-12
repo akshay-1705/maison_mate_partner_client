@@ -42,7 +42,7 @@ class _SignInWidgetState extends State<SignInWidget> {
                         key: _formKey,
                         child: ListView(
                           children: <Widget>[
-                            const SizedBox(height: 60),
+                            const SizedBox(height: 100),
                             signInHeader(),
                             const SizedBox(height: 40),
                             if (model.errorMessage.isNotEmpty)

@@ -33,11 +33,7 @@ class MyApp extends StatelessWidget {
         ],
         child: MaterialApp(
           title: _title,
-          home: Scaffold(
-            appBar: AppBar(title: const Text(_title)),
-            body:
-                isUserLoggedIn ? const HomePageWidget() : const SignInWidget(),
-          ),
+          home: isUserLoggedIn ? const HomePageWidget() : const SignInWidget(),
           theme: ThemeData(
             useMaterial3: true,
             colorScheme:

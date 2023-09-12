@@ -38,7 +38,7 @@ class _ResetPasswordWidgetState extends State<ResetPasswordWidget> {
                 child: Form(
                     key: _formKey,
                     child: ListView(children: [
-                      const SizedBox(height: 65),
+                      const SizedBox(height: 100),
                       header(),
                       const SizedBox(height: 40),
                       if (model.errorMessage.isNotEmpty) errorMessage(model),
