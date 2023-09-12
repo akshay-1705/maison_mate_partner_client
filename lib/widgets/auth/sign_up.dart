@@ -56,7 +56,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                       termsAndConditions(model),
                       const SizedBox(height: 10),
                       signUpButton(model),
-                      signInOption(context),
+                      signInOption(context, model),
                     ])))));
   }
 
@@ -68,22 +68,24 @@ class _SignUpWidgetState extends State<SignUpWidget> {
     ));
   }
 
-  Row signInOption(BuildContext context) {
+  Row signInOption(BuildContext context, SignUpModel model) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         const Text("Already have an account?"),
         TextButton(
-          child: Text(
-            'Sign In',
-            style:
-                TextStyle(fontSize: 17, color: Colors.black.withOpacity(0.6)),
-          ),
-          onPressed: () => Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const SignInWidget()),
-          ),
-        )
+            child: Text(
+              'Sign In',
+              style:
+                  TextStyle(fontSize: 17, color: Colors.black.withOpacity(0.6)),
+            ),
+            onPressed: () {
+              model.clearStates();
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const SignInWidget()),
+              );
+            })
       ],
     );
   }

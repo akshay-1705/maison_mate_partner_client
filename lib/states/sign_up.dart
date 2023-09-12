@@ -19,4 +19,10 @@ class SignUpModel extends ChangeNotifier {
     acceptedTerms = value;
     notifyListeners();
   }
+
+  void clearStates() {
+    errorMessage = '';
+    isLoading = false;
+    acceptedTerms = false;
+  }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 // import 'package:maison_mate/network/response/sign_in.dart';
 // import 'package:maison_mate/network/response/api_response.dart';
-import 'package:maison_mate/widgets/auth/reset_password.dart';
+import 'package:maison_mate/widgets/auth/forgot_password.dart';
 import 'package:maison_mate/widgets/auth/sign_up.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -45,10 +45,10 @@ class _SignInWidgetState extends State<SignInWidget> {
                               errorMessage(model),
                             formFields(model),
                             const SizedBox(height: 10),
-                            forgotPassword(context),
+                            forgotPassword(context, model),
                             const SizedBox(height: 10),
                             loginContainer(model),
-                            signUp(context),
+                            signUp(context, model),
                           ],
                         ))))));
   }
@@ -99,6 +99,10 @@ class _SignInWidgetState extends State<SignInWidget> {
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Email is required';
+                  } else if (!RegExp(
+                          r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$')
+                      .hasMatch(value)) {
+                    return 'Email is invalid';
                   }
                   // You can add more specific email format validation here if needed
                   return null;
@@ -133,7 +137,7 @@ class _SignInWidgetState extends State<SignInWidget> {
     );
   }
 
-  TextButton forgotPassword(BuildContext context) {
+  TextButton forgotPassword(BuildContext context, SignInModel model) {
     return TextButton(
       onPressed: () {
         Navigator.push(
@@ -207,7 +211,7 @@ class _SignInWidgetState extends State<SignInWidget> {
     }
   }
 
-  Row signUp(BuildContext context) {
+  Row signUp(BuildContext context, SignInModel model) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
@@ -219,10 +223,9 @@ class _SignInWidgetState extends State<SignInWidget> {
                 TextStyle(fontSize: 17, color: Colors.black.withOpacity(0.6)),
           ),
           onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const SignUpWidget()),
-            );
+            model.clearStates();
+            Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (context) => const SignUpWidget()));
           },
         )
       ],

@@ -14,6 +14,7 @@ class ResetPasswordWidget extends StatefulWidget {
 
 class _ResetPasswordWidgetState extends State<ResetPasswordWidget> {
   TextEditingController emailController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     final model = Provider.of<ForgotPasswordModel>(context);
@@ -33,23 +34,56 @@ class _ResetPasswordWidgetState extends State<ResetPasswordWidget> {
             },
             child: Padding(
                 padding: const EdgeInsets.all(10),
-                child: ListView(children: [
-                  Align(
-                    alignment: Alignment.topLeft,
-                    child: IconButton(
-                      icon: const Icon(Icons.arrow_back, color: Colors.black),
-                      onPressed: () => Navigator.of(context).pop(),
-                    ),
-                  ),
-                  const SizedBox(height: 65),
-                  header(),
-                  const SizedBox(height: 40),
-                  if (model.errorMessage.isNotEmpty) errorMessage(model),
-                  if (model.successMessage.isNotEmpty) successMessage(model),
-                  emailField(emailController),
-                  const SizedBox(height: 20),
-                  forgotPasswordButton(model),
-                ]))));
+                child: Form(
+                    key: _formKey,
+                    child: ListView(children: [
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: IconButton(
+                          icon:
+                              const Icon(Icons.arrow_back, color: Colors.black),
+                          onPressed: () {
+                            model.clearStates();
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: 65),
+                      header(),
+                      const SizedBox(height: 40),
+                      if (model.errorMessage.isNotEmpty) errorMessage(model),
+                      if (model.successMessage.isNotEmpty)
+                        successMessage(model),
+                      if (model.successMessage.isEmpty)
+                        emailField(emailController),
+                      const SizedBox(height: 20),
+                      if (model.successMessage.isEmpty)
+                        forgotPasswordButton(model),
+                    ])))));
+  }
+
+  Center successMessage(ForgotPasswordModel model) {
+    return Center(
+      child: AnimatedContainer(
+        duration:
+            const Duration(milliseconds: 500), // Set your desired duration
+        height: model.showSuccessMessage ? 50.0 : 0.0, // Adjust the height
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
+              Icons.check_circle_outline,
+              color: Colors.green,
+            ),
+            const SizedBox(width: 10),
+            Text(
+              model.successMessage,
+              style: const TextStyle(color: Colors.green),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Container forgotPasswordButton(ForgotPasswordModel model) {
@@ -60,7 +94,7 @@ class _ResetPasswordWidgetState extends State<ResetPasswordWidget> {
             ? const Center(child: CircularProgressIndicator())
             : ElevatedButton(
                 onPressed: () async {
-                  if (!model.isLoading) {
+                  if (!model.isLoading && _formKey.currentState!.validate()) {
                     model.setErrorMessage('');
                     model.setsuccessMessage('');
                     await forgotPassword(model);
@@ -74,7 +108,7 @@ class _ResetPasswordWidgetState extends State<ResetPasswordWidget> {
                     ),
                     backgroundColor: MaterialStateProperty.all<Color>(
                         const Color(0xff2cc48a))),
-                child: const Text('Forgot',
+                child: const Text('Send Email',
                     style: TextStyle(color: Colors.white))));
   }
 
@@ -109,13 +143,20 @@ class _ResetPasswordWidgetState extends State<ResetPasswordWidget> {
         opacity: 0.3,
         child: Container(
           padding: const EdgeInsets.all(10),
-          child: TextField(
+          child: TextFormField(
             controller: emailController,
             decoration: const InputDecoration(
               border: OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(8))),
               labelText: 'Email*',
             ),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Email is required';
+              }
+              // You can add more complex password validation here if needed
+              return null;
+            },
           ),
         ));
   }
@@ -128,13 +169,13 @@ class _ResetPasswordWidgetState extends State<ResetPasswordWidget> {
     ));
   }
 
-  Center successMessage(ForgotPasswordModel model) {
-    return Center(
-        child: Text(
-      model.successMessage,
-      style: const TextStyle(color: Colors.green),
-    ));
-  }
+  // Center successMessage(ForgotPasswordModel model) {
+  //   return Center(
+  //       child: Text(
+  //     model.successMessage,
+  //     style: const TextStyle(color: Colors.green),
+  //   ));
+  // }
 
   Future<void> forgotPassword(ForgotPasswordModel model) async {
     model.setLoading(true);
@@ -159,6 +200,7 @@ class _ResetPasswordWidgetState extends State<ResetPasswordWidget> {
         model.setsuccessMessage(
             ApiResponse.fromJson(jsonDecode(response.body)).message);
         emailController.text = '';
+        model.showSuccessMessage = true;
       } else if (response.statusCode == 404) {
         model.setsuccessMessage('');
         model.setErrorMessage(
