@@ -1,19 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:maison_mate/widgets/auth/sign_in.dart';
+import 'package:maison_mate/widgets/home/home_page.dart';
 import 'package:maison_mate/states/sign_in.dart';
 import 'package:maison_mate/states/sign_up.dart';
 import 'package:maison_mate/states/forgot_password.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:maison_mate/constants.dart';
 
-void main() => runApp(const MyApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  const storage = FlutterSecureStorage();
+  final authToken = await storage.read(key: authTokenKey);
+  runApp(MyApp(authToken: authToken));
+}
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  final String? authToken;
+  const MyApp({Key? key, this.authToken}) : super(key: key);
 
   static const String _title = '';
 
   @override
   Widget build(BuildContext context) {
+    final isUserLoggedIn = authToken != null;
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => SignInModel()),
@@ -24,7 +35,8 @@ class MyApp extends StatelessWidget {
           title: _title,
           home: Scaffold(
             appBar: AppBar(title: const Text(_title)),
-            body: const SignInWidget(),
+            body:
+                isUserLoggedIn ? const HomePageWidget() : const SignInWidget(),
           ),
           theme: ThemeData(
             useMaterial3: true,

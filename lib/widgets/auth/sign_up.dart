@@ -8,6 +8,9 @@ import 'package:maison_mate/states/sign_up.dart';
 import 'package:maison_mate/widgets/auth/terms_and_conditions_page.dart';
 import 'package:provider/provider.dart';
 import 'package:maison_mate/network/response/api_response.dart';
+import 'package:maison_mate/constants.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:maison_mate/widgets/home/home_page.dart';
 
 class SignUpWidget extends StatefulWidget {
   const SignUpWidget({Key? key}) : super(key: key);
@@ -23,6 +26,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  static const storage = FlutterSecureStorage();
 
   @override
   Widget build(BuildContext context) {
@@ -126,12 +130,11 @@ class _SignUpWidgetState extends State<SignUpWidget> {
 
   Future<void> signUp(SignUpModel model) async {
     model.setLoading(true);
-    const String baseURL = 'http://192.168.1.3:3000/api/v1/partner/signup';
-    const String secretHeader = '1e802fb752174d1c3145cc657872b0a1';
+    const String signUpUrl = '$baseApiUrl/partner/signup';
 
     try {
       final response = await http.post(
-        Uri.parse(baseURL),
+        Uri.parse(signUpUrl),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Secret-Header': secretHeader
@@ -146,17 +149,23 @@ class _SignUpWidgetState extends State<SignUpWidget> {
       );
 
       if (response.statusCode == 200) {
-        // Successful login logic here
+        String authToken = ApiResponse.fromJson(jsonDecode(response.body))
+            .data
+            .token as String;
+        await storage.write(key: authTokenKey, value: authToken);
+        // ignore: use_build_context_synchronously
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const HomePageWidget()),
+        );
         model.setErrorMessage('');
-        // print(ApiResponse.fromJson(jsonDecode(response.body)).data.token);
       } else if (response.statusCode == 418) {
         model.setErrorMessage(
             ApiResponse.fromJson(jsonDecode(response.body)).message);
       } else {
-        model.setErrorMessage('Network error');
+        model.setErrorMessage(networkError);
       }
     } catch (e) {
-      model.setErrorMessage('Network error');
+      model.setErrorMessage(somethingWentWrong);
     } finally {
       model.setLoading(false);
     }

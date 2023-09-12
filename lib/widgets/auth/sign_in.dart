@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 // import 'package:maison_mate/network/response/sign_in.dart';
-// import 'package:maison_mate/network/response/api_response.dart';
+import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/widgets/auth/forgot_password.dart';
 import 'package:maison_mate/widgets/auth/sign_up.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:maison_mate/widgets/home/home_page.dart';
 import 'package:provider/provider.dart';
 import 'package:maison_mate/states/sign_in.dart';
+import 'package:maison_mate/constants.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class SignInWidget extends StatefulWidget {
   const SignInWidget({Key? key}) : super(key: key);
@@ -19,6 +22,7 @@ class _SignInWidgetState extends State<SignInWidget> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  static const storage = FlutterSecureStorage();
 
   @override
   Widget build(BuildContext context) {
@@ -150,6 +154,15 @@ class _SignInWidgetState extends State<SignInWidget> {
     );
   }
 
+  void showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red,
+      ),
+    );
+  }
+
   Container loginContainer(SignInModel model) {
     return Container(
       height: 50,
@@ -178,12 +191,11 @@ class _SignInWidgetState extends State<SignInWidget> {
 
   Future<void> login(SignInModel model) async {
     model.setLoading(true);
-    const String baseURL = 'http://192.168.1.3:3000/api/v1/partner/login';
-    const String secretHeader = '1e802fb752174d1c3145cc657872b0a1';
+    const String loginUrl = '$baseApiUrl/partner/login';
 
     try {
       final response = await http.post(
-        Uri.parse(baseURL),
+        Uri.parse(loginUrl),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Secret-Header': secretHeader
@@ -195,17 +207,22 @@ class _SignInWidgetState extends State<SignInWidget> {
       );
 
       if (response.statusCode == 200) {
-        // Successful login logic here
+        String authToken = ApiResponse.fromJson(jsonDecode(response.body))
+            .data
+            .token as String;
+        await storage.write(key: authTokenKey, value: authToken);
+        // ignore: use_build_context_synchronously
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const HomePageWidget()),
+        );
         model.setErrorMessage('');
-        // print(ApiResponse.fromJson(jsonDecode(response.body)));
       } else if (response.statusCode == 401) {
-        // print(ApiResponse.fromJson(jsonDecode(response.body)).message);
         model.setErrorMessage('Invalid credentials');
       } else {
-        model.setErrorMessage('Network error');
+        model.setErrorMessage(networkError);
       }
     } catch (e) {
-      model.setErrorMessage('Network error');
+      model.setErrorMessage(somethingWentWrong);
     } finally {
       model.setLoading(false);
     }

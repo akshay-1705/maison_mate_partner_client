@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:maison_mate/network/response/api_response.dart';
+import 'package:maison_mate/constants.dart';
 
 class ResetPasswordWidget extends StatefulWidget {
   const ResetPasswordWidget({Key? key}) : super(key: key);
@@ -165,7 +166,6 @@ class _ResetPasswordWidgetState extends State<ResetPasswordWidget> {
               if (value == null || value.isEmpty) {
                 return 'Email is required';
               }
-              // You can add more complex password validation here if needed
               return null;
             },
           ),
@@ -182,13 +182,11 @@ class _ResetPasswordWidgetState extends State<ResetPasswordWidget> {
 
   Future<void> forgotPassword(ForgotPasswordModel model) async {
     model.setLoading(true);
-    const String baseURL =
-        'http://192.168.1.3:3000/api/v1/partner/forgot_password';
-    const String secretHeader = '1e802fb752174d1c3145cc657872b0a1';
+    const String forgotPasswordUrl = '$baseApiUrl/partner/forgot_password';
 
     try {
       final response = await http.post(
-        Uri.parse(baseURL),
+        Uri.parse(forgotPasswordUrl),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
           'Secret-Header': secretHeader
@@ -210,11 +208,11 @@ class _ResetPasswordWidgetState extends State<ResetPasswordWidget> {
             ApiResponse.fromJson(jsonDecode(response.body)).message);
       } else {
         model.setsuccessMessage('');
-        model.setErrorMessage('Network error');
+        model.setErrorMessage(networkError);
       }
     } catch (e) {
       model.setsuccessMessage('');
-      model.setErrorMessage('Network error');
+      model.setErrorMessage(somethingWentWrong);
     } finally {
       model.setLoading(false);
     }
