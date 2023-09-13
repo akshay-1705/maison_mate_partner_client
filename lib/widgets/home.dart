@@ -42,7 +42,7 @@ class _HomeWidgetState extends State<HomeWidget> {
           label: 'Favorites',
         ),
       ],
-      selectedItemColor: const Color(0xff2cc48a), // Selected tab color
+      selectedItemColor: const Color(themeColor), // Selected tab color
       unselectedItemColor: Colors.grey, // Unselected tab color
     );
   }
@@ -77,7 +77,7 @@ class _HomeWidgetState extends State<HomeWidget> {
           },
           style: ButtonStyle(
             backgroundColor: MaterialStateProperty.all<Color>(
-              const Color(0xff2cc48a), // Match the color scheme
+              const Color(themeColor), // Match the color scheme
             ),
           ),
           child: const Text(
@@ -96,7 +96,7 @@ class _HomeWidgetState extends State<HomeWidget> {
 
   Container header() {
     return Container(
-      color: const Color(0xff2cc48a), // Header background color
+      color: const Color(themeColor), // Header background color
       padding: const EdgeInsets.only(top: 50.0),
       child: const Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

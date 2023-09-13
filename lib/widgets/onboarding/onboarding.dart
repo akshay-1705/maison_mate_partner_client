@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:maison_mate/widgets/home.dart';
 import 'package:maison_mate/widgets/onboarding/documentation.dart';
 import 'package:maison_mate/widgets/onboarding/your_details.dart';
+import 'package:maison_mate/constants.dart';
 
 class OnboardingWidget extends StatefulWidget {
   const OnboardingWidget({Key? key}) : super(key: key);
@@ -17,7 +18,7 @@ class _OnboardingWidgetState extends State<OnboardingWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xff2cc48a), // Match the color scheme
+        backgroundColor: const Color(themeColor), // Match the color scheme
         title: const Text(
           'Onboarding',
           style: TextStyle(color: Colors.white),
@@ -57,7 +58,7 @@ class _OnboardingWidgetState extends State<OnboardingWidget> {
             // Show "Next" button on Your Details section
             return FloatingActionButton(
               backgroundColor:
-                  const Color(0xff2cc48a), // Match the color scheme
+                  const Color(themeColor), // Match the color scheme
               onPressed: () {
                 setState(() {
                   _currentIndex = 1; // Navigate to the Documentation section
@@ -69,7 +70,7 @@ class _OnboardingWidgetState extends State<OnboardingWidget> {
             // Show "Back" button on Documentation section
             return FloatingActionButton(
               backgroundColor:
-                  const Color(0xff2cc48a), // Match the color scheme
+                  const Color(themeColor), // Match the color scheme
               onPressed: () {
                 setState(() {
                   _currentIndex = 0; // Navigate back to Your Details section

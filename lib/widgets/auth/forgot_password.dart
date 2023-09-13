@@ -66,10 +66,10 @@ class _ResetPasswordWidgetState extends State<ResetPasswordWidget> {
                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
-                      side: const BorderSide(color: Color(0xff2cc48a))),
+                      side: const BorderSide(color: Color(themeColor))),
                 ),
                 backgroundColor:
-                    MaterialStateProperty.all<Color>(const Color(0xff2cc48a))),
+                    MaterialStateProperty.all<Color>(const Color(themeColor))),
             child:
                 const Text('Sign In', style: TextStyle(color: Colors.white))));
   }
@@ -116,10 +116,10 @@ class _ResetPasswordWidgetState extends State<ResetPasswordWidget> {
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
-                          side: const BorderSide(color: Color(0xff2cc48a))),
+                          side: const BorderSide(color: Color(themeColor))),
                     ),
                     backgroundColor: MaterialStateProperty.all<Color>(
-                        const Color(0xff2cc48a))),
+                        const Color(themeColor))),
                 child: const Text('Send Email',
                     style: TextStyle(color: Colors.white))));
   }

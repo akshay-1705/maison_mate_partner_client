@@ -5,3 +5,4 @@ const String baseApiUrl = "http://$baseDomain:3000/api/v1";
 const String networkError = "Network Error";
 const String somethingWentWrong =
     "Something Went Wrong. Try again after sometime";
+const themeColor = 0xff2cc48a;

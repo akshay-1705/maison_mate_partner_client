@@ -120,10 +120,10 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
-                          side: const BorderSide(color: Color(0xff2cc48a))),
+                          side: const BorderSide(color: Color(themeColor))),
                     ),
                     backgroundColor: MaterialStateProperty.all<Color>(
-                        const Color(0xff2cc48a))),
+                        const Color(themeColor))),
                 child: const Text('Sign Up',
                     style: TextStyle(color: Colors.white))));
   }
