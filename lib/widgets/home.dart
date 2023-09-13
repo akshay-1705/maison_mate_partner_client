@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:maison_mate/constants.dart';
 import 'package:maison_mate/widgets/auth/sign_in.dart';
+import 'package:maison_mate/widgets/onboarding.dart';
 
-class HomePageWidget extends StatefulWidget {
-  const HomePageWidget({Key? key}) : super(key: key);
+class HomeWidget extends StatefulWidget {
+  const HomeWidget({Key? key}) : super(key: key);
 
   @override
-  State<HomePageWidget> createState() => _HomePageWidgetState();
+  State<HomeWidget> createState() => _HomeWidgetState();
 }
 
-class _HomePageWidgetState extends State<HomePageWidget> {
+class _HomeWidgetState extends State<HomeWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,7 +70,10 @@ class _HomePageWidgetState extends State<HomePageWidget> {
         const SizedBox(height: 20),
         ElevatedButton(
           onPressed: () {
-            // Add your action for the "Proceed" button here
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const OnboardingWidget()),
+            );
           },
           style: ButtonStyle(
             backgroundColor: MaterialStateProperty.all<Color>(
@@ -108,16 +112,16 @@ class _HomePageWidgetState extends State<HomePageWidget> {
               ),
             ),
           ),
-          LogoutButton(),
+          Account(),
         ],
       ),
     );
   }
 }
 
-class LogoutButton extends StatelessWidget {
+class Account extends StatelessWidget {
   static const storage = FlutterSecureStorage();
-  const LogoutButton({
+  const Account({
     super.key,
   });
 

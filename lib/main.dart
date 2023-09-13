@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:maison_mate/widgets/auth/sign_in.dart';
-import 'package:maison_mate/widgets/home_page.dart';
+import 'package:maison_mate/widgets/home.dart';
 import 'package:maison_mate/states/sign_in.dart';
 import 'package:maison_mate/states/sign_up.dart';
 import 'package:maison_mate/states/forgot_password.dart';
@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
         ],
         child: MaterialApp(
           title: _title,
-          home: isUserLoggedIn ? const HomePageWidget() : const SignInWidget(),
+          home: isUserLoggedIn ? const HomeWidget() : const SignInWidget(),
           theme: ThemeData(
             useMaterial3: true,
             colorScheme:

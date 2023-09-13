@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/constants.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:maison_mate/widgets/home_page.dart';
+import 'package:maison_mate/widgets/home.dart';
 
 class SignUpWidget extends StatefulWidget {
   const SignUpWidget({Key? key}) : super(key: key);
@@ -155,7 +155,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
         await storage.write(key: authTokenKey, value: authToken);
         // ignore: use_build_context_synchronously
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const HomePageWidget()),
+          MaterialPageRoute(builder: (context) => const HomeWidget()),
         );
         model.setErrorMessage('');
       } else if (response.statusCode == 418) {

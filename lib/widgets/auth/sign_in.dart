@@ -5,7 +5,7 @@ import 'package:maison_mate/widgets/auth/forgot_password.dart';
 import 'package:maison_mate/widgets/auth/sign_up.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:maison_mate/widgets/home_page.dart';
+import 'package:maison_mate/widgets/home.dart';
 import 'package:provider/provider.dart';
 import 'package:maison_mate/states/sign_in.dart';
 import 'package:maison_mate/constants.dart';
@@ -213,7 +213,7 @@ class _SignInWidgetState extends State<SignInWidget> {
         await storage.write(key: authTokenKey, value: authToken);
         // ignore: use_build_context_synchronously
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const HomePageWidget()),
+          MaterialPageRoute(builder: (context) => const HomeWidget()),
         );
         model.setErrorMessage('');
       } else if (response.statusCode == 401) {
