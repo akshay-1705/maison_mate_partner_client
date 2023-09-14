@@ -96,6 +96,12 @@ class _YourDetailsSectionState extends State<YourDetailsSection> {
                       title: const Text("Postcodes"),
                       searchable: true,
                       selectedColor: const Color(themeColor),
+                      validator: (value) {
+                        if ((value == null || value.isEmpty)) {
+                          return 'This field is required';
+                        }
+                        return null;
+                      },
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.1),
                         borderRadius:
@@ -109,10 +115,10 @@ class _YourDetailsSectionState extends State<YourDetailsSection> {
                         color: Color(themeColor),
                       ),
                       buttonText: const Text(
-                        "Which postcodes or towns do you cover?*",
+                        "Enter postcodes like (EB3 5DJ, E14 OBQ)",
                         style: TextStyle(
                           color: Colors.grey,
-                          fontSize: 16,
+                          fontSize: 14,
                         ),
                       ),
                       onConfirm: (results) {},
