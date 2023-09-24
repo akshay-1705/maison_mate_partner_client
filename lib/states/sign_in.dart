@@ -17,5 +17,6 @@ class SignInModel extends ChangeNotifier {
   void clearStates() {
     errorMessage = '';
     isLoading = false;
+    notifyListeners();
   }
 }

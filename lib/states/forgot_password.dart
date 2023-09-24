@@ -30,5 +30,6 @@ class ForgotPasswordModel extends ChangeNotifier {
     isLoading = false;
     errorMessage = '';
     successMessage = '';
+    notifyListeners();
   }
 }

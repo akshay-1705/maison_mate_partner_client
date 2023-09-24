@@ -1,5 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:maison_mate/network/response/sign_in.dart';
+import 'package:maison_mate/network/response/your_details_response.dart';
 
 part 'api_response.g.dart';
 
@@ -29,6 +30,9 @@ class _Converter<T> implements JsonConverter<T, Object> {
     final map = json as Map<String, dynamic>;
     if (map.containsKey('partner') && map.containsKey('token')) {
       return SignIn.fromJson(map) as T;
+    } else if (map.containsKey('services_available') &&
+        map.containsKey('postcodes_available')) {
+      return YourDetailsResponse.fromJson(map) as T;
     } else {
       return map as T;
     }

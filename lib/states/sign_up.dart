@@ -24,5 +24,6 @@ class SignUpModel extends ChangeNotifier {
     errorMessage = '';
     isLoading = false;
     acceptedTerms = false;
+    notifyListeners();
   }
 }
