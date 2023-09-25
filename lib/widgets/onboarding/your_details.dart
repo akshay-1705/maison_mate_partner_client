@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:maison_mate/network/request/get_request.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:maison_mate/network/request/post_request.dart';
 import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/network/response/your_details_response.dart';
 import 'package:maison_mate/states/your_details.dart';
@@ -116,7 +114,6 @@ class _YourDetailsSectionState extends State<YourDetailsSection> {
                           errorMessageContainer(model)
                         else
                           const SizedBox.shrink(), // Empty space when no error
-                        // Display the loader (CircularProgressIndicator) while submitting
                         Column(children: [
                           formFieldHeader('Select Tradesmen Type*'),
                           buildRadioButtons(
@@ -187,7 +184,7 @@ class _YourDetailsSectionState extends State<YourDetailsSection> {
                           ),
                           const SizedBox(height: 16.0),
                           (postFutureData != null)
-                              ? postRequestFutureBuilder(model)
+                              ? postRequestFutureBuilder(model, postFutureData!)
                               : submitButton("Next Step", () async {
                                   onSubmitCallback(model);
                                 })
@@ -197,6 +194,36 @@ class _YourDetailsSectionState extends State<YourDetailsSection> {
                     ),
                   ),
                 ))));
+  }
+
+  FutureBuilder<ApiResponse> postRequestFutureBuilder(
+      dynamic model, Future<ApiResponse> postFutureData) {
+    return FutureBuilder<ApiResponse>(
+      future: postFutureData,
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return submitButton("Next Step", () async {
+            onSubmitCallback(model);
+          });
+        } else if (snapshot.connectionState == ConnectionState.waiting) {
+          return circularLoader();
+        } else if (snapshot.data!.success) {
+          // Navigate to a new page when data is available
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            Navigator.of(context).pushReplacement(MaterialPageRoute(
+              builder: (context) => const DocumentationSection(),
+            ));
+          });
+        } else if (snapshot.data!.success == false) {
+          // model.setErrorMessage(snapshot.data!.message);
+          return submitButton("Next Step", () async {
+            onSubmitCallback(model);
+          });
+        }
+
+        return circularLoader();
+      },
+    );
   }
 
   void onSubmitCallback(YourDetails model) {
@@ -223,73 +250,6 @@ class _YourDetailsSectionState extends State<YourDetailsSection> {
         postFutureData = postData(apiUrl, formData, model);
       }
     }
-  }
-
-  Future<ApiResponse<T>> postData<T>(
-      String apiUrl, Map<String, Object> formData, YourDetails model) async {
-    try {
-      const storage = FlutterSecureStorage();
-      var authToken = (await storage.read(key: authTokenKey))!;
-      final response = await http.post(
-        Uri.parse(apiUrl),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-          'Partner-Authorization': authToken
-        },
-        body: jsonEncode(formData),
-      );
-      final Map<String, dynamic> data = json.decode(response.body);
-
-      model.setIsSubmitting(false);
-      ApiResponse<T> apiResponse = ApiResponse.fromJson(data);
-
-      if (apiResponse.success == false) {
-        model.setErrorMessage(apiResponse.message);
-      }
-      return apiResponse;
-    } catch (e) {
-      model.setErrorMessage("Something Went Wrong");
-      throw ("Something Went Wrong");
-    }
-  }
-
-  FutureBuilder<ApiResponse> postRequestFutureBuilder(YourDetails model) {
-    return FutureBuilder<ApiResponse>(
-      future: postFutureData,
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return submitButton("Next Step", () async {
-            onSubmitCallback(model);
-          });
-        } else if (snapshot.connectionState == ConnectionState.waiting) {
-          return Container(
-            alignment: Alignment.center,
-            child: const Center(
-              child: CircularProgressIndicator(),
-            ),
-          );
-        } else if (snapshot.data!.success) {
-          // Navigate to a new page when data is available
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            Navigator.of(context).pushReplacement(MaterialPageRoute(
-              builder: (context) => const DocumentationSection(),
-            ));
-          });
-        } else if (snapshot.data!.success == false) {
-          // model.setErrorMessage(snapshot.data!.message);
-          return submitButton("Next Step", () async {
-            onSubmitCallback(model);
-          });
-        }
-
-        return Container(
-          alignment: Alignment.center,
-          child: const Center(
-            child: CircularProgressIndicator(),
-          ),
-        );
-      },
-    );
   }
 
   Visibility errorMessageContainer(YourDetails model) {

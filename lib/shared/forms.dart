@@ -154,6 +154,15 @@ Widget buildRadioButtons(
   );
 }
 
+Widget circularLoader() {
+  return Container(
+    alignment: Alignment.center,
+    child: const Center(
+      child: CircularProgressIndicator(),
+    ),
+  );
+}
+
 typedef MultiSelectFieldCallback = void Function(List<dynamic>);
 
 Container multiSelectField(

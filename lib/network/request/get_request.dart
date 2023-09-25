@@ -5,6 +5,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:maison_mate/constants.dart';
 import 'package:maison_mate/network/response/api_response.dart';
 import 'package:http/http.dart' as http;
+import 'package:maison_mate/shared/forms.dart';
 import 'package:maison_mate/widgets/home.dart';
 
 Future<ApiResponse<T>> fetchData<T>(String apiUrl) async {
@@ -53,12 +54,7 @@ class GetRequestFutureBuilder<T> extends StatelessWidget {
           });
           return Container();
         }
-        return Container(
-          alignment: Alignment.center,
-          child: const Center(
-            child: CircularProgressIndicator(),
-          ),
-        );
+        return circularLoader();
       },
     );
   }

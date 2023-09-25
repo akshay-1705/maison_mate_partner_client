@@ -55,7 +55,7 @@ class _ResetPasswordWidgetState extends State<ResetPasswordWidget> {
                         }),
                       if (model.successMessage.isEmpty)
                         model.isLoading
-                            ? const Center(child: CircularProgressIndicator())
+                            ? circularLoader()
                             : submitButton('Send Email', () async {
                                 if (!model.isLoading &&
                                     _formKey.currentState!.validate()) {

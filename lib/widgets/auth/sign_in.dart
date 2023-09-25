@@ -73,12 +73,7 @@ class _SignInWidgetState extends State<SignInWidget> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           // Return a loading indicator while the future is waiting
-          return Container(
-            alignment: Alignment.center,
-            child: const Center(
-              child: CircularProgressIndicator(),
-            ),
-          );
+          return circularLoader();
         } else if (snapshot.hasError || snapshot.data?.success == false) {
           // Handle the case where there's an error or login is unsuccessful
           return submitButton('Login', () async {
@@ -99,9 +94,7 @@ class _SignInWidgetState extends State<SignInWidget> {
         // Return a default empty container as a fallback
         return Container(
           alignment: Alignment.center,
-          child: const Center(
-            child: CircularProgressIndicator(),
-          ),
+          child: circularLoader(),
         );
       },
     );

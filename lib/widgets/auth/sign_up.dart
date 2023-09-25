@@ -101,7 +101,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
         height: 50,
         padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
         child: model.isLoading
-            ? const Center(child: CircularProgressIndicator())
+            ? circularLoader()
             : ElevatedButton(
                 onPressed: () async {
                   if (!model.isLoading && _formKey.currentState!.validate()) {
