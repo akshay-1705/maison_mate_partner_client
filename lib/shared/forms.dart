@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:maison_mate/constants.dart';
-import 'package:maison_mate/states/your_details.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 Container formFieldHeader(String label) {
@@ -13,7 +12,28 @@ Container formFieldHeader(String label) {
       ));
 }
 
-Opacity requiredTextField(String label, TextEditingController controller) {
+Opacity requiredTextField(String label, TextEditingController controller,
+    [bool? obscure]) {
+  obscure ??= false;
+  return Opacity(
+      opacity: 0.5,
+      child: Container(
+        padding: const EdgeInsets.all(6),
+        child: TextFormField(
+          controller: controller,
+          obscureText: obscure,
+          decoration: customInputDecoration(label),
+          validator: (value) {
+            if ((value == null || value.isEmpty)) {
+              return 'This field is required';
+            }
+            return null;
+          },
+        ),
+      ));
+}
+
+Opacity requiredEmailField(String label, TextEditingController controller) {
   return Opacity(
       opacity: 0.5,
       child: Container(
@@ -22,9 +42,13 @@ Opacity requiredTextField(String label, TextEditingController controller) {
           controller: controller,
           decoration: customInputDecoration(label),
           validator: (value) {
-            if ((value == null || value.isEmpty)) {
+            if (value == null || value.isEmpty) {
               return 'This field is required';
+            } else if (!RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$')
+                .hasMatch(value)) {
+              return 'Email is invalid';
             }
+            // You can add more specific email format validation here if needed
             return null;
           },
         ),
@@ -179,8 +203,7 @@ Container multiSelectField(
 
 typedef SubmitButtonCallback = void Function();
 
-Widget submitButton(
-    YourDetails model, String buttonText, SubmitButtonCallback onSubmit) {
+Widget submitButton(String buttonText, SubmitButtonCallback onSubmit) {
   return SizedBox(
       width: 125,
       height: 50,

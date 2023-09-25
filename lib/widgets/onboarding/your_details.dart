@@ -188,7 +188,7 @@ class _YourDetailsSectionState extends State<YourDetailsSection> {
                           const SizedBox(height: 16.0),
                           (postFutureData != null)
                               ? postRequestFutureBuilder(model)
-                              : submitButton(model, "Next Step", () async {
+                              : submitButton("Next Step", () async {
                                   onSubmitCallback(model);
                                 })
                         ]),
@@ -258,7 +258,7 @@ class _YourDetailsSectionState extends State<YourDetailsSection> {
       future: postFutureData,
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          return submitButton(model, "Next Step", () async {
+          return submitButton("Next Step", () async {
             onSubmitCallback(model);
           });
         } else if (snapshot.connectionState == ConnectionState.waiting) {
@@ -277,7 +277,7 @@ class _YourDetailsSectionState extends State<YourDetailsSection> {
           });
         } else if (snapshot.data!.success == false) {
           // model.setErrorMessage(snapshot.data!.message);
-          return submitButton(model, "Next Step", () async {
+          return submitButton("Next Step", () async {
             onSubmitCallback(model);
           });
         }

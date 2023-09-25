@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 // import 'package:maison_mate/network/response/sign_in.dart';
 import 'package:maison_mate/network/response/api_response.dart';
+import 'package:maison_mate/shared/forms.dart';
 import 'package:maison_mate/widgets/auth/forgot_password.dart';
 import 'package:maison_mate/widgets/auth/sign_up.dart';
 import 'dart:convert';
@@ -23,6 +24,7 @@ class _SignInWidgetState extends State<SignInWidget> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   static const storage = FlutterSecureStorage();
+  Future<ApiResponse>? futureData;
 
   @override
   Widget build(BuildContext context) {
@@ -51,10 +53,94 @@ class _SignInWidgetState extends State<SignInWidget> {
                             const SizedBox(height: 10),
                             forgotPassword(context, model),
                             const SizedBox(height: 10),
-                            loginContainer(model),
+                            (futureData != null)
+                                ? futureBuilder(model)
+                                : submitButton('Login', () async {
+                                    if (!model.isLoading &&
+                                        _formKey.currentState!.validate()) {
+                                      model.setErrorMessage('');
+                                      futureData = login(model);
+                                    }
+                                  }),
                             signUp(context, model),
                           ],
                         ))))));
+  }
+
+  FutureBuilder<ApiResponse> futureBuilder(SignInModel model) {
+    return FutureBuilder<ApiResponse>(
+      future: futureData,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          // Return a loading indicator while the future is waiting
+          return Container(
+            alignment: Alignment.center,
+            child: const Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        } else if (snapshot.hasError || snapshot.data?.success == false) {
+          // Handle the case where there's an error or login is unsuccessful
+          return submitButton('Login', () async {
+            if (!model.isLoading && _formKey.currentState!.validate()) {
+              model.setErrorMessage('');
+              futureData = login(model);
+            }
+          });
+        } else if (snapshot.hasData && snapshot.data!.success) {
+          // Handle the case where login is successful
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => const HomeWidget()),
+            );
+          });
+        }
+
+        // Return a default empty container as a fallback
+        return Container(
+          alignment: Alignment.center,
+          child: const Center(
+            child: CircularProgressIndicator(),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<ApiResponse> login<T>(SignInModel model) async {
+    model.setLoading(true);
+    const String loginUrl = '$baseApiUrl/partner/login';
+
+    try {
+      final response = await http.post(
+        Uri.parse(loginUrl),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Secret-Header': secretHeader
+        },
+        body: jsonEncode(<String, String>{
+          'email': emailController.text,
+          'password': passwordController.text
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        var authToken =
+            ApiResponse.fromJson(jsonDecode(response.body)).data.token;
+        await storage.write(key: authTokenKey, value: authToken);
+        model.setErrorMessage('');
+      } else if (response.statusCode == 401) {
+        model.setErrorMessage('Invalid credentials');
+      } else {
+        model.setErrorMessage(networkError);
+      }
+      model.setLoading(false);
+      return ApiResponse.fromJson(jsonDecode(response.body));
+    } catch (e) {
+      model.setLoading(false);
+      model.setErrorMessage(somethingWentWrong);
+      throw (somethingWentWrong);
+    }
   }
 
   Column signInHeader() {
@@ -89,54 +175,8 @@ class _SignInWidgetState extends State<SignInWidget> {
   Column formFields(SignInModel model) {
     return Column(
       children: [
-        Opacity(
-            opacity: 0.5,
-            child: Container(
-              padding: const EdgeInsets.all(10),
-              child: TextFormField(
-                controller: emailController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(8))),
-                  labelText: 'Email*',
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Email is required';
-                  } else if (!RegExp(
-                          r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$')
-                      .hasMatch(value)) {
-                    return 'Email is invalid';
-                  }
-                  // You can add more specific email format validation here if needed
-                  return null;
-                },
-              ),
-            )),
-        Opacity(
-          opacity: 0.5,
-          child: Container(
-            padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-            child: TextFormField(
-              obscureText: true,
-              controller: passwordController,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(8))),
-                labelText: 'Password*',
-                labelStyle: TextStyle(color: Color(themeColor)),
-              ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Password is required';
-                }
-                // You can add more complex password validation here if needed
-                return null;
-              },
-              style: const TextStyle(color: Color(themeColor)),
-            ),
-          ),
-        ),
+        requiredEmailField('Email*', emailController),
+        requiredTextField('Password*', passwordController, true),
       ],
     );
   }
@@ -152,71 +192,6 @@ class _SignInWidgetState extends State<SignInWidget> {
       child: const Text('Forgot Password?',
           style: TextStyle(color: Color(themeColor))),
     );
-  }
-
-  Container loginContainer(SignInModel model) {
-    return Container(
-      height: 50,
-      padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-      child: model.isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : ElevatedButton(
-              onPressed: () async {
-                if (!model.isLoading && _formKey.currentState!.validate()) {
-                  model.setErrorMessage('');
-                  await login(model);
-                }
-              },
-              style: ButtonStyle(
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        side: const BorderSide(color: Color(themeColor))),
-                  ),
-                  backgroundColor: MaterialStateProperty.all<Color>(
-                      const Color(themeColor))),
-              child: const Text('Login',
-                  style: TextStyle(color: Color(secondaryColor)))),
-    );
-  }
-
-  Future<void> login(SignInModel model) async {
-    model.setLoading(true);
-    const String loginUrl = '$baseApiUrl/partner/login';
-
-    try {
-      final response = await http.post(
-        Uri.parse(loginUrl),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-          'Secret-Header': secretHeader
-        },
-        body: jsonEncode(<String, String>{
-          'email': emailController.text,
-          'password': passwordController.text
-        }),
-      );
-
-      if (response.statusCode == 200) {
-        String authToken = ApiResponse.fromJson(jsonDecode(response.body))
-            .data
-            .token as String;
-        await storage.write(key: authTokenKey, value: authToken);
-        // ignore: use_build_context_synchronously
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const HomeWidget()),
-        );
-        model.setErrorMessage('');
-      } else if (response.statusCode == 401) {
-        model.setErrorMessage('Invalid credentials');
-      } else {
-        model.setErrorMessage(networkError);
-      }
-    } catch (e) {
-      model.setErrorMessage(somethingWentWrong);
-    } finally {
-      model.setLoading(false);
-    }
   }
 
   Row signUp(BuildContext context, SignInModel model) {

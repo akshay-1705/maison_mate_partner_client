@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:maison_mate/shared/forms.dart';
 import 'package:maison_mate/states/forgot_password.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
@@ -45,33 +46,25 @@ class _ResetPasswordWidgetState extends State<ResetPasswordWidget> {
                       if (model.successMessage.isNotEmpty)
                         successMessage(model),
                       if (model.successMessage.isEmpty)
-                        emailField(emailController),
+                        requiredEmailField('Email*', emailController),
                       const SizedBox(height: 20),
-                      if (model.successMessage.isNotEmpty) signInButton(model),
+                      if (model.successMessage.isNotEmpty)
+                        submitButton('Sign In', () {
+                          model.clearStates();
+                          Navigator.of(context).pop();
+                        }),
                       if (model.successMessage.isEmpty)
-                        forgotPasswordButton(model),
+                        model.isLoading
+                            ? const Center(child: CircularProgressIndicator())
+                            : submitButton('Send Email', () async {
+                                if (!model.isLoading &&
+                                    _formKey.currentState!.validate()) {
+                                  model.setErrorMessage('');
+                                  model.setsuccessMessage('');
+                                  await forgotPassword(model);
+                                }
+                              }),
                     ])))));
-  }
-
-  Container signInButton(ForgotPasswordModel model) {
-    return Container(
-        height: 50,
-        padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-        child: ElevatedButton(
-            onPressed: () {
-              model.clearStates();
-              Navigator.of(context).pop();
-            },
-            style: ButtonStyle(
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      side: const BorderSide(color: Color(themeColor))),
-                ),
-                backgroundColor:
-                    MaterialStateProperty.all<Color>(const Color(themeColor))),
-            child: const Text('Sign In',
-                style: TextStyle(color: Color(secondaryColor)))));
   }
 
   Center successMessage(ForgotPasswordModel model) {
@@ -98,32 +91,6 @@ class _ResetPasswordWidgetState extends State<ResetPasswordWidget> {
     );
   }
 
-  Container forgotPasswordButton(ForgotPasswordModel model) {
-    return Container(
-        height: 50,
-        padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-        child: model.isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : ElevatedButton(
-                onPressed: () async {
-                  if (!model.isLoading && _formKey.currentState!.validate()) {
-                    model.setErrorMessage('');
-                    model.setsuccessMessage('');
-                    await forgotPassword(model);
-                  }
-                },
-                style: ButtonStyle(
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          side: const BorderSide(color: Color(themeColor))),
-                    ),
-                    backgroundColor: MaterialStateProperty.all<Color>(
-                        const Color(themeColor))),
-                child: const Text('Send Email',
-                    style: TextStyle(color: Color(secondaryColor)))));
-  }
-
   Column header() {
     return Column(
       children: [
@@ -148,28 +115,6 @@ class _ResetPasswordWidgetState extends State<ResetPasswordWidget> {
         ),
       ],
     );
-  }
-
-  Opacity emailField(TextEditingController emailController) {
-    return Opacity(
-        opacity: 0.3,
-        child: Container(
-          padding: const EdgeInsets.all(10),
-          child: TextFormField(
-            controller: emailController,
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(8))),
-              labelText: 'Email*',
-            ),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Email is required';
-              }
-              return null;
-            },
-          ),
-        ));
   }
 
   Center errorMessage(ForgotPasswordModel model) {
