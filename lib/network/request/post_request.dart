@@ -8,9 +8,12 @@ import 'package:http/http.dart' as http;
 import 'package:maison_mate/shared/forms.dart';
 import 'package:maison_mate/shared/my_snackbar.dart';
 
+bool isSnackbarShown = false;
+
 Future<ApiResponse<T>> postData<T>(String apiUrl, Map<String, Object> bodyData,
     dynamic model, void Function(ApiResponse<T>) apiSpecificTask) async {
   try {
+    isSnackbarShown = false;
     const storage = FlutterSecureStorage();
     var authToken = await storage.read(key: authTokenKey);
     authToken ??= '';
@@ -57,16 +60,20 @@ FutureBuilder<ApiResponse> postRequestFutureBuilder(
                 ? snapshot.data!.message
                 : somethingWentWrong);
 
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          ScaffoldMessenger.of(context).showSnackBar(
-              MySnackBar(message: errorMessage, error: true).getSnackbar());
-        });
+        if (!isSnackbarShown) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            isSnackbarShown = true;
+            ScaffoldMessenger.of(context).showSnackBar(
+                MySnackBar(message: errorMessage, error: true).getSnackbar());
+          });
+        }
         return submitButton(buttonText, buttonAction);
       } else if (snapshot.connectionState == ConnectionState.waiting) {
         return circularLoader();
       } else if (snapshot.data!.success &&
           snapshot.connectionState == ConnectionState.done) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
+          isSnackbarShown = false;
           onNavigation();
         });
       }
