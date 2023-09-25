@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:maison_mate/shared/forms.dart';
 import 'package:maison_mate/widgets/auth/sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:maison_mate/states/sign_up.dart';
@@ -54,7 +55,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                       const SizedBox(height: 40),
                       if (model.errorMessage.isNotEmpty) errorMessage(model),
                       nameFields(),
-                      emailField(),
+                      requiredEmailField('Email*', emailController),
                       passwordFields(),
                       const SizedBox(height: 10),
                       termsAndConditions(model),
@@ -194,7 +195,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                   text: "Terms & Conditions",
                   style: const TextStyle(
                     fontSize: 13,
-                    color: Color(themeColor),
+                    color: Color(awesomeColor),
                   ),
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
@@ -215,7 +216,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                   text: "Privacy Policy",
                   style: const TextStyle(
                     fontSize: 13,
-                    color: Color(themeColor),
+                    color: Color(awesomeColor),
                   ),
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
@@ -244,7 +245,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
           child: Opacity(
               opacity: 0.5,
               child: Container(
-                padding: const EdgeInsets.all(10),
+                padding: const EdgeInsets.all(8),
                 child: TextFormField(
                   controller: passwordController,
                   obscureText: true,
@@ -270,7 +271,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
           child: Opacity(
               opacity: 0.5,
               child: Container(
-                padding: const EdgeInsets.all(10),
+                padding: const EdgeInsets.all(8),
                 child: TextFormField(
                   controller: confirmPasswordController,
                   obscureText: true,
@@ -308,77 +309,15 @@ class _SignUpWidgetState extends State<SignUpWidget> {
     );
   }
 
-  Opacity emailField() {
-    return Opacity(
-        opacity: 0.5,
-        child: Container(
-          padding: const EdgeInsets.all(10),
-          child: TextFormField(
-            controller: emailController,
-            validator: (value) {
-              if (value!.isEmpty) {
-                return 'Email is required'; // Return an error message if the field is empty
-              } else if (!RegExp(
-                      r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$')
-                  .hasMatch(value)) {
-                return 'Email is invalid';
-              }
-              return null; // Return null if the field is valid
-            },
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(8))),
-              labelText: 'Email*',
-            ),
-          ),
-        ));
-  }
-
   Row nameFields() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
         Flexible(
-          child: Opacity(
-              opacity: 0.5,
-              child: Container(
-                padding: const EdgeInsets.all(10),
-                child: TextFormField(
-                  controller: firstNameController,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'First Name is required'; // Return an error message if the field is empty
-                    }
-                    return null; // Return null if the field is valid
-                  },
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(8))),
-                    labelText: 'First Name*',
-                  ),
-                ),
-              )),
+          child: requiredTextField('First Name*', firstNameController),
         ),
         Flexible(
-          child: Opacity(
-              opacity: 0.5,
-              child: Container(
-                padding: const EdgeInsets.all(10),
-                child: TextFormField(
-                  controller: lastNameController,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(8))),
-                    labelText: 'Last Name',
-                  ),
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Last Name is required'; // Return an error message if the field is empty
-                    }
-                    return null; // Return null if the field is valid
-                  },
-                ),
-              )),
+          child: requiredTextField('Last Name*', lastNameController),
         )
       ],
     );
