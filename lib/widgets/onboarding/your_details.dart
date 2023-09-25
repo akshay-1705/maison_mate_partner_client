@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:maison_mate/network/request/get_request.dart';
-import 'package:maison_mate/network/request/post_request.dart';
+import 'package:maison_mate/network/request/post_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/network/response/your_details_response.dart';
 import 'package:maison_mate/states/your_details.dart';
@@ -180,7 +180,7 @@ class _YourDetailsSectionState extends State<YourDetailsSection> {
                           ),
                           const SizedBox(height: 16.0),
                           (postFutureData != null)
-                              ? postRequestFutureBuilder(
+                              ? PostClient.futureBuilder(
                                   model,
                                   postFutureData!,
                                   "Next Step",
@@ -227,7 +227,8 @@ class _YourDetailsSectionState extends State<YourDetailsSection> {
           'services_offered': model.selectedServices.toList(),
           'postcodes_covered': model.selectedPostcodes.toList(),
         };
-        postFutureData = postData(apiUrl, formData, model, (response) {});
+        postFutureData =
+            PostClient.request(apiUrl, formData, model, (response) {});
       }
     }
   }

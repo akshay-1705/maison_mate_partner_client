@@ -1,6 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:maison_mate/network/request/post_request.dart';
+import 'package:maison_mate/network/request/post_client.dart';
 import 'package:maison_mate/shared/forms.dart';
 import 'package:maison_mate/shared/my_snackbar.dart';
 import 'package:maison_mate/widgets/auth/sign_in.dart';
@@ -60,7 +60,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                       termsAndConditions(model),
                       const SizedBox(height: 10),
                       (futureData != null)
-                          ? postRequestFutureBuilder(
+                          ? PostClient.futureBuilder(
                               model,
                               futureData!,
                               "Sign Up",
@@ -94,7 +94,8 @@ class _SignUpWidgetState extends State<SignUpWidget> {
           'password': passwordController.text,
           'password_confirmation': confirmPasswordController.text
         };
-        futureData = postData(signUpUrl, formData, model, (response) async {
+        futureData =
+            PostClient.request(signUpUrl, formData, model, (response) async {
           var authToken = response.data.token;
           await storage.write(key: authTokenKey, value: authToken);
         });

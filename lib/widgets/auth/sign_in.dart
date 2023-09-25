@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:maison_mate/network/request/post_request.dart';
+import 'package:maison_mate/network/request/post_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/shared/forms.dart';
 import 'package:maison_mate/widgets/auth/forgot_password.dart';
@@ -50,7 +50,7 @@ class _SignInWidgetState extends State<SignInWidget> {
                             forgotPassword(context, model),
                             const SizedBox(height: 10),
                             (futureData != null)
-                                ? postRequestFutureBuilder(
+                                ? PostClient.futureBuilder(
                                     model,
                                     futureData!,
                                     "Login",
@@ -82,7 +82,8 @@ class _SignInWidgetState extends State<SignInWidget> {
         'password': passwordController.text
       };
 
-      futureData = postData(loginUrl, formData, model, (response) async {
+      futureData =
+          PostClient.request(loginUrl, formData, model, (response) async {
         var authToken = response.data.token;
         await storage.write(key: authTokenKey, value: authToken);
       });

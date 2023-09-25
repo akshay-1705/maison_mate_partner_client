@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:maison_mate/network/request/post_request.dart';
+import 'package:maison_mate/network/request/post_client.dart';
 import 'package:maison_mate/shared/forms.dart';
 import 'package:maison_mate/shared/my_snackbar.dart';
 import 'package:maison_mate/states/forgot_password.dart';
@@ -53,7 +53,7 @@ class _ResetPasswordWidgetState extends State<ResetPasswordWidget> {
                         }),
                       if (model.successMessage.isEmpty)
                         (futureData != null)
-                            ? postRequestFutureBuilder(
+                            ? PostClient.futureBuilder(
                                 model,
                                 futureData!,
                                 "Send Email",
@@ -74,7 +74,8 @@ class _ResetPasswordWidgetState extends State<ResetPasswordWidget> {
       var formData = {
         'email': emailController.text,
       };
-      futureData = postData(forgotPasswordUrl, formData, model, (response) {
+      futureData =
+          PostClient.request(forgotPasswordUrl, formData, model, (response) {
         ScaffoldMessenger.of(context).showSnackBar(
             MySnackBar(message: response.message, error: false).getSnackbar());
         model.setSuccessMessage(response.message);
