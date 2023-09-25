@@ -1,6 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:maison_mate/network/request/post_client.dart';
+import 'package:maison_mate/network/client/post_client.dart';
 import 'package:maison_mate/shared/forms.dart';
 import 'package:maison_mate/shared/my_snackbar.dart';
 import 'package:maison_mate/widgets/auth/sign_in.dart';

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:maison_mate/network/request/post_client.dart';
+import 'package:maison_mate/network/client/post_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/shared/forms.dart';
 import 'package:maison_mate/widgets/auth/forgot_password.dart';

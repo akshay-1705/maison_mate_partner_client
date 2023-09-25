@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:maison_mate/network/request/get_request.dart';
-import 'package:maison_mate/network/request/post_client.dart';
+import 'package:maison_mate/network/client/get_request.dart';
+import 'package:maison_mate/network/client/post_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/network/response/your_details_response.dart';
 import 'package:maison_mate/states/your_details.dart';
