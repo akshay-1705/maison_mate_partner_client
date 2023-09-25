@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:maison_mate/network/request/post_request.dart';
 import 'package:maison_mate/shared/forms.dart';
+import 'package:maison_mate/shared/my_snackbar.dart';
 import 'package:maison_mate/states/forgot_password.dart';
 import 'package:provider/provider.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/constants.dart';
 
@@ -17,6 +17,7 @@ class ResetPasswordWidget extends StatefulWidget {
 class _ResetPasswordWidgetState extends State<ResetPasswordWidget> {
   TextEditingController emailController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  Future<ApiResponse>? futureData;
   @override
   Widget build(BuildContext context) {
     final model = Provider.of<ForgotPasswordModel>(context);
@@ -42,9 +43,6 @@ class _ResetPasswordWidgetState extends State<ResetPasswordWidget> {
                       const SizedBox(height: 100),
                       header(),
                       const SizedBox(height: 40),
-                      if (model.errorMessage.isNotEmpty) errorMessage(model),
-                      if (model.successMessage.isNotEmpty)
-                        successMessage(model),
                       if (model.successMessage.isEmpty)
                         requiredEmailField('Email*', emailController),
                       const SizedBox(height: 20),
@@ -54,41 +52,34 @@ class _ResetPasswordWidgetState extends State<ResetPasswordWidget> {
                           Navigator.of(context).pop();
                         }),
                       if (model.successMessage.isEmpty)
-                        model.isLoading
-                            ? circularLoader()
-                            : submitButton('Send Email', () async {
-                                if (!model.isLoading &&
-                                    _formKey.currentState!.validate()) {
-                                  model.setErrorMessage('');
-                                  model.setsuccessMessage('');
-                                  await forgotPassword(model);
-                                }
+                        (futureData != null)
+                            ? postRequestFutureBuilder(
+                                model,
+                                futureData!,
+                                "Send Email",
+                                () async {
+                                  onSubmitCallback(model);
+                                },
+                                () {},
+                              )
+                            : submitButton("Send Email", () async {
+                                onSubmitCallback(model);
                               }),
                     ])))));
   }
 
-  Center successMessage(ForgotPasswordModel model) {
-    return Center(
-      child: AnimatedContainer(
-        duration:
-            const Duration(milliseconds: 2000), // Set your desired duration
-        height: model.showSuccessMessage ? 50.0 : 0.0, // Adjust the height
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(
-              Icons.check_circle_outline,
-              color: Color(awesomeColor),
-            ),
-            const SizedBox(width: 10),
-            Text(
-              model.successMessage,
-              style: const TextStyle(color: Color(awesomeColor)),
-            ),
-          ],
-        ),
-      ),
-    );
+  void onSubmitCallback(ForgotPasswordModel model) {
+    if (!model.isSubmitting && _formKey.currentState!.validate()) {
+      const String forgotPasswordUrl = '$baseApiUrl/partner/forgot_password';
+      var formData = {
+        'email': emailController.text,
+      };
+      futureData = postData(forgotPasswordUrl, formData, model, (response) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            MySnackBar(message: response.message, error: false).getSnackbar());
+        model.setSuccessMessage(response.message);
+      });
+    }
   }
 
   Column header() {
@@ -115,51 +106,5 @@ class _ResetPasswordWidgetState extends State<ResetPasswordWidget> {
         ),
       ],
     );
-  }
-
-  Center errorMessage(ForgotPasswordModel model) {
-    return Center(
-        child: Text(
-      model.errorMessage,
-      style: const TextStyle(color: Colors.red),
-    ));
-  }
-
-  Future<void> forgotPassword(ForgotPasswordModel model) async {
-    model.setLoading(true);
-    const String forgotPasswordUrl = '$baseApiUrl/partner/forgot_password';
-
-    try {
-      final response = await http.post(
-        Uri.parse(forgotPasswordUrl),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-          'Secret-Header': secretHeader
-        },
-        body: jsonEncode(<String, String>{
-          'email': emailController.text,
-        }),
-      );
-
-      if (response.statusCode == 200) {
-        model.setErrorMessage('');
-        model.setsuccessMessage(
-            ApiResponse.fromJson(jsonDecode(response.body)).message);
-        emailController.text = '';
-        model.showSuccessMessage = true;
-      } else if (response.statusCode == 404) {
-        model.setsuccessMessage('');
-        model.setErrorMessage(
-            ApiResponse.fromJson(jsonDecode(response.body)).message);
-      } else {
-        model.setsuccessMessage('');
-        model.setErrorMessage(networkError);
-      }
-    } catch (e) {
-      model.setsuccessMessage('');
-      model.setErrorMessage(somethingWentWrong);
-    } finally {
-      model.setLoading(false);
-    }
   }
 }

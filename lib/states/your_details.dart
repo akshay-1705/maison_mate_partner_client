@@ -5,7 +5,6 @@ class YourDetails with ChangeNotifier {
   Set<String> selectedServices = {};
   List<dynamic> selectedPostcodes = [];
   bool formSubmitted = false;
-  String errorMessage = "";
   bool isSubmitting = false;
 
   String get selectedValue => _selectedValue;
@@ -27,11 +26,6 @@ class YourDetails with ChangeNotifier {
 
   void setFormSubmitted(bool value) {
     formSubmitted = value;
-    notifyListeners();
-  }
-
-  void setErrorMessage(String value) {
-    errorMessage = value;
     notifyListeners();
   }
 

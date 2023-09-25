@@ -11,7 +11,8 @@ import 'package:maison_mate/widgets/home.dart';
 Future<ApiResponse<T>> fetchData<T>(String apiUrl) async {
   try {
     const storage = FlutterSecureStorage();
-    var authToken = (await storage.read(key: authTokenKey))!;
+    var authToken = await storage.read(key: authTokenKey);
+    authToken ??= '';
     final response = await http.get(
       Uri.parse(apiUrl),
       headers: <String, String>{'Partner-Authorization': authToken},

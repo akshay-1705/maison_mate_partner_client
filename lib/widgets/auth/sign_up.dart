@@ -1,10 +1,9 @@
-import 'dart:convert';
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:maison_mate/network/request/post_request.dart';
 import 'package:maison_mate/shared/forms.dart';
+import 'package:maison_mate/shared/my_snackbar.dart';
 import 'package:maison_mate/widgets/auth/sign_in.dart';
-import 'package:http/http.dart' as http;
 import 'package:maison_mate/states/sign_up.dart';
 import 'package:maison_mate/widgets/auth/terms_and_conditions_page.dart';
 import 'package:provider/provider.dart';
@@ -28,6 +27,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
   TextEditingController confirmPasswordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   static const storage = FlutterSecureStorage();
+  Future<ApiResponse>? futureData;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +39,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
   renderForm(BuildContext context) {
     final model = Provider.of<SignUpModel>(context);
     return AbsorbPointer(
-        absorbing: model.isLoading,
+        absorbing: model.isSubmitting,
         child: GestureDetector(
             onTap: () {
               // Dismiss the keyboard when tapped on a non-actionable item
@@ -53,24 +53,59 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                       const SizedBox(height: 80),
                       header(),
                       const SizedBox(height: 40),
-                      if (model.errorMessage.isNotEmpty) errorMessage(model),
                       nameFields(),
                       requiredEmailField('Email*', emailController),
                       passwordFields(),
                       const SizedBox(height: 10),
                       termsAndConditions(model),
                       const SizedBox(height: 10),
-                      signUpButton(model),
+                      (futureData != null)
+                          ? postRequestFutureBuilder(
+                              model,
+                              futureData!,
+                              "Sign Up",
+                              () async {
+                                onSubmitCallback(model);
+                              },
+                              () {
+                                Navigator.of(context).pushReplacement(
+                                  MaterialPageRoute(
+                                      builder: (context) => const HomeWidget()),
+                                );
+                              },
+                            )
+                          : submitButton("Sign Up", () async {
+                              onSubmitCallback(model);
+                            }),
                       signInOption(context, model),
                     ])))));
   }
 
-  Center errorMessage(SignUpModel model) {
-    return Center(
-        child: Text(
-      model.errorMessage,
-      style: const TextStyle(color: Colors.red),
-    ));
+  void onSubmitCallback(SignUpModel model) {
+    if (!model.isSubmitting && _formKey.currentState!.validate()) {
+      if (model.acceptedTerms) {
+        model.setIsSubmitting(true);
+        const String signUpUrl = '$baseApiUrl/partner/signup';
+
+        var formData = {
+          'first_name': firstNameController.text,
+          'last_name': lastNameController.text,
+          'email': emailController.text,
+          'password': passwordController.text,
+          'password_confirmation': confirmPasswordController.text
+        };
+        futureData = postData(signUpUrl, formData, model, (response) async {
+          var authToken = response.data.token;
+          await storage.write(key: authTokenKey, value: authToken);
+        });
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(MySnackBar(
+                message:
+                    'Please accept the Terms & Conditions and Privacy Policy',
+                error: true)
+            .getSnackbar());
+      }
+    }
   }
 
   Row signInOption(BuildContext context, SignUpModel model) {
@@ -94,83 +129,6 @@ class _SignUpWidgetState extends State<SignUpWidget> {
             })
       ],
     );
-  }
-
-  Container signUpButton(SignUpModel model) {
-    return Container(
-        height: 50,
-        padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-        child: model.isLoading
-            ? circularLoader()
-            : ElevatedButton(
-                onPressed: () async {
-                  if (!model.isLoading && _formKey.currentState!.validate()) {
-                    if (model.acceptedTerms) {
-                      model.setErrorMessage('');
-                      await signUp(model);
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                              'Please accept the Terms & Conditions and Privacy Policy'),
-                        ),
-                      );
-                    }
-                  }
-                },
-                style: ButtonStyle(
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          side: const BorderSide(color: Color(themeColor))),
-                    ),
-                    backgroundColor: MaterialStateProperty.all<Color>(
-                        const Color(themeColor))),
-                child: const Text('Sign Up',
-                    style: TextStyle(color: Color(secondaryColor)))));
-  }
-
-  Future<void> signUp(SignUpModel model) async {
-    model.setLoading(true);
-    const String signUpUrl = '$baseApiUrl/partner/signup';
-
-    try {
-      final response = await http.post(
-        Uri.parse(signUpUrl),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-          'Secret-Header': secretHeader
-        },
-        body: jsonEncode(<String, String>{
-          'first_name': firstNameController.text,
-          'last_name': lastNameController.text,
-          'email': emailController.text,
-          'password': passwordController.text,
-          'password_confirmation': confirmPasswordController.text
-        }),
-      );
-
-      if (response.statusCode == 200) {
-        String authToken = ApiResponse.fromJson(jsonDecode(response.body))
-            .data
-            .token as String;
-        await storage.write(key: authTokenKey, value: authToken);
-        // ignore: use_build_context_synchronously
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const HomeWidget()),
-        );
-        model.setErrorMessage('');
-      } else if (response.statusCode == 418) {
-        model.setErrorMessage(
-            ApiResponse.fromJson(jsonDecode(response.body)).message);
-      } else {
-        model.setErrorMessage(networkError);
-      }
-    } catch (e) {
-      model.setErrorMessage(somethingWentWrong);
-    } finally {
-      model.setLoading(false);
-    }
   }
 
   Row termsAndConditions(SignUpModel model) {
@@ -279,19 +237,16 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                     if (value!.isEmpty) {
                       return 'Password is required'; // Return an error message if the field is empty
                     } else if (value != passwordController.text) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Passwords do not match'),
-                        ),
-                      );
+                      ScaffoldMessenger.of(context).showSnackBar(MySnackBar(
+                              message: 'Passwords do not match', error: true)
+                          .getSnackbar());
                       return '';
                     } else if (value.length < 6) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                              'Password must be at least 6 characters long'),
-                        ),
-                      );
+                      ScaffoldMessenger.of(context).showSnackBar(MySnackBar(
+                              message:
+                                  'Password must be at least 6 characters long',
+                              error: true)
+                          .getSnackbar());
                       return '';
                     }
                     return null; // Return null if the field is valid

@@ -110,7 +110,6 @@ class _YourDetailsSectionState extends State<YourDetailsSection> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        const SizedBox.shrink(), // Empty space when no error
                         Column(children: [
                           formFieldHeader('Select Tradesmen Type*'),
                           buildRadioButtons(
@@ -181,7 +180,22 @@ class _YourDetailsSectionState extends State<YourDetailsSection> {
                           ),
                           const SizedBox(height: 16.0),
                           (postFutureData != null)
-                              ? postRequestFutureBuilder(model, postFutureData!)
+                              ? postRequestFutureBuilder(
+                                  model,
+                                  postFutureData!,
+                                  "Next Step",
+                                  () async {
+                                    onSubmitCallback(model);
+                                  },
+                                  () {
+                                    // Generic navigation function
+                                    Navigator.of(context)
+                                        .pushReplacement(MaterialPageRoute(
+                                      builder: (context) =>
+                                          const DocumentationSection(),
+                                    ));
+                                  },
+                                )
                               : submitButton("Next Step", () async {
                                   onSubmitCallback(model);
                                 })
@@ -191,55 +205,6 @@ class _YourDetailsSectionState extends State<YourDetailsSection> {
                     ),
                   ),
                 ))));
-  }
-
-  FutureBuilder<ApiResponse> postRequestFutureBuilder(
-      dynamic model, Future<ApiResponse> postFutureData) {
-    return FutureBuilder<ApiResponse>(
-      future: postFutureData,
-      builder: (context, snapshot) {
-        if (snapshot.hasError &&
-            snapshot.connectionState == ConnectionState.done) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Error: ${snapshot.error.toString()}'),
-                backgroundColor: Colors.red,
-              ),
-            );
-          });
-          return submitButton("Next Step", () async {
-            onSubmitCallback(model);
-          });
-        } else if (snapshot.connectionState == ConnectionState.waiting) {
-          return circularLoader();
-        } else if (snapshot.data!.success &&
-            snapshot.connectionState == ConnectionState.done) {
-          // Navigate to a new page when data is available
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            Navigator.of(context).pushReplacement(MaterialPageRoute(
-              builder: (context) => const DocumentationSection(),
-            ));
-          });
-        } else if (snapshot.data!.success == false &&
-            snapshot.connectionState == ConnectionState.done) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Error: ${snapshot.data?.message}'),
-                backgroundColor: Colors.red,
-              ),
-            );
-          });
-
-          return submitButton("Next Step", () async {
-            onSubmitCallback(model);
-          });
-        }
-
-        return circularLoader();
-      },
-    );
   }
 
   void onSubmitCallback(YourDetails model) {
@@ -262,7 +227,7 @@ class _YourDetailsSectionState extends State<YourDetailsSection> {
           'services_offered': model.selectedServices.toList(),
           'postcodes_covered': model.selectedPostcodes.toList(),
         };
-        postFutureData = postData(apiUrl, formData, model);
+        postFutureData = postData(apiUrl, formData, model, (response) {});
       }
     }
   }
