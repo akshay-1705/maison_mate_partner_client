@@ -110,10 +110,7 @@ class _YourDetailsSectionState extends State<YourDetailsSection> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        if (model.errorMessage != "")
-                          errorMessageContainer(model)
-                        else
-                          const SizedBox.shrink(), // Empty space when no error
+                        const SizedBox.shrink(), // Empty space when no error
                         Column(children: [
                           formFieldHeader('Select Tradesmen Type*'),
                           buildRadioButtons(
@@ -247,7 +244,6 @@ class _YourDetailsSectionState extends State<YourDetailsSection> {
 
   void onSubmitCallback(YourDetails model) {
     model.setFormSubmitted(true);
-    model.setErrorMessage("");
     if (_formKey.currentState!.validate()) {
       if (model.selectedServices.isNotEmpty) {
         model.setIsSubmitting(true);
@@ -270,26 +266,6 @@ class _YourDetailsSectionState extends State<YourDetailsSection> {
       }
     }
   }
-
-  Visibility errorMessageContainer(YourDetails model) {
-    return Visibility(
-      visible: model.errorMessage != "",
-      maintainSize: false,
-      maintainAnimation: false,
-      child: Column(children: [
-        const SizedBox(height: 12.0),
-        Text(
-          model.errorMessage,
-          style: const TextStyle(
-            color: Colors.red, // Customize the error message color
-            fontSize: 16.0, // Customize the error message font size
-          ),
-        )
-      ]),
-    );
-  }
-
-  Future navigateToDocumentsPage(context) async {}
 
   void createServiceCheckboxes(YourDetails model, List<Row> serviceRows) {
     for (int i = 0; i < availableServices.length; i += servicesPerRow) {
