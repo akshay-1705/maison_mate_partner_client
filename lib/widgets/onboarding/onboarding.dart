@@ -31,10 +31,11 @@ class _OnboardingWidgetState extends State<OnboardingWidget> {
                     const Color(themeColor), // Match the color scheme
                 title: const Text(
                   'Onboarding',
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: Color(secondaryColor)),
                 ),
                 leading: IconButton(
                   icon: const Icon(Icons.home_rounded),
+                  color: const Color(secondaryColor),
                   onPressed: () {
                     Navigator.of(context).pushReplacement(
                       MaterialPageRoute(
@@ -67,10 +68,10 @@ class _OnboardingWidgetState extends State<OnboardingWidget> {
   Widget _buildCustomTabBar() {
     return Container(
       decoration: const BoxDecoration(
-        color: Colors.white,
+        color: Color(secondaryColor),
         boxShadow: [
           BoxShadow(
-            color: Colors.black12,
+            color: Color(themeColor),
             blurRadius: 2,
             offset: Offset(0, -1),
           ),

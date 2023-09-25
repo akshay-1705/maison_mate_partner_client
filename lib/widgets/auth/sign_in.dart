@@ -66,7 +66,7 @@ class _SignInWidgetState extends State<SignInWidget> {
             child: const Text(
               'Sign In',
               style: TextStyle(
-                  color: Color(0xff000000),
+                  color: Color(themeColor),
                   fontWeight: FontWeight.w400,
                   fontSize: 30),
             )),
@@ -124,7 +124,7 @@ class _SignInWidgetState extends State<SignInWidget> {
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(8))),
                 labelText: 'Password*',
-                labelStyle: TextStyle(color: Color(0xff000000)),
+                labelStyle: TextStyle(color: Color(themeColor)),
               ),
               validator: (value) {
                 if (value == null || value.isEmpty) {
@@ -133,7 +133,7 @@ class _SignInWidgetState extends State<SignInWidget> {
                 // You can add more complex password validation here if needed
                 return null;
               },
-              style: const TextStyle(color: Color(0xff000000)),
+              style: const TextStyle(color: Color(themeColor)),
             ),
           ),
         ),
@@ -149,17 +149,8 @@ class _SignInWidgetState extends State<SignInWidget> {
           MaterialPageRoute(builder: (context) => const ResetPasswordWidget()),
         );
       },
-      child:
-          const Text('Forgot Password?', style: TextStyle(color: Colors.black)),
-    );
-  }
-
-  void showSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.red,
-      ),
+      child: const Text('Forgot Password?',
+          style: TextStyle(color: Color(themeColor))),
     );
   }
 
@@ -184,8 +175,8 @@ class _SignInWidgetState extends State<SignInWidget> {
                   ),
                   backgroundColor: MaterialStateProperty.all<Color>(
                       const Color(themeColor))),
-              child:
-                  const Text('Login', style: TextStyle(color: Colors.white))),
+              child: const Text('Login',
+                  style: TextStyle(color: Color(secondaryColor)))),
     );
   }
 
@@ -236,8 +227,8 @@ class _SignInWidgetState extends State<SignInWidget> {
         TextButton(
           child: Text(
             'Sign Up',
-            style:
-                TextStyle(fontSize: 17, color: Colors.black.withOpacity(0.6)),
+            style: TextStyle(
+                fontSize: 17, color: const Color(themeColor).withOpacity(0.6)),
           ),
           onPressed: () {
             model.clearStates();

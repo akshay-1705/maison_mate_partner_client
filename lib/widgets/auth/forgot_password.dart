@@ -70,8 +70,8 @@ class _ResetPasswordWidgetState extends State<ResetPasswordWidget> {
                 ),
                 backgroundColor:
                     MaterialStateProperty.all<Color>(const Color(themeColor))),
-            child:
-                const Text('Sign In', style: TextStyle(color: Colors.white))));
+            child: const Text('Sign In',
+                style: TextStyle(color: Color(secondaryColor)))));
   }
 
   Center successMessage(ForgotPasswordModel model) {
@@ -85,12 +85,12 @@ class _ResetPasswordWidgetState extends State<ResetPasswordWidget> {
           children: [
             const Icon(
               Icons.check_circle_outline,
-              color: Colors.green,
+              color: Color(awesomeColor),
             ),
             const SizedBox(width: 10),
             Text(
               model.successMessage,
-              style: const TextStyle(color: Colors.green),
+              style: const TextStyle(color: Color(awesomeColor)),
             ),
           ],
         ),
@@ -121,7 +121,7 @@ class _ResetPasswordWidgetState extends State<ResetPasswordWidget> {
                     backgroundColor: MaterialStateProperty.all<Color>(
                         const Color(themeColor))),
                 child: const Text('Send Email',
-                    style: TextStyle(color: Colors.white))));
+                    style: TextStyle(color: Color(secondaryColor)))));
   }
 
   Column header() {
@@ -134,7 +134,7 @@ class _ResetPasswordWidgetState extends State<ResetPasswordWidget> {
                 child: const Text(
                   'Forgot Password?',
                   style: TextStyle(
-                      color: Color(0xff000000),
+                      color: Color(themeColor),
                       fontWeight: FontWeight.w400,
                       fontSize: 30),
                 ))),

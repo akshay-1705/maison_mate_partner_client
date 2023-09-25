@@ -83,7 +83,7 @@ class _HomeWidgetState extends State<HomeWidget> {
           child: const Text(
             'Proceed',
             style: TextStyle(
-              color: Colors.white,
+              color: Color(secondaryColor),
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
@@ -106,7 +106,7 @@ class _HomeWidgetState extends State<HomeWidget> {
             child: Text(
               'Maison Mate', // Company name
               style: TextStyle(
-                color: Colors.white, // Text color
+                color: Color(secondaryColor), // Text color
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
@@ -130,7 +130,7 @@ class Account extends StatelessWidget {
     return IconButton(
       icon: const Icon(
         Icons.account_circle_outlined,
-        color: Colors.white,
+        color: Color(secondaryColor),
       ),
       onPressed: () async {
         await storage.delete(key: authTokenKey);

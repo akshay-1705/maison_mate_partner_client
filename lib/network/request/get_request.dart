@@ -11,10 +11,7 @@ Future<ApiResponse<T>> fetchData<T>(String apiUrl) async {
   var authToken = (await storage.read(key: authTokenKey))!;
   final response = await http.get(
     Uri.parse(apiUrl),
-    headers: <String, String>{
-      // 'Content-Type': 'application/json; charset=UTF-8',
-      'Partner-Authorization': authToken
-    },
+    headers: <String, String>{'Partner-Authorization': authToken},
   );
 
   if (response.statusCode == 200) {

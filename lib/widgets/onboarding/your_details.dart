@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:maison_mate/network/request/get_request.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/network/response/your_details_response.dart';
 import 'package:maison_mate/states/your_details.dart';
+import 'package:maison_mate/widgets/onboarding/documentation.dart';
 import 'package:provider/provider.dart';
 import 'package:maison_mate/constants.dart';
 import 'package:maison_mate/shared/forms.dart';
@@ -31,10 +35,12 @@ class _YourDetailsSectionState extends State<YourDetailsSection> {
   final TextEditingController servicePostcodesController =
       TextEditingController();
   late Future<ApiResponse<YourDetailsResponse>> futureData;
+  Future<ApiResponse>? postFutureData;
   var authToken = "";
   static const String apiUrl = '$baseApiUrl/partners/your_details';
-  List<MultiSelectItem> pincodes = [];
+  List<MultiSelectItem> postcodes = [];
   List<String> availableServices = [];
+  List<String> formSelectedPostcodes = [];
 
   List<Row> serviceRows = [];
   int servicesPerRow = 2; // Number of services checkboxes per row
@@ -51,10 +57,14 @@ class _YourDetailsSectionState extends State<YourDetailsSection> {
       var stateModel = Provider.of<YourDetails>(context, listen: false);
       final YourDetailsResponse data = apiResponse.data;
       availableServices = data.servicesAvailable!;
+      stateModel.selectedServices = data.servicesOffered!.toSet();
 
-      pincodes = data.postcodesAvailable!.map((String postcode) {
+      postcodes = data.postcodesAvailable!.map((String postcode) {
         return MultiSelectItem<String>(postcode, postcode);
       }).toList();
+
+      stateModel.selectedPostcodes = data.postcodesCovered!.cast<String>();
+      formSelectedPostcodes = data.postcodesCovered!;
 
       stateModel.selectedValue =
           data.isLimited == true ? 'Limited' : 'Self Trader';
@@ -62,6 +72,13 @@ class _YourDetailsSectionState extends State<YourDetailsSection> {
       firstNameController.text = data.firstName;
       lastNameController.text = data.lastName;
       emailController.text = data.email!;
+      companyNameController.text = data.companyTradingName!;
+      registeredNameController.text = data.companyRegisteredName!;
+      addressController.text = data.addressDetails!;
+      cityController.text = data.city!;
+      countryController.text = data.country!;
+      postcodeController.text = data.postcode!;
+      phoneNumberController.text = data.phoneNumber!;
     });
   }
 
@@ -85,106 +102,215 @@ class _YourDetailsSectionState extends State<YourDetailsSection> {
     return Center(
         child: SingleChildScrollView(
             child: GestureDetector(
-      onTap: () {
-        FocusScope.of(context).unfocus();
-      },
-      child: Form(
-        key: _formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            formFieldHeader('Select Tradesmen Type*'),
-            buildRadioButtons(
-              ['Self Trader', 'Limited'],
-              model.selectedValue,
-              (value) {
-                if (value == 'Limited') {
-                  registeredNameController.text = '';
-                }
-                model.selectedValue = value;
-              },
-            ),
-            requiredTextField("Company Name", companyNameController),
-            if (model.selectedValue == 'Limited') ...[
-              requiredTextField(
-                "Company Registered Name (if different)",
-                registeredNameController,
-              ),
-            ],
-            const SizedBox(height: 12.0),
-            formFieldHeader('Address*'),
-            multilineRequiredTextField("Address", addressController),
-            inlineRequiredTextFields(
-              "Town/City",
-              "Country",
-              cityController,
-              countryController,
-            ),
-            requiredTextField("Postcode", postcodeController),
-            const SizedBox(height: 12.0),
-            formFieldHeader('Personal Details*'),
-            inlineRequiredTextFields(
-              "First Name",
-              "Last Name",
-              firstNameController,
-              lastNameController,
-            ),
-            inlineRequiredTextFields(
-              "Phone Number",
-              "Email",
-              phoneNumberController,
-              emailController,
-            ),
-            const SizedBox(height: 12.0),
-            formFieldHeader('Which postcodes or towns do you cover?*'),
-            multiSelectField(pincodes, const Text("Postcodes"),
-                "Enter postcodes like (EB3 5DJ, E14 OBQ)", (results) {
-              model.selectedPostcodes = results;
-            }),
-            const SizedBox(height: 12.0),
-            formFieldHeader('Which services can you offer?*'),
-            if (model.formSubmitted && model.selectedServices.isEmpty) ...[
-              const Text(
-                'Select at least one service', // Validation message
-                style: TextStyle(
-                  color: Colors.red,
-                  fontSize: 14.0,
-                ),
-              ),
-            ],
-            Column(
-              children: serviceRows,
-            ),
-            const SizedBox(height: 16.0),
-            submitButton(model, () {
-              model.setFormSubmitted(true);
-              if (_formKey.currentState!.validate()) {
-                if (model.selectedServices.isNotEmpty) {
-                  final formData = {
-                    'first_name': firstNameController.text,
-                    'last_name': lastNameController.text,
-                    'email': emailController.text,
-                    'phone_number': phoneNumberController.text,
-                    'company_trading_name': companyNameController.text,
-                    'company_registered_name': registeredNameController.text,
-                    'is_limited': model.selectedValue == 'Limited',
-                    'address_details': addressController.text,
-                    'postcode': postcodeController.text,
-                    'city': cityController.text,
-                    'country': countryController.text,
-                    'services_offered': model.selectedServices,
-                    'postcodes_covered': model.selectedPostcodes,
-                  };
-                  print(formData);
-                }
-              }
-            }),
-            const SizedBox(height: 56.0),
-          ],
-        ),
-      ),
-    )));
+                onTap: () {
+                  FocusScope.of(context).unfocus();
+                },
+                child: Form(
+                  key: _formKey,
+                  child: AbsorbPointer(
+                    absorbing: model.isSubmitting,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        if (model.errorMessage != "")
+                          errorMessageContainer(model)
+                        else
+                          const SizedBox.shrink(), // Empty space when no error
+                        // Display the loader (CircularProgressIndicator) while submitting
+                        Column(children: [
+                          formFieldHeader('Select Tradesmen Type*'),
+                          buildRadioButtons(
+                            ['Self Trader', 'Limited'],
+                            model.selectedValue,
+                            (value) {
+                              if (value == 'Limited') {
+                                registeredNameController.text = '';
+                              }
+                              model.selectedValue = value;
+                            },
+                          ),
+                          requiredTextField(
+                              "Company Name", companyNameController),
+                          if (model.selectedValue == 'Limited') ...[
+                            requiredTextField(
+                              "Company Registered Name (if different)",
+                              registeredNameController,
+                            ),
+                          ],
+                          const SizedBox(height: 12.0),
+                          formFieldHeader('Address*'),
+                          multilineRequiredTextField(
+                              "Address", addressController),
+                          inlineRequiredDisabledTextFields(
+                            "Town/City",
+                            "Country",
+                            cityController,
+                            countryController,
+                          ),
+                          requiredTextField("Postcode", postcodeController),
+                          const SizedBox(height: 12.0),
+                          formFieldHeader('Personal Details*'),
+                          inlineRequiredTextFields(
+                            "First Name",
+                            "Last Name",
+                            firstNameController,
+                            lastNameController,
+                          ),
+                          inlineRequiredTextFields(
+                            "Phone Number",
+                            "Email",
+                            phoneNumberController,
+                            emailController,
+                          ),
+                          const SizedBox(height: 12.0),
+                          formFieldHeader(
+                              'Which postcodes or towns do you cover?*'),
+                          multiSelectField(postcodes, const Text("Postcodes"),
+                              "Enter postcodes like (EB3 5DJ, E14 OBQ)",
+                              (results) {
+                            model.selectedPostcodes = results;
+                          }, Icons.location_city, formSelectedPostcodes),
+                          const SizedBox(height: 12.0),
+                          formFieldHeader('Which services can you offer?*'),
+                          if (model.formSubmitted &&
+                              model.selectedServices.isEmpty) ...[
+                            const Text(
+                              'Select at least one service', // Validation message
+                              style: TextStyle(
+                                color: Colors.red,
+                                fontSize: 14.0,
+                              ),
+                            ),
+                          ],
+                          Column(
+                            children: serviceRows,
+                          ),
+                          const SizedBox(height: 16.0),
+                          (postFutureData != null)
+                              ? postRequestFutureBuilder(model)
+                              : submitButton(model, "Next Step", () async {
+                                  onSubmitCallback(model);
+                                })
+                        ]),
+                        const SizedBox(height: 56.0),
+                      ],
+                    ),
+                  ),
+                ))));
   }
+
+  void onSubmitCallback(YourDetails model) {
+    model.setFormSubmitted(true);
+    model.setErrorMessage("");
+    if (_formKey.currentState!.validate()) {
+      if (model.selectedServices.isNotEmpty) {
+        model.setIsSubmitting(true);
+        var formData = {
+          'first_name': firstNameController.text,
+          'last_name': lastNameController.text,
+          'email': emailController.text,
+          'phone_number': phoneNumberController.text,
+          'company_trading_name': companyNameController.text,
+          'company_registered_name': registeredNameController.text,
+          'is_limited': model.selectedValue == 'Limited',
+          'address_details': addressController.text,
+          'postcode': postcodeController.text,
+          'city': cityController.text,
+          'country': countryController.text,
+          'services_offered': model.selectedServices.toList(),
+          'postcodes_covered': model.selectedPostcodes.toList(),
+        };
+        postFutureData = postData(apiUrl, formData, model);
+      }
+    }
+  }
+
+  Future<ApiResponse<T>> postData<T>(
+      String apiUrl, Map<String, Object> formData, YourDetails model) async {
+    try {
+      const storage = FlutterSecureStorage();
+      var authToken = (await storage.read(key: authTokenKey))!;
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Partner-Authorization': authToken
+        },
+        body: jsonEncode(formData),
+      );
+      final Map<String, dynamic> data = json.decode(response.body);
+
+      model.setIsSubmitting(false);
+      ApiResponse<T> apiResponse = ApiResponse.fromJson(data);
+
+      if (apiResponse.success == false) {
+        model.setErrorMessage(apiResponse.message);
+      }
+      return apiResponse;
+    } catch (e) {
+      model.setErrorMessage("Something Went Wrong");
+      throw ("Something Went Wrong");
+    }
+  }
+
+  FutureBuilder<ApiResponse> postRequestFutureBuilder(YourDetails model) {
+    return FutureBuilder<ApiResponse>(
+      future: postFutureData,
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return submitButton(model, "Next Step", () async {
+            onSubmitCallback(model);
+          });
+        } else if (snapshot.connectionState == ConnectionState.waiting) {
+          return Container(
+            alignment: Alignment.center,
+            child: const Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        } else if (snapshot.data!.success) {
+          // Navigate to a new page when data is available
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            Navigator.of(context).pushReplacement(MaterialPageRoute(
+              builder: (context) => const DocumentationSection(),
+            ));
+          });
+        } else if (snapshot.data!.success == false) {
+          // model.setErrorMessage(snapshot.data!.message);
+          return submitButton(model, "Next Step", () async {
+            onSubmitCallback(model);
+          });
+        }
+
+        return Container(
+          alignment: Alignment.center,
+          child: const Center(
+            child: CircularProgressIndicator(),
+          ),
+        );
+      },
+    );
+  }
+
+  Visibility errorMessageContainer(YourDetails model) {
+    return Visibility(
+      visible: model.errorMessage != "",
+      maintainSize: false,
+      maintainAnimation: false,
+      child: Column(children: [
+        const SizedBox(height: 12.0),
+        Text(
+          model.errorMessage,
+          style: const TextStyle(
+            color: Colors.red, // Customize the error message color
+            fontSize: 16.0, // Customize the error message font size
+          ),
+        )
+      ]),
+    );
+  }
+
+  Future navigateToDocumentsPage(context) async {}
 
   void createServiceCheckboxes(YourDetails model, List<Row> serviceRows) {
     for (int i = 0; i < availableServices.length; i += servicesPerRow) {

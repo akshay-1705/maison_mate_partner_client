@@ -80,8 +80,9 @@ class _SignUpWidgetState extends State<SignUpWidget> {
         TextButton(
             child: Text(
               'Sign In',
-              style:
-                  TextStyle(fontSize: 17, color: Colors.black.withOpacity(0.6)),
+              style: TextStyle(
+                  fontSize: 17,
+                  color: const Color(themeColor).withOpacity(0.6)),
             ),
             onPressed: () {
               model.clearStates();
@@ -125,7 +126,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                     backgroundColor: MaterialStateProperty.all<Color>(
                         const Color(themeColor))),
                 child: const Text('Sign Up',
-                    style: TextStyle(color: Colors.white))));
+                    style: TextStyle(color: Color(secondaryColor)))));
   }
 
   Future<void> signUp(SignUpModel model) async {
@@ -393,7 +394,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                 child: const Text(
                   'Sign Up',
                   style: TextStyle(
-                      color: Color(0xff000000),
+                      color: Color(themeColor),
                       fontWeight: FontWeight.w400,
                       fontSize: 30),
                 ))),

@@ -36,8 +36,10 @@ class MyApp extends StatelessWidget {
           home: isUserLoggedIn ? const HomeWidget() : const SignInWidget(),
           theme: ThemeData(
             useMaterial3: true,
-            colorScheme:
-                ColorScheme.fromSeed(seedColor: const Color(themeColor)),
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: const Color(secondaryColor),
+              primary: const Color(themeColor),
+            ),
           ),
         ));
   }

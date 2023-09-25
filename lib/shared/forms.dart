@@ -31,6 +31,25 @@ Opacity requiredTextField(String label, TextEditingController controller) {
       ));
 }
 
+Opacity disabledTextField(String label, TextEditingController controller) {
+  return Opacity(
+      opacity: 0.5,
+      child: Container(
+        padding: const EdgeInsets.all(6),
+        child: TextFormField(
+          enabled: false,
+          controller: controller,
+          decoration: customInputDecoration(label),
+          validator: (value) {
+            if ((value == null || value.isEmpty)) {
+              return 'This field is required';
+            }
+            return null;
+          },
+        ),
+      ));
+}
+
 InputDecoration customInputDecoration(String label) {
   return InputDecoration(
     contentPadding: const EdgeInsets.all(15.0), // Adjust the padding
@@ -75,6 +94,17 @@ inlineRequiredTextFields(String label1, String label2,
   );
 }
 
+inlineRequiredDisabledTextFields(String label1, String label2,
+    TextEditingController controller1, TextEditingController controller2) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: <Widget>[
+      Flexible(child: requiredTextField(label1, controller1)),
+      Flexible(child: disabledTextField(label2, controller2))
+    ],
+  );
+}
+
 typedef RadioButtonCallback = void Function(String);
 
 Widget buildRadioButtons(
@@ -102,14 +132,20 @@ Widget buildRadioButtons(
 
 typedef MultiSelectFieldCallback = void Function(List<dynamic>);
 
-Container multiSelectField(List<MultiSelectItem> items, Text title,
-    String buttonLabel, MultiSelectFieldCallback onConfirm) {
+Container multiSelectField(
+    List<MultiSelectItem> items,
+    Text title,
+    String buttonLabel,
+    MultiSelectFieldCallback onConfirm,
+    IconData icon,
+    List<String> initialItems) {
   return Container(
       padding: const EdgeInsets.only(left: 6, right: 6, bottom: 6),
       child: MultiSelectDialogField(
         items: items,
         title: title,
         searchable: true,
+        initialValue: initialItems,
         selectedColor: const Color(themeColor),
         validator: (value) {
           if ((value == null || value.isEmpty)) {
@@ -118,15 +154,15 @@ Container multiSelectField(List<MultiSelectItem> items, Text title,
           return null;
         },
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.1),
+          color: const Color(secondaryColor).withOpacity(0.1),
           borderRadius: const BorderRadius.all(Radius.circular(15)),
           border: Border.all(
             color: Colors.grey,
           ),
         ),
-        buttonIcon: const Icon(
-          Icons.location_city,
-          color: Color(themeColor),
+        buttonIcon: Icon(
+          icon,
+          color: const Color(awesomeColor),
         ),
         buttonText: Text(
           buttonLabel,
@@ -143,7 +179,8 @@ Container multiSelectField(List<MultiSelectItem> items, Text title,
 
 typedef SubmitButtonCallback = void Function();
 
-Widget submitButton(YourDetails model, SubmitButtonCallback onSubmit) {
+Widget submitButton(
+    YourDetails model, String buttonText, SubmitButtonCallback onSubmit) {
   return SizedBox(
       width: 125,
       height: 50,
@@ -162,7 +199,7 @@ Widget submitButton(YourDetails model, SubmitButtonCallback onSubmit) {
             const Color(themeColor),
           ),
         ),
-        child: const Text('Submit',
-            style: TextStyle(color: Colors.white, fontSize: 16)),
+        child: Text(buttonText,
+            style: const TextStyle(color: Color(secondaryColor), fontSize: 16)),
       ));
 }
