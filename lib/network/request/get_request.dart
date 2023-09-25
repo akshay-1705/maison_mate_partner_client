@@ -5,19 +5,24 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:maison_mate/constants.dart';
 import 'package:maison_mate/network/response/api_response.dart';
 import 'package:http/http.dart' as http;
+import 'package:maison_mate/widgets/home.dart';
 
 Future<ApiResponse<T>> fetchData<T>(String apiUrl) async {
-  const storage = FlutterSecureStorage();
-  var authToken = (await storage.read(key: authTokenKey))!;
-  final response = await http.get(
-    Uri.parse(apiUrl),
-    headers: <String, String>{'Partner-Authorization': authToken},
-  );
+  try {
+    const storage = FlutterSecureStorage();
+    var authToken = (await storage.read(key: authTokenKey))!;
+    final response = await http.get(
+      Uri.parse(apiUrl),
+      headers: <String, String>{'Partner-Authorization': authToken},
+    );
 
-  if (response.statusCode == 200) {
-    final Map<String, dynamic> data = json.decode(response.body);
-    return ApiResponse.fromJson(data);
-  } else {
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      return ApiResponse.fromJson(data);
+    } else {
+      throw Exception('Failed to load data from the API');
+    }
+  } catch (e) {
     throw Exception('Failed to load data from the API');
   }
 }
@@ -40,8 +45,13 @@ class GetRequestFutureBuilder<T> extends StatelessWidget {
         if (snapshot.hasData) {
           return builder(context, snapshot.data!.data);
         } else if (snapshot.hasError) {
-          // Handle failures
-          // return Text('${snapshot.error}');
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const HomeWidget()),
+            );
+          });
+          return Container();
         }
         return Container(
           alignment: Alignment.center,
