@@ -201,21 +201,40 @@ class _YourDetailsSectionState extends State<YourDetailsSection> {
     return FutureBuilder<ApiResponse>(
       future: postFutureData,
       builder: (context, snapshot) {
-        if (snapshot.hasError) {
+        if (snapshot.hasError &&
+            snapshot.connectionState == ConnectionState.done) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Error: ${snapshot.error.toString()}'),
+                backgroundColor: Colors.red,
+              ),
+            );
+          });
           return submitButton("Next Step", () async {
             onSubmitCallback(model);
           });
         } else if (snapshot.connectionState == ConnectionState.waiting) {
           return circularLoader();
-        } else if (snapshot.data!.success) {
+        } else if (snapshot.data!.success &&
+            snapshot.connectionState == ConnectionState.done) {
           // Navigate to a new page when data is available
           WidgetsBinding.instance.addPostFrameCallback((_) {
             Navigator.of(context).pushReplacement(MaterialPageRoute(
               builder: (context) => const DocumentationSection(),
             ));
           });
-        } else if (snapshot.data!.success == false) {
-          // model.setErrorMessage(snapshot.data!.message);
+        } else if (snapshot.data!.success == false &&
+            snapshot.connectionState == ConnectionState.done) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Error: ${snapshot.data?.message}'),
+                backgroundColor: Colors.red,
+              ),
+            );
+          });
+
           return submitButton("Next Step", () async {
             onSubmitCallback(model);
           });

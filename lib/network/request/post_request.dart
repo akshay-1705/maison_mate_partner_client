@@ -22,13 +22,8 @@ Future<ApiResponse<T>> postData<T>(
 
     model.setIsSubmitting(false);
     ApiResponse<T> apiResponse = ApiResponse.fromJson(data);
-
-    if (apiResponse.success == false) {
-      model.setErrorMessage(apiResponse.message);
-    }
     return apiResponse;
   } catch (e) {
-    model.setErrorMessage(somethingWentWrong);
     throw (somethingWentWrong);
   }
 }
