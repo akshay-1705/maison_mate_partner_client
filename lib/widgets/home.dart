@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:maison_mate/constants.dart';
+import 'package:maison_mate/network/client/get_client.dart';
+import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/widgets/auth/sign_in.dart';
 import 'package:maison_mate/widgets/onboarding/onboarding.dart';
 
@@ -12,17 +14,31 @@ class HomeWidget extends StatefulWidget {
 }
 
 class _HomeWidgetState extends State<HomeWidget> {
+  late Future<ApiResponse> futureData;
+  static const String apiUrl = '$baseApiUrl/partners/onboarding_status';
+
+  @override
+  void initState() {
+    super.initState();
+    futureData = GetClient.fetchData(apiUrl);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-          child: Column(
-        children: [
-          header(),
-          completeOnboarding(),
-        ],
-      )),
-      bottomNavigationBar: bottomNavigation(),
+    return GetRequestFutureBuilder<dynamic>(
+      future: futureData,
+      builder: (context, data) {
+        return Scaffold(
+          body: SingleChildScrollView(
+              child: Column(
+            children: [
+              header(),
+              completeOnboarding(data.yourDetailsSection),
+            ],
+          )),
+          bottomNavigationBar: bottomNavigation(),
+        );
+      },
     );
   }
 
@@ -47,7 +63,8 @@ class _HomeWidgetState extends State<HomeWidget> {
     );
   }
 
-  Column completeOnboarding() {
+  Column completeOnboarding(yourDetailsSection) {
+    String buttonText = yourDetailsSection ? 'Resume' : 'Proceed';
     return Column(
       children: [
         const SizedBox(height: 240),
@@ -72,7 +89,9 @@ class _HomeWidgetState extends State<HomeWidget> {
           onPressed: () {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => const OnboardingWidget()),
+              MaterialPageRoute(
+                  builder: (context) =>
+                      OnboardingWidget(yourDetailsSection: yourDetailsSection)),
             );
           },
           style: ButtonStyle(
@@ -80,9 +99,9 @@ class _HomeWidgetState extends State<HomeWidget> {
               const Color(themeColor), // Match the color scheme
             ),
           ),
-          child: const Text(
-            'Proceed',
-            style: TextStyle(
+          child: Text(
+            buttonText,
+            style: const TextStyle(
               color: Color(secondaryColor),
               fontSize: 18,
               fontWeight: FontWeight.bold,

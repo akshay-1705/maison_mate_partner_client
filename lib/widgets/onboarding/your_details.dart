@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:maison_mate/network/client/get_request.dart';
+import 'package:maison_mate/network/client/get_client.dart';
 import 'package:maison_mate/network/client/post_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/network/response/your_details_response.dart';
+import 'package:maison_mate/shared/my_snackbar.dart';
+import 'package:maison_mate/states/onboarding.dart';
 import 'package:maison_mate/states/your_details.dart';
-import 'package:maison_mate/widgets/onboarding/documentation.dart';
+// import 'package:maison_mate/widgets/onboarding/documentation.dart';
 import 'package:provider/provider.dart';
 import 'package:maison_mate/constants.dart';
 import 'package:maison_mate/shared/forms.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 class YourDetailsSection extends StatefulWidget {
-  const YourDetailsSection({Key? key}) : super(key: key);
+  final Onboarding onboardingModel;
+  const YourDetailsSection({Key? key, required this.onboardingModel})
+      : super(key: key);
 
   @override
   State<YourDetailsSection> createState() => _YourDetailsSectionState();
@@ -46,7 +50,7 @@ class _YourDetailsSectionState extends State<YourDetailsSection> {
   @override
   void initState() {
     super.initState();
-    futureData = fetchData(apiUrl);
+    futureData = GetClient.fetchData(apiUrl);
     initializeFormData();
   }
 
@@ -188,12 +192,7 @@ class _YourDetailsSectionState extends State<YourDetailsSection> {
                                     onSubmitCallback(model);
                                   },
                                   () {
-                                    // Generic navigation function
-                                    Navigator.of(context)
-                                        .pushReplacement(MaterialPageRoute(
-                                      builder: (context) =>
-                                          const DocumentationSection(),
-                                    ));
+                                    widget.onboardingModel.setCurrentIndex(1);
                                   },
                                 )
                               : submitButton("Next Step", () async {

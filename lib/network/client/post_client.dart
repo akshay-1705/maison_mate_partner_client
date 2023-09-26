@@ -34,12 +34,12 @@ class PostClient {
       );
       final Map<String, dynamic> data = json.decode(response.body);
 
-      model.setIsSubmitting(false);
       ApiResponse<T> apiResponse = ApiResponse.fromJson(data);
 
       if (apiResponse.success) {
         apiSpecificTask(apiResponse);
       }
+      model.setIsSubmitting(false);
       return apiResponse;
     } catch (e) {
       model.setIsSubmitting(false);
@@ -78,9 +78,9 @@ class PostClient {
         } else if (snapshot.data!.success &&
             snapshot.connectionState == ConnectionState.done) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            isSnackbarShown = false;
             onNavigation();
           });
+          return submitButton(buttonText, buttonAction);
         }
 
         return circularLoader();

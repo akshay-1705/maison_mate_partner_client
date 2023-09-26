@@ -8,24 +8,26 @@ import 'package:http/http.dart' as http;
 import 'package:maison_mate/shared/forms.dart';
 import 'package:maison_mate/widgets/home.dart';
 
-Future<ApiResponse<T>> fetchData<T>(String apiUrl) async {
-  try {
-    const storage = FlutterSecureStorage();
-    var authToken = await storage.read(key: authTokenKey);
-    authToken ??= '';
-    final response = await http.get(
-      Uri.parse(apiUrl),
-      headers: <String, String>{'Partner-Authorization': authToken},
-    );
+class GetClient {
+  static Future<ApiResponse<T>> fetchData<T>(String apiUrl) async {
+    try {
+      const storage = FlutterSecureStorage();
+      var authToken = await storage.read(key: authTokenKey);
+      authToken ??= '';
+      final response = await http.get(
+        Uri.parse(apiUrl),
+        headers: <String, String>{'Partner-Authorization': authToken},
+      );
 
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> data = json.decode(response.body);
-      return ApiResponse.fromJson(data);
-    } else {
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = json.decode(response.body);
+        return ApiResponse.fromJson(data);
+      } else {
+        throw Exception('Failed to load data from the API');
+      }
+    } catch (e) {
       throw Exception('Failed to load data from the API');
     }
-  } catch (e) {
-    throw Exception('Failed to load data from the API');
   }
 }
 
@@ -44,7 +46,9 @@ class GetRequestFutureBuilder<T> extends StatelessWidget {
     return FutureBuilder<ApiResponse<T>>(
       future: future,
       builder: (context, snapshot) {
-        if (snapshot.hasData) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return circularLoader();
+        } else if (snapshot.hasData) {
           return builder(context, snapshot.data!.data);
         } else if (snapshot.hasError) {
           WidgetsBinding.instance.addPostFrameCallback((_) {

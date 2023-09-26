@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 class SignUpModel extends ChangeNotifier {
   bool acceptedTerms = false;
