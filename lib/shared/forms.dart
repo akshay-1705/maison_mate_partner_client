@@ -4,7 +4,7 @@ import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 Container formFieldHeader(String label) {
   return Container(
-      padding: const EdgeInsets.all(15),
+      padding: const EdgeInsets.only(left: 10, top: 18, bottom: 18),
       alignment: Alignment.bottomLeft,
       child: Text(
         label,
@@ -234,4 +234,45 @@ Widget submitButton(String buttonText, SubmitButtonCallback onSubmit) {
         child: Text(buttonText,
             style: const TextStyle(color: Color(secondaryColor), fontSize: 16)),
       ));
+}
+
+Widget buildBulletPoint(String text) {
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.start,
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      const Icon(Icons.circle, size: 9),
+      const SizedBox(width: 10),
+      Baseline(
+        baseline: 10.0,
+        baselineType: TextBaseline.alphabetic,
+        child: Text(
+          text,
+          style: const TextStyle(
+            fontSize: 16.0,
+          ),
+        ),
+      ),
+    ],
+  );
+}
+
+Widget uploadImageButton() {
+  return Container(
+    padding: const EdgeInsets.only(left: 10),
+    alignment: Alignment.centerLeft,
+    child: ElevatedButton.icon(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.white70,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(5),
+        ),
+      ),
+      onPressed: () {
+        // Handle image upload here
+      },
+      icon: const Icon(Icons.upload_file),
+      label: const Text('Upload Image'),
+    ),
+  );
 }

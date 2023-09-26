@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:maison_mate/states/onboarding.dart';
-import 'package:maison_mate/widgets/home.dart';
 import 'package:maison_mate/widgets/onboarding/documentation.dart';
 import 'package:maison_mate/widgets/onboarding/your_details.dart';
 import 'package:maison_mate/constants.dart';
@@ -24,32 +23,33 @@ class _OnboardingWidgetState extends State<OnboardingWidget> {
           ChangeNotifierProvider(create: (_) => YourDetails()),
           ChangeNotifierProvider(create: (_) => Onboarding()),
         ],
-        child: GestureDetector(
-            onTap: () {
-              // Dismiss the keyboard when tapped outside of any focused input field
-              FocusScope.of(context).unfocus();
+        child: WillPopScope(
+            onWillPop: () async {
+              return Future.value(false);
             },
-            child: Scaffold(
-              appBar: AppBar(
-                backgroundColor:
-                    const Color(themeColor), // Match the color scheme
-                title: const Text(
-                  'Onboarding',
-                  style: TextStyle(color: Color(secondaryColor)),
-                ),
-                leading: IconButton(
-                  icon: const Icon(Icons.home_rounded),
-                  color: const Color(secondaryColor),
-                  onPressed: () {
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                          builder: (context) => const HomeWidget()),
-                    );
-                  },
-                ),
-              ),
-              body: buildBody(),
-            )));
+            child: GestureDetector(
+                onTap: () {
+                  // Dismiss the keyboard when tapped outside of any focused input field
+                  FocusScope.of(context).unfocus();
+                },
+                child: Scaffold(
+                  appBar: AppBar(
+                    backgroundColor:
+                        const Color(themeColor), // Match the color scheme
+                    title: const Text(
+                      'Onboarding',
+                      style: TextStyle(color: Color(secondaryColor)),
+                    ),
+                    leading: IconButton(
+                      icon: const Icon(Icons.home_rounded),
+                      color: const Color(secondaryColor),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ),
+                  body: buildBody(),
+                ))));
   }
 
   Widget buildBody() {
@@ -58,6 +58,7 @@ class _OnboardingWidgetState extends State<OnboardingWidget> {
       if (widget.yourDetailsSection) {
         model.currentIndex = 1;
       }
+
       return Column(
         children: [
           _buildCustomTabBar(model),
@@ -65,8 +66,12 @@ class _OnboardingWidgetState extends State<OnboardingWidget> {
             child: IndexedStack(
               index: model.currentIndex,
               children: [
-                YourDetailsSection(onboardingModel: model),
-                const DocumentationSection(),
+                model.currentIndex == 0
+                    ? YourDetailsSection(onboardingModel: model)
+                    : Container(),
+                model.currentIndex == 1
+                    ? Documentation(onboardingModel: model)
+                    : Container(),
               ],
             ),
           ),

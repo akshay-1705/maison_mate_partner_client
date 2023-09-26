@@ -3,10 +3,8 @@ import 'package:maison_mate/network/client/get_client.dart';
 import 'package:maison_mate/network/client/post_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/network/response/your_details_response.dart';
-import 'package:maison_mate/shared/my_snackbar.dart';
 import 'package:maison_mate/states/onboarding.dart';
 import 'package:maison_mate/states/your_details.dart';
-// import 'package:maison_mate/widgets/onboarding/documentation.dart';
 import 'package:provider/provider.dart';
 import 'package:maison_mate/constants.dart';
 import 'package:maison_mate/shared/forms.dart';
@@ -103,107 +101,106 @@ class _YourDetailsSectionState extends State<YourDetailsSection> {
       BuildContext context, YourDetails model, YourDetailsResponse data) {
     return Center(
         child: SingleChildScrollView(
+            padding: const EdgeInsets.all(5.0),
             child: GestureDetector(
-                onTap: () {
-                  FocusScope.of(context).unfocus();
-                },
-                child: Form(
-                  key: _formKey,
-                  child: AbsorbPointer(
-                    absorbing: model.isSubmitting,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
+              onTap: () {
+                FocusScope.of(context).unfocus();
+              },
+              child: Form(
+                key: _formKey,
+                child: AbsorbPointer(
+                  absorbing: model.isSubmitting,
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        Column(children: [
-                          formFieldHeader('Select Tradesmen Type*'),
-                          buildRadioButtons(
-                            ['Self Trader', 'Limited'],
-                            model.selectedValue,
-                            (value) {
-                              if (value == 'Limited') {
-                                registeredNameController.text = '';
-                              }
-                              model.selectedValue = value;
-                            },
-                          ),
+                        formFieldHeader('Select Tradesmen Type*'),
+                        buildRadioButtons(
+                          ['Self Trader', 'Limited'],
+                          model.selectedValue,
+                          (value) {
+                            if (value == 'Limited') {
+                              registeredNameController.text = '';
+                            }
+                            model.selectedValue = value;
+                          },
+                        ),
+                        requiredTextField(
+                            "Company Name", companyNameController),
+                        if (model.selectedValue == 'Limited') ...[
                           requiredTextField(
-                              "Company Name", companyNameController),
-                          if (model.selectedValue == 'Limited') ...[
-                            requiredTextField(
-                              "Company Registered Name (if different)",
-                              registeredNameController,
+                            "Company Registered Name (if different)",
+                            registeredNameController,
+                          ),
+                        ],
+                        const SizedBox(height: 12.0),
+                        formFieldHeader('Address*'),
+                        multilineRequiredTextField(
+                            "Address", addressController),
+                        inlineRequiredDisabledTextFields(
+                          "Town/City",
+                          "Country",
+                          cityController,
+                          countryController,
+                        ),
+                        requiredTextField("Postcode", postcodeController),
+                        const SizedBox(height: 12.0),
+                        formFieldHeader('Personal Details*'),
+                        inlineRequiredTextFields(
+                          "First Name",
+                          "Last Name",
+                          firstNameController,
+                          lastNameController,
+                        ),
+                        inlineRequiredTextFields(
+                          "Phone Number",
+                          "Email",
+                          phoneNumberController,
+                          emailController,
+                        ),
+                        const SizedBox(height: 12.0),
+                        formFieldHeader(
+                            'Which postcodes or towns do you cover?*'),
+                        multiSelectField(postcodes, const Text("Postcodes"),
+                            "Enter postcodes like (EB3 5DJ, E14 OBQ)",
+                            (results) {
+                          model.selectedPostcodes = results;
+                        }, Icons.location_city, formSelectedPostcodes),
+                        const SizedBox(height: 12.0),
+                        formFieldHeader('Which services can you offer?*'),
+                        if (model.formSubmitted &&
+                            model.selectedServices.isEmpty) ...[
+                          const Text(
+                            'Select at least one service', // Validation message
+                            style: TextStyle(
+                              color: Colors.red,
+                              fontSize: 14.0,
                             ),
-                          ],
-                          const SizedBox(height: 12.0),
-                          formFieldHeader('Address*'),
-                          multilineRequiredTextField(
-                              "Address", addressController),
-                          inlineRequiredDisabledTextFields(
-                            "Town/City",
-                            "Country",
-                            cityController,
-                            countryController,
                           ),
-                          requiredTextField("Postcode", postcodeController),
-                          const SizedBox(height: 12.0),
-                          formFieldHeader('Personal Details*'),
-                          inlineRequiredTextFields(
-                            "First Name",
-                            "Last Name",
-                            firstNameController,
-                            lastNameController,
-                          ),
-                          inlineRequiredTextFields(
-                            "Phone Number",
-                            "Email",
-                            phoneNumberController,
-                            emailController,
-                          ),
-                          const SizedBox(height: 12.0),
-                          formFieldHeader(
-                              'Which postcodes or towns do you cover?*'),
-                          multiSelectField(postcodes, const Text("Postcodes"),
-                              "Enter postcodes like (EB3 5DJ, E14 OBQ)",
-                              (results) {
-                            model.selectedPostcodes = results;
-                          }, Icons.location_city, formSelectedPostcodes),
-                          const SizedBox(height: 12.0),
-                          formFieldHeader('Which services can you offer?*'),
-                          if (model.formSubmitted &&
-                              model.selectedServices.isEmpty) ...[
-                            const Text(
-                              'Select at least one service', // Validation message
-                              style: TextStyle(
-                                color: Colors.red,
-                                fontSize: 14.0,
-                              ),
-                            ),
-                          ],
-                          Column(
-                            children: serviceRows,
-                          ),
-                          const SizedBox(height: 16.0),
-                          (postFutureData != null)
-                              ? PostClient.futureBuilder(
-                                  model,
-                                  postFutureData!,
-                                  "Next Step",
-                                  () async {
-                                    onSubmitCallback(model);
-                                  },
-                                  () {
-                                    widget.onboardingModel.setCurrentIndex(1);
-                                  },
-                                )
-                              : submitButton("Next Step", () async {
+                        ],
+                        Column(
+                          children: serviceRows,
+                        ),
+                        const SizedBox(height: 16.0),
+                        (postFutureData != null)
+                            ? PostClient.futureBuilder(
+                                model,
+                                postFutureData!,
+                                "Next Step",
+                                () async {
                                   onSubmitCallback(model);
-                                })
-                        ]),
-                        const SizedBox(height: 56.0),
-                      ],
-                    ),
-                  ),
-                ))));
+                                },
+                                () {
+                                  widget.onboardingModel.setCurrentIndex(1);
+                                },
+                              )
+                            : submitButton("Next Step", () async {
+                                onSubmitCallback(model);
+                              }),
+                        const SizedBox(height: 30.0)
+                      ]),
+                ),
+              ),
+            )));
   }
 
   void onSubmitCallback(YourDetails model) {

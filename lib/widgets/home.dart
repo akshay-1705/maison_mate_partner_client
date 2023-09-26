@@ -87,7 +87,7 @@ class _HomeWidgetState extends State<HomeWidget> {
         const SizedBox(height: 20),
         ElevatedButton(
           onPressed: () {
-            Navigator.pushReplacement(
+            Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) =>
