@@ -12,10 +12,43 @@ class CustomAppBar {
       leading: IconButton(
         icon: icon,
         color: const Color(secondaryColor),
-        onPressed: () {
-          Navigator.of(context).pop();
+        onPressed: () async {
+          bool confirm = await showConfirmationDialog(
+              context, "Are you sure you want to leave this page?");
+          if (confirm) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              Navigator.of(context).pop();
+            });
+          }
         },
       ),
+    );
+  }
+
+  static Future<bool> showConfirmationDialog(
+      BuildContext context, String label) async {
+    return await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Confirmation"),
+          content: Text(label),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false); // Cancel the pop
+              },
+              child: const Text("No"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(true); // Confirm the pop
+              },
+              child: const Text("Yes"),
+            ),
+          ],
+        );
+      },
     );
   }
 }

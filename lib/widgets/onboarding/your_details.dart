@@ -5,6 +5,7 @@ import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/network/response/your_details_response.dart';
 import 'package:maison_mate/provider/onboarding_model.dart';
 import 'package:maison_mate/provider/your_details_model.dart';
+import 'package:maison_mate/shared/custom_app_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:maison_mate/constants.dart';
 import 'package:maison_mate/shared/my_form.dart';
@@ -191,14 +192,26 @@ class _YourDetailsSectionState extends State<YourDetailsSection> {
                                 postFutureData!,
                                 "Submit",
                                 () async {
-                                  onSubmitCallback(model);
+                                  bool confirm =
+                                      await CustomAppBar.showConfirmationDialog(
+                                          context,
+                                          'Are you sure you want to submit this form?');
+                                  if (confirm) {
+                                    onSubmitCallback(model);
+                                  }
                                 },
                                 () {
                                   widget.onboardingModel.setCurrentIndex(1);
                                 },
                               )
                             : MyForm.submitButton("Submit", () async {
-                                onSubmitCallback(model);
+                                bool confirm =
+                                    await CustomAppBar.showConfirmationDialog(
+                                        context,
+                                        'Are you sure you want to submit this form?');
+                                if (confirm) {
+                                  onSubmitCallback(model);
+                                }
                               }),
                         const SizedBox(height: 30.0)
                       ]),
