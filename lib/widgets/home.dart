@@ -3,6 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:maison_mate/constants.dart';
 import 'package:maison_mate/network/client/get_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
+import 'package:maison_mate/shared/custom_app_bar.dart';
 import 'package:maison_mate/widgets/auth/sign_in.dart';
 import 'package:maison_mate/widgets/onboarding/onboarding.dart';
 
@@ -148,16 +149,20 @@ class Account extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
       icon: const Icon(
-        Icons.account_circle_outlined,
+        Icons.logout_outlined,
         color: Color(secondaryColor),
       ),
       onPressed: () async {
-        await storage.delete(key: authTokenKey);
-        if (!context.mounted) {
-          return;
+        bool confirm = await CustomAppBar.showConfirmationDialog(
+            context, "Are you sure you want to Logout?");
+        if (confirm) {
+          await storage.delete(key: authTokenKey);
+          if (!context.mounted) {
+            return;
+          }
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => const SignInWidget()));
         }
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => const SignInWidget()));
       },
     );
   }

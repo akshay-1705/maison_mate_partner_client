@@ -63,7 +63,7 @@ class _DocumentationState extends State<Documentation> {
       case 'Completed':
         return Icon(Icons.check_circle, color: color);
       case 'Incomplete':
-        return Icon(Icons.pending_actions, color: color);
+        return Icon(Icons.pending, color: color);
       case 'Failed':
         return Icon(Icons.error, color: color);
       default:

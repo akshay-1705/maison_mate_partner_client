@@ -27,7 +27,7 @@ class CustomAppBar {
 
   static Future<bool> showConfirmationDialog(
       BuildContext context, String label) async {
-    return await showDialog(
+    final result = await showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
@@ -50,5 +50,7 @@ class CustomAppBar {
         );
       },
     );
+
+    return result ?? false;
   }
 }

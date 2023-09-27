@@ -95,13 +95,24 @@ class _OnboardingWidgetState extends State<OnboardingWidget> {
   Widget _buildTabItem(
       int index, IconData icon, String label, OnboardingModel model) {
     final isSelected = index == model.currentIndex;
+    Icon secondaryIcon = widget.yourDetailsSection
+        ? const Icon(
+            Icons.check_circle,
+            color: Colors.green,
+          )
+        : const Icon(
+            Icons.pending,
+            color: Colors.orange,
+          );
     return GestureDetector(
       onTap: () async {
-        bool confirm = await CustomAppBar.showConfirmationDialog(
-            context, "Are you sure you want to go to '$label' section?");
-        if (confirm) {
-          tabClicked = true;
-          model.setCurrentIndex(index);
+        if (model.currentIndex != index) {
+          bool confirm = await CustomAppBar.showConfirmationDialog(
+              context, "Are you sure you want to go to '$label' section?");
+          if (confirm) {
+            tabClicked = true;
+            model.setCurrentIndex(index);
+          }
         }
       },
       child: Container(
@@ -127,11 +138,7 @@ class _OnboardingWidgetState extends State<OnboardingWidget> {
                 color: isSelected ? const Color(themeColor) : Colors.grey,
               ),
             ),
-            if (widget.yourDetailsSection && label == 'Your Details')
-              const Icon(
-                Icons.done,
-                color: Colors.green,
-              ),
+            if (label == 'Your Details') secondaryIcon
           ],
         ),
       ),

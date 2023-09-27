@@ -144,7 +144,8 @@ class _YourDetailsSectionState extends State<YourDetailsSection> {
                           countryController,
                         ),
                         MyForm.requiredTextField(
-                            "Postcode", postcodeController),
+                            "Postcode (e.g. W3, SE20, GU12)",
+                            postcodeController),
                         const SizedBox(height: 12.0),
                         MyForm.formFieldHeader('Personal Details*'),
                         MyForm.inlineRequiredTextFields(
@@ -165,8 +166,7 @@ class _YourDetailsSectionState extends State<YourDetailsSection> {
                         MyForm.multiSelectField(
                             postcodes,
                             const Text("Postcodes"),
-                            "Enter postcodes like (EB3 5DJ, E14 OBQ)",
-                            (results) {
+                            "Enter postcodes like (W3, SE20, GU12)", (results) {
                           model.selectedPostcodes = results;
                         }, Icons.location_city, formSelectedPostcodes),
                         const SizedBox(height: 12.0),
