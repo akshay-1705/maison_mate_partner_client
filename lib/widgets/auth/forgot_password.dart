@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:maison_mate/network/client/post_client.dart';
 import 'package:maison_mate/shared/forms.dart';
 import 'package:maison_mate/shared/my_snackbar.dart';
-import 'package:maison_mate/states/forgot_password.dart';
+import 'package:maison_mate/provider/forgot_password.dart';
 import 'package:provider/provider.dart';
 import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/constants.dart';

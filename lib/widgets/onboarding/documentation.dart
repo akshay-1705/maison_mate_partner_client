@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:maison_mate/states/onboarding.dart';
+import 'package:maison_mate/provider/onboarding.dart';
 import 'package:maison_mate/widgets/onboarding/documentation/banking.dart';
 import 'package:maison_mate/widgets/onboarding/documentation/company_owner_identification.dart';
 import 'package:maison_mate/widgets/onboarding/documentation/employees.dart';
@@ -26,7 +26,7 @@ class _DocumentationState extends State<Documentation> {
 
   @override
   Widget build(BuildContext context) {
-    const status = 'Pending';
+    const status = 'Incomplete';
     Color color = getColor(status);
     return Scaffold(
         body: Column(children: [
@@ -62,7 +62,7 @@ class _DocumentationState extends State<Documentation> {
     switch (status) {
       case 'Completed':
         return Icon(Icons.check_circle, color: color);
-      case 'Pending':
+      case 'Incomplete':
         return Icon(Icons.pending_actions, color: color);
       case 'Failed':
         return Icon(Icons.error, color: color);
@@ -75,7 +75,7 @@ class _DocumentationState extends State<Documentation> {
     switch (status) {
       case 'Completed':
         return Colors.green;
-      case 'Pending':
+      case 'Incomplete':
         return Colors.orange;
       case 'Failed':
         return Colors.red;

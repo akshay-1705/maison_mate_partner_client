@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:maison_mate/states/onboarding.dart';
+import 'package:maison_mate/provider/onboarding.dart';
 import 'package:maison_mate/widgets/onboarding/documentation.dart';
 import 'package:maison_mate/widgets/onboarding/your_details.dart';
 import 'package:maison_mate/constants.dart';
 import 'package:provider/provider.dart';
-import 'package:maison_mate/states/your_details.dart';
+import 'package:maison_mate/provider/your_details.dart';
 
 class OnboardingWidget extends StatefulWidget {
   final bool yourDetailsSection;
@@ -53,11 +53,8 @@ class _OnboardingWidgetState extends State<OnboardingWidget> {
   }
 
   Widget buildBody() {
-    return Consumer<Onboarding>(builder: (context, cart, child) {
+    return Consumer<Onboarding>(builder: (context, onboarding, child) {
       final Onboarding model = Provider.of<Onboarding>(context);
-      if (widget.yourDetailsSection) {
-        model.currentIndex = 1;
-      }
 
       return Column(
         children: [
@@ -106,6 +103,9 @@ class _OnboardingWidgetState extends State<OnboardingWidget> {
       int index, IconData icon, String label, Onboarding model) {
     final isSelected = index == model.currentIndex;
     return GestureDetector(
+      onTap: () {
+        model.setCurrentIndex(index);
+      },
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
         decoration: BoxDecoration(
@@ -129,6 +129,11 @@ class _OnboardingWidgetState extends State<OnboardingWidget> {
                 color: isSelected ? const Color(themeColor) : Colors.grey,
               ),
             ),
+            if (widget.yourDetailsSection && label == 'Your Details')
+              const Icon(
+                Icons.done,
+                color: Colors.green,
+              ),
           ],
         ),
       ),

@@ -4,7 +4,7 @@ import 'package:maison_mate/network/client/post_client.dart';
 import 'package:maison_mate/shared/forms.dart';
 import 'package:maison_mate/shared/my_snackbar.dart';
 import 'package:maison_mate/widgets/auth/sign_in.dart';
-import 'package:maison_mate/states/sign_up.dart';
+import 'package:maison_mate/provider/sign_up.dart';
 import 'package:maison_mate/widgets/auth/terms_and_conditions_page.dart';
 import 'package:provider/provider.dart';
 import 'package:maison_mate/network/response/api_response.dart';

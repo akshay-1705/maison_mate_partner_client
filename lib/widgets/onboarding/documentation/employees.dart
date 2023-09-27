@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:maison_mate/shared/custom_app_bar.dart';
+import 'package:maison_mate/shared/forms.dart';
 
 class Employees extends StatefulWidget {
   const Employees({Key? key}) : super(key: key);
@@ -14,23 +15,34 @@ class _EmployeesState extends State<Employees> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: CustomAppBar.show(
-            context, "Employees", const Icon(Icons.arrow_back)),
-        body: WillPopScope(
-            onWillPop: () async {
-              return Future.value(false);
-            },
-            child: SingleChildScrollView(
-                child: GestureDetector(
-                    onTap: () {
-                      FocusScope.of(context).unfocus();
-                    },
-                    child: Form(
-                        key: _formKey,
-                        child: const AbsorbPointer(
-                            absorbing: false,
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [])))))));
+      appBar:
+          CustomAppBar.show(context, "Employees", const Icon(Icons.arrow_back)),
+      body: WillPopScope(
+        onWillPop: () async {
+          return Future.value(false);
+        },
+        child: GestureDetector(
+          onTap: () {
+            FocusScope.of(context).unfocus();
+          },
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(5.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const SizedBox(height: 10),
+                  formFieldHeader('Do you have any employees?'),
+                  buildRadioButtons(['Yes', 'No'], 'No', (value) {}),
+                  const SizedBox(height: 20),
+                  submitButton("Submit", () {}),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

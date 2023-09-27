@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:maison_mate/shared/custom_app_bar.dart';
+import 'package:maison_mate/shared/forms.dart';
 
 class ProfilePicture extends StatefulWidget {
   const ProfilePicture({Key? key}) : super(key: key);
@@ -14,23 +15,35 @@ class _ProfilePictureState extends State<ProfilePicture> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: CustomAppBar.show(
-            context, "Profile picture", const Icon(Icons.arrow_back)),
-        body: WillPopScope(
-            onWillPop: () async {
-              return Future.value(false);
-            },
-            child: SingleChildScrollView(
-                child: GestureDetector(
-                    onTap: () {
-                      FocusScope.of(context).unfocus();
-                    },
-                    child: Form(
-                        key: _formKey,
-                        child: const AbsorbPointer(
-                            absorbing: false,
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [])))))));
+      appBar: CustomAppBar.show(
+          context, "Profile picture", const Icon(Icons.arrow_back)),
+      body: WillPopScope(
+        onWillPop: () async {
+          return Future.value(false);
+        },
+        child: GestureDetector(
+          onTap: () {
+            FocusScope.of(context).unfocus();
+          },
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(5.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const SizedBox(height: 10),
+                  formFieldHeader(
+                      'Attach a professional picture of yourself. No selfies or group photos; this is the photo customers will see when you book a job.*'),
+                  // uploadImageButton(),
+                  const SizedBox(height: 20),
+                  submitButton("Submit", () {}),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

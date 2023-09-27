@@ -13,7 +13,7 @@ class PostClient {
 
   static Future<ApiResponse<T>> request<T>(
     String apiUrl,
-    Map<String, Object> bodyData,
+    Map<String, dynamic> bodyData,
     dynamic model,
     void Function(ApiResponse<T>) apiSpecificTask,
   ) async {

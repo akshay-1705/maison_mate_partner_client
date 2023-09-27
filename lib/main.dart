@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:maison_mate/widgets/auth/sign_in.dart';
 import 'package:maison_mate/widgets/home.dart';
-import 'package:maison_mate/states/sign_in.dart';
-import 'package:maison_mate/states/sign_up.dart';
-import 'package:maison_mate/states/forgot_password.dart';
+import 'package:maison_mate/provider/sign_in.dart';
+import 'package:maison_mate/provider/sign_up.dart';
+import 'package:maison_mate/provider/forgot_password.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:maison_mate/constants.dart';

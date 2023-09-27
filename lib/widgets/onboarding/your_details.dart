@@ -3,8 +3,8 @@ import 'package:maison_mate/network/client/get_client.dart';
 import 'package:maison_mate/network/client/post_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/network/response/your_details_response.dart';
-import 'package:maison_mate/states/onboarding.dart';
-import 'package:maison_mate/states/your_details.dart';
+import 'package:maison_mate/provider/onboarding.dart';
+import 'package:maison_mate/provider/your_details.dart';
 import 'package:provider/provider.dart';
 import 'package:maison_mate/constants.dart';
 import 'package:maison_mate/shared/forms.dart';
@@ -185,7 +185,7 @@ class _YourDetailsSectionState extends State<YourDetailsSection> {
                             ? PostClient.futureBuilder(
                                 model,
                                 postFutureData!,
-                                "Next Step",
+                                "Submit",
                                 () async {
                                   onSubmitCallback(model);
                                 },
@@ -193,7 +193,7 @@ class _YourDetailsSectionState extends State<YourDetailsSection> {
                                   widget.onboardingModel.setCurrentIndex(1);
                                 },
                               )
-                            : submitButton("Next Step", () async {
+                            : submitButton("Submit", () async {
                                 onSubmitCallback(model);
                               }),
                         const SizedBox(height: 30.0)

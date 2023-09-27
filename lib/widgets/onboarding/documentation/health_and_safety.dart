@@ -14,23 +14,28 @@ class _HealthAndSafetyState extends State<HealthAndSafety> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: CustomAppBar.show(
-            context, "Health and safety", const Icon(Icons.arrow_back)),
-        body: WillPopScope(
-            onWillPop: () async {
-              return Future.value(false);
-            },
-            child: SingleChildScrollView(
-                child: GestureDetector(
-                    onTap: () {
-                      FocusScope.of(context).unfocus();
-                    },
-                    child: Form(
-                        key: _formKey,
-                        child: const AbsorbPointer(
-                            absorbing: false,
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [])))))));
+      appBar: CustomAppBar.show(
+          context, "Health and safety", const Icon(Icons.arrow_back)),
+      body: WillPopScope(
+        onWillPop: () async {
+          return Future.value(false);
+        },
+        child: GestureDetector(
+          onTap: () {
+            FocusScope.of(context).unfocus();
+          },
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(5.0),
+            child: Form(
+              key: _formKey,
+              child: const Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

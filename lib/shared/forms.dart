@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:maison_mate/constants.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
@@ -257,7 +260,18 @@ Widget buildBulletPoint(String text) {
   );
 }
 
-Widget uploadImageButton() {
+Widget uploadImageSection(dynamic model) {
+  return Column(children: [
+    uploadImageButton(model),
+    if (model.fileName.isNotEmpty)
+      Container(
+          padding: const EdgeInsets.only(left: 10),
+          alignment: Alignment.centerLeft,
+          child: Text(model.fileName))
+  ]);
+}
+
+Widget uploadImageButton(dynamic model) {
   return Container(
     padding: const EdgeInsets.only(left: 10),
     alignment: Alignment.centerLeft,
@@ -268,11 +282,78 @@ Widget uploadImageButton() {
           borderRadius: BorderRadius.circular(5),
         ),
       ),
-      onPressed: () {
-        // Handle image upload here
+      onPressed: () async {
+        FilePickerResult? result = await FilePicker.platform.pickFiles(
+          type: FileType.image,
+        );
+        if (result != null) {
+          model.setSelectedFile(File(result.files.single.path!));
+        }
       },
       icon: const Icon(Icons.upload_file),
       label: const Text('Upload Image'),
+    ),
+  );
+}
+
+Widget checkbox(String textLabel, bool value) {
+  return CheckboxListTile(
+    title: Text(textLabel),
+    value: value,
+    controlAffinity: ListTileControlAffinity.leading,
+    onChanged: (newValue) {
+      // setState(() {
+      //   // checkbox3Value = newValue!;
+      // });
+    },
+  );
+}
+
+Widget datePickerFormField(
+  String label,
+  TextEditingController controller,
+  BuildContext context,
+) {
+  return Opacity(
+    opacity: 0.5,
+    child: Container(
+      padding: const EdgeInsets.all(6),
+      child: TextFormField(
+        readOnly: true, // Make the field read-only
+        controller: controller,
+        decoration: customInputDecoration(label),
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'This field is required';
+          }
+          return null;
+        },
+        onTap: () async {
+          final DateTime? pickedDate = await showDatePicker(
+            context: context,
+            initialDate: DateTime.now(),
+            firstDate: DateTime.now(),
+            lastDate: DateTime(2101),
+            builder: (BuildContext context, Widget? child) {
+              return Theme(
+                data: ThemeData.light().copyWith(
+                  primaryColor: const Color(themeColor), // Your theme color
+                  hintColor: const Color(themeColor), // Your theme color
+                  colorScheme: const ColorScheme.light(
+                    primary: Color(themeColor), // Your theme color
+                  ),
+                  buttonTheme:
+                      const ButtonThemeData(textTheme: ButtonTextTheme.primary),
+                ),
+                child: child!,
+              );
+            },
+          );
+          if (pickedDate != null && pickedDate != DateTime.now()) {
+            controller.text = pickedDate.toString();
+          }
+        },
+      ),
     ),
   );
 }
