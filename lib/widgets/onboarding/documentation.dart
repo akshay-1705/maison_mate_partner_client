@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:maison_mate/provider/onboarding.dart';
+import 'package:maison_mate/provider/onboarding_model.dart';
 import 'package:maison_mate/widgets/onboarding/documentation/banking.dart';
 import 'package:maison_mate/widgets/onboarding/documentation/company_owner_identification.dart';
 import 'package:maison_mate/widgets/onboarding/documentation/employees.dart';
@@ -10,7 +10,7 @@ import 'package:maison_mate/widgets/onboarding/documentation/profile_picture.dar
 import 'package:maison_mate/widgets/onboarding/documentation/selected_services.dart';
 
 class Documentation extends StatefulWidget {
-  final Onboarding onboardingModel;
+  final OnboardingModel onboardingModel;
   const Documentation({Key? key, required this.onboardingModel})
       : super(key: key);
 

@@ -1,10 +1,10 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:maison_mate/network/client/post_client.dart';
-import 'package:maison_mate/shared/forms.dart';
+import 'package:maison_mate/shared/my_form.dart';
 import 'package:maison_mate/shared/my_snackbar.dart';
 import 'package:maison_mate/widgets/auth/sign_in.dart';
-import 'package:maison_mate/provider/sign_up.dart';
+import 'package:maison_mate/provider/auth/sign_up_model.dart';
 import 'package:maison_mate/widgets/auth/terms_and_conditions_page.dart';
 import 'package:provider/provider.dart';
 import 'package:maison_mate/network/response/api_response.dart';
@@ -54,7 +54,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                       header(),
                       const SizedBox(height: 40),
                       nameFields(),
-                      requiredEmailField('Email*', emailController),
+                      MyForm.requiredEmailField('Email*', emailController),
                       passwordFields(),
                       const SizedBox(height: 10),
                       termsAndConditions(model),
@@ -74,7 +74,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                                 );
                               },
                             )
-                          : submitButton("Sign Up", () async {
+                          : MyForm.submitButton("Sign Up", () async {
                               onSubmitCallback(model);
                             }),
                       signInOption(context, model),
@@ -270,10 +270,10 @@ class _SignUpWidgetState extends State<SignUpWidget> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
         Flexible(
-          child: requiredTextField('First Name*', firstNameController),
+          child: MyForm.requiredTextField('First Name*', firstNameController),
         ),
         Flexible(
-          child: requiredTextField('Last Name*', lastNameController),
+          child: MyForm.requiredTextField('Last Name*', lastNameController),
         )
       ],
     );

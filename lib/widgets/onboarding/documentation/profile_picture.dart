@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:maison_mate/shared/custom_app_bar.dart';
-import 'package:maison_mate/shared/forms.dart';
+import 'package:maison_mate/shared/my_form.dart';
 
 class ProfilePicture extends StatefulWidget {
   const ProfilePicture({Key? key}) : super(key: key);
@@ -33,11 +33,11 @@ class _ProfilePictureState extends State<ProfilePicture> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const SizedBox(height: 10),
-                  formFieldHeader(
+                  MyForm.formFieldHeader(
                       'Attach a professional picture of yourself. No selfies or group photos; this is the photo customers will see when you book a job.*'),
                   // uploadImageButton(),
                   const SizedBox(height: 20),
-                  submitButton("Submit", () {}),
+                  MyForm.submitButton("Submit", () {}),
                 ],
               ),
             ),

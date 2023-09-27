@@ -3,9 +3,8 @@ import 'package:maison_mate/network/client/post_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/provider/documentation/banking_model.dart';
 import 'package:maison_mate/shared/custom_app_bar.dart';
-import 'package:maison_mate/shared/forms.dart';
+import 'package:maison_mate/shared/my_form.dart';
 import 'package:maison_mate/shared/my_snackbar.dart';
-// import 'package:file_picker/file_picker.dart';
 import 'package:provider/provider.dart';
 
 class Banking extends StatefulWidget {
@@ -49,17 +48,17 @@ class _BankingState extends State<Banking> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           const SizedBox(height: 10),
-                          formFieldHeader('Bank Details'),
-                          inlineRequiredTextFields(
+                          MyForm.formFieldHeader('Bank Details'),
+                          MyForm.inlineRequiredTextFields(
                             'Bank Name*',
                             'Sort code*',
                             bankNameController,
                             sortCodeController,
                           ),
-                          requiredTextField(
+                          MyForm.requiredTextField(
                               "Account Number*", accountNumberController),
                           const SizedBox(height: 25),
-                          formFieldHeader(
+                          MyForm.formFieldHeader(
                             'Attach a photo of your bank proof. This can include any of the following*:',
                           ),
                           const SizedBox(height: 10),
@@ -68,17 +67,18 @@ class _BankingState extends State<Banking> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                buildBulletPoint('Top-half of bank statement'),
+                                MyForm.buildBulletPoint(
+                                    'Top-half of bank statement'),
                                 const SizedBox(height: 10),
-                                buildBulletPoint('Paying-in slip'),
+                                MyForm.buildBulletPoint('Paying-in slip'),
                                 const SizedBox(height: 10),
-                                buildBulletPoint(
+                                MyForm.buildBulletPoint(
                                     'Screenshot of mobile banking'),
                               ],
                             ),
                           ),
                           const SizedBox(height: 20),
-                          uploadImageSection(model),
+                          MyForm.uploadImageSection(model),
                           const SizedBox(height: 20),
                           (futureData != null)
                               ? PostClient.futureBuilder(
@@ -90,7 +90,7 @@ class _BankingState extends State<Banking> {
                                   },
                                   () {},
                                 )
-                              : submitButton("Submit", () async {
+                              : MyForm.submitButton("Submit", () async {
                                   onSubmitCallback(model);
                                 }),
                         ],

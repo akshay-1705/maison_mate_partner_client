@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:maison_mate/shared/custom_app_bar.dart';
-import 'package:maison_mate/shared/forms.dart';
+import 'package:maison_mate/shared/my_form.dart';
 
 class Employees extends StatefulWidget {
   const Employees({Key? key}) : super(key: key);
@@ -33,10 +33,10 @@ class _EmployeesState extends State<Employees> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const SizedBox(height: 10),
-                  formFieldHeader('Do you have any employees?'),
-                  buildRadioButtons(['Yes', 'No'], 'No', (value) {}),
+                  MyForm.formFieldHeader('Do you have any employees?'),
+                  MyForm.buildRadioButtons(['Yes', 'No'], 'No', (value) {}),
                   const SizedBox(height: 20),
-                  submitButton("Submit", () {}),
+                  MyForm.submitButton("Submit", () {}),
                 ],
               ),
             ),

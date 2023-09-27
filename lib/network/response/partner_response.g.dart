@@ -1,12 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'partner.dart';
+part of 'partner_response.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-Partner _$PartnerFromJson(Map<String, dynamic> json) {
+PartnerResponse _$PartnerResponseFromJson(Map<String, dynamic> json) {
   $checkKeys(
     json,
     requiredKeys: const [
@@ -18,7 +18,7 @@ Partner _$PartnerFromJson(Map<String, dynamic> json) {
       'updated_at'
     ],
   );
-  return Partner(
+  return PartnerResponse(
     json['id'] as int,
     json['first_name'] as String,
     json['last_name'] as String,
@@ -28,7 +28,8 @@ Partner _$PartnerFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$PartnerToJson(Partner instance) => <String, dynamic>{
+Map<String, dynamic> _$PartnerResponseToJson(PartnerResponse instance) =>
+    <String, dynamic>{
       'id': instance.id,
       'first_name': instance.firstName,
       'last_name': instance.lastName,

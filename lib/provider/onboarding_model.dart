@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class Onboarding extends ChangeNotifier {
+class OnboardingModel extends ChangeNotifier {
   int currentIndex = 0;
 
   void setCurrentIndex(value) {

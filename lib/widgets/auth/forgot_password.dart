@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:maison_mate/network/client/post_client.dart';
-import 'package:maison_mate/shared/forms.dart';
+import 'package:maison_mate/shared/my_form.dart';
 import 'package:maison_mate/shared/my_snackbar.dart';
-import 'package:maison_mate/provider/forgot_password.dart';
+import 'package:maison_mate/provider/auth/forgot_password_model.dart';
 import 'package:provider/provider.dart';
 import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/constants.dart';
@@ -44,10 +44,10 @@ class _ResetPasswordWidgetState extends State<ResetPasswordWidget> {
                       header(),
                       const SizedBox(height: 40),
                       if (model.successMessage.isEmpty)
-                        requiredEmailField('Email*', emailController),
+                        MyForm.requiredEmailField('Email*', emailController),
                       const SizedBox(height: 20),
                       if (model.successMessage.isNotEmpty)
-                        submitButton('Sign In', () {
+                        MyForm.submitButton('Sign In', () {
                           model.clearStates();
                           Navigator.of(context).pop();
                         }),
@@ -62,7 +62,7 @@ class _ResetPasswordWidgetState extends State<ResetPasswordWidget> {
                                 },
                                 () {},
                               )
-                            : submitButton("Send Email", () async {
+                            : MyForm.submitButton("Send Email", () async {
                                 onSubmitCallback(model);
                               }),
                     ])))));

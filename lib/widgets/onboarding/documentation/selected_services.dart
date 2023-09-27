@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:maison_mate/shared/custom_app_bar.dart';
-import 'package:maison_mate/shared/forms.dart';
+import 'package:maison_mate/shared/my_form.dart';
 
 class SelectedServices extends StatefulWidget {
   const SelectedServices({Key? key}) : super(key: key);
@@ -36,15 +36,15 @@ class _SelectedServicesState extends State<SelectedServices> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const SizedBox(height: 10),
-                  formFieldHeader(
+                  MyForm.formFieldHeader(
                       'How many years’ experience do you have as a Handyman?'),
-                  requiredTextField(
+                  MyForm.requiredTextField(
                       "Enter your experience*", yearsExperienceController),
-                  formFieldHeader('What is your hourly rate?'),
-                  requiredTextField(
+                  MyForm.formFieldHeader('What is your hourly rate?'),
+                  MyForm.requiredTextField(
                       "Enter your hourly rate*", hourlyRateController),
                   const SizedBox(height: 20),
-                  submitButton("Submit", () {}),
+                  MyForm.submitButton("Submit", () {}),
                 ],
               ),
             ),

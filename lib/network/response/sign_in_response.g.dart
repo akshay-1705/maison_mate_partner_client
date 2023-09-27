@@ -1,17 +1,19 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'sign_in.dart';
+part of 'sign_in_response.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-SignIn _$SignInFromJson(Map<String, dynamic> json) => SignIn(
+SignInResponse _$SignInResponseFromJson(Map<String, dynamic> json) =>
+    SignInResponse(
       json['token'] as String,
-      Partner.fromJson(json['partner'] as Map<String, dynamic>),
+      PartnerResponse.fromJson(json['partner'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$SignInToJson(SignIn instance) => <String, dynamic>{
+Map<String, dynamic> _$SignInResponseToJson(SignInResponse instance) =>
+    <String, dynamic>{
       'token': instance.token,
       'partner': instance.partner.toJson(),
     };

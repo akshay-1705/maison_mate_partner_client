@@ -5,7 +5,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:maison_mate/constants.dart';
 import 'package:maison_mate/network/response/api_response.dart';
 import 'package:http/http.dart' as http;
-import 'package:maison_mate/shared/forms.dart';
+import 'package:maison_mate/shared/my_form.dart';
 import 'package:maison_mate/widgets/home.dart';
 
 class GetClient {
@@ -47,7 +47,7 @@ class GetRequestFutureBuilder<T> extends StatelessWidget {
       future: future,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return circularLoader();
+          return MyForm.circularLoader();
         } else if (snapshot.hasData) {
           return builder(context, snapshot.data!.data);
         } else if (snapshot.hasError) {
@@ -59,7 +59,7 @@ class GetRequestFutureBuilder<T> extends StatelessWidget {
           });
           return Container();
         }
-        return circularLoader();
+        return MyForm.circularLoader();
       },
     );
   }

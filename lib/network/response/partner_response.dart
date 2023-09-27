@@ -1,9 +1,9 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'partner.g.dart';
+part 'partner_response.g.dart';
 
 @JsonSerializable(explicitToJson: true)
-class Partner {
+class PartnerResponse {
   @JsonKey(name: "id", required: true)
   final int id;
 
@@ -22,7 +22,7 @@ class Partner {
   @JsonKey(name: "updated_at", required: true)
   final String? updatedAt;
 
-  Partner(
+  PartnerResponse(
     this.id,
     this.firstName,
     this.lastName,
@@ -31,7 +31,7 @@ class Partner {
     this.updatedAt,
   );
 
-  factory Partner.fromJson(Map<String, dynamic> json) =>
-      _$PartnerFromJson(json);
-  Map<String, dynamic> toJson() => _$PartnerToJson(this);
+  factory PartnerResponse.fromJson(Map<String, dynamic> json) =>
+      _$PartnerResponseFromJson(json);
+  Map<String, dynamic> toJson() => _$PartnerResponseToJson(this);
 }

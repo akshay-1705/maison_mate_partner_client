@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:maison_mate/network/client/post_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
-import 'package:maison_mate/shared/forms.dart';
+import 'package:maison_mate/shared/my_form.dart';
 import 'package:maison_mate/widgets/auth/forgot_password.dart';
 import 'package:maison_mate/widgets/auth/sign_up.dart';
 import 'package:maison_mate/widgets/home.dart';
 import 'package:provider/provider.dart';
-import 'package:maison_mate/provider/sign_in.dart';
+import 'package:maison_mate/provider/auth/sign_in_model.dart';
 import 'package:maison_mate/constants.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -65,7 +65,7 @@ class _SignInWidgetState extends State<SignInWidget> {
                                       );
                                     },
                                   )
-                                : submitButton("Login", () async {
+                                : MyForm.submitButton("Login", () async {
                                     onSubmitCallback(model);
                                   }),
                             signUp(context, model),
@@ -114,8 +114,8 @@ class _SignInWidgetState extends State<SignInWidget> {
   Column formFields(SignInModel model) {
     return Column(
       children: [
-        requiredEmailField('Email*', emailController),
-        requiredTextField('Password*', passwordController, true),
+        MyForm.requiredEmailField('Email*', emailController),
+        MyForm.requiredTextField('Password*', passwordController, true),
       ],
     );
   }

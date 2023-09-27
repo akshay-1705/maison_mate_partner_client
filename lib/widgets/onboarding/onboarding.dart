@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:maison_mate/provider/onboarding.dart';
+import 'package:maison_mate/provider/onboarding_model.dart';
 import 'package:maison_mate/widgets/onboarding/documentation.dart';
 import 'package:maison_mate/widgets/onboarding/your_details.dart';
 import 'package:maison_mate/constants.dart';
 import 'package:provider/provider.dart';
-import 'package:maison_mate/provider/your_details.dart';
+import 'package:maison_mate/provider/your_details_model.dart';
 
 class OnboardingWidget extends StatefulWidget {
   final bool yourDetailsSection;
@@ -20,8 +20,8 @@ class _OnboardingWidgetState extends State<OnboardingWidget> {
   Widget build(BuildContext context) {
     return MultiProvider(
         providers: [
-          ChangeNotifierProvider(create: (_) => YourDetails()),
-          ChangeNotifierProvider(create: (_) => Onboarding()),
+          ChangeNotifierProvider(create: (_) => YourDetailsModel()),
+          ChangeNotifierProvider(create: (_) => OnboardingModel()),
         ],
         child: WillPopScope(
             onWillPop: () async {
@@ -53,8 +53,8 @@ class _OnboardingWidgetState extends State<OnboardingWidget> {
   }
 
   Widget buildBody() {
-    return Consumer<Onboarding>(builder: (context, onboarding, child) {
-      final Onboarding model = Provider.of<Onboarding>(context);
+    return Consumer<OnboardingModel>(builder: (context, onboarding, child) {
+      final OnboardingModel model = Provider.of<OnboardingModel>(context);
 
       return Column(
         children: [
@@ -77,7 +77,7 @@ class _OnboardingWidgetState extends State<OnboardingWidget> {
     });
   }
 
-  Widget _buildCustomTabBar(Onboarding model) {
+  Widget _buildCustomTabBar(OnboardingModel model) {
     return Container(
       decoration: const BoxDecoration(
         color: Color(secondaryColor),
@@ -100,7 +100,7 @@ class _OnboardingWidgetState extends State<OnboardingWidget> {
   }
 
   Widget _buildTabItem(
-      int index, IconData icon, String label, Onboarding model) {
+      int index, IconData icon, String label, OnboardingModel model) {
     final isSelected = index == model.currentIndex;
     return GestureDetector(
       onTap: () {

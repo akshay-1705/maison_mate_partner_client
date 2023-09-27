@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class YourDetails with ChangeNotifier {
+class YourDetailsModel with ChangeNotifier {
   String _selectedValue = 'Limited'; // Default value
   Set<String> selectedServices = {};
   List<dynamic> selectedPostcodes = [];

@@ -5,7 +5,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:maison_mate/constants.dart';
 import 'package:maison_mate/network/response/api_response.dart';
 import 'package:http/http.dart' as http;
-import 'package:maison_mate/shared/forms.dart';
+import 'package:maison_mate/shared/my_form.dart';
 import 'package:maison_mate/shared/my_snackbar.dart';
 
 class PostClient {
@@ -72,18 +72,18 @@ class PostClient {
                   MySnackBar(message: errorMessage, error: true).getSnackbar());
             });
           }
-          return submitButton(buttonText, buttonAction);
+          return MyForm.submitButton(buttonText, buttonAction);
         } else if (snapshot.connectionState == ConnectionState.waiting) {
-          return circularLoader();
+          return MyForm.circularLoader();
         } else if (snapshot.data!.success &&
             snapshot.connectionState == ConnectionState.done) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             onNavigation();
           });
-          return submitButton(buttonText, buttonAction);
+          return MyForm.submitButton(buttonText, buttonAction);
         }
 
-        return circularLoader();
+        return MyForm.circularLoader();
       },
     );
   }

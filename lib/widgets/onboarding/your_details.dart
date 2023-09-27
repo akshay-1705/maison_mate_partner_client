@@ -3,15 +3,15 @@ import 'package:maison_mate/network/client/get_client.dart';
 import 'package:maison_mate/network/client/post_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/network/response/your_details_response.dart';
-import 'package:maison_mate/provider/onboarding.dart';
-import 'package:maison_mate/provider/your_details.dart';
+import 'package:maison_mate/provider/onboarding_model.dart';
+import 'package:maison_mate/provider/your_details_model.dart';
 import 'package:provider/provider.dart';
 import 'package:maison_mate/constants.dart';
-import 'package:maison_mate/shared/forms.dart';
+import 'package:maison_mate/shared/my_form.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 class YourDetailsSection extends StatefulWidget {
-  final Onboarding onboardingModel;
+  final OnboardingModel onboardingModel;
   const YourDetailsSection({Key? key, required this.onboardingModel})
       : super(key: key);
 
@@ -54,7 +54,7 @@ class _YourDetailsSectionState extends State<YourDetailsSection> {
 
   void initializeFormData() {
     futureData.then((apiResponse) {
-      var stateModel = Provider.of<YourDetails>(context, listen: false);
+      var stateModel = Provider.of<YourDetailsModel>(context, listen: false);
       final YourDetailsResponse data = apiResponse.data;
       availableServices = data.servicesAvailable!;
       stateModel.selectedServices = data.servicesOffered!.toSet();
@@ -84,7 +84,7 @@ class _YourDetailsSectionState extends State<YourDetailsSection> {
 
   @override
   Widget build(BuildContext context) {
-    final YourDetails model = Provider.of<YourDetails>(context);
+    final YourDetailsModel model = Provider.of<YourDetailsModel>(context);
     serviceRows = [];
     createServiceCheckboxes(model, serviceRows);
 
@@ -98,7 +98,7 @@ class _YourDetailsSectionState extends State<YourDetailsSection> {
   }
 
   Widget renderData(
-      BuildContext context, YourDetails model, YourDetailsResponse data) {
+      BuildContext context, YourDetailsModel model, YourDetailsResponse data) {
     return Center(
         child: SingleChildScrollView(
             padding: const EdgeInsets.all(5.0),
@@ -113,8 +113,8 @@ class _YourDetailsSectionState extends State<YourDetailsSection> {
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        formFieldHeader('Select Tradesmen Type*'),
-                        buildRadioButtons(
+                        MyForm.formFieldHeader('Select Tradesmen Type*'),
+                        MyForm.buildRadioButtons(
                           ['Self Trader', 'Limited'],
                           model.selectedValue,
                           (value) {
@@ -124,49 +124,53 @@ class _YourDetailsSectionState extends State<YourDetailsSection> {
                             model.selectedValue = value;
                           },
                         ),
-                        requiredTextField(
+                        MyForm.requiredTextField(
                             "Company Name", companyNameController),
                         if (model.selectedValue == 'Limited') ...[
-                          requiredTextField(
+                          MyForm.requiredTextField(
                             "Company Registered Name (if different)",
                             registeredNameController,
                           ),
                         ],
                         const SizedBox(height: 12.0),
-                        formFieldHeader('Address*'),
-                        multilineRequiredTextField(
+                        MyForm.formFieldHeader('Address*'),
+                        MyForm.multilineRequiredTextField(
                             "Address", addressController),
-                        inlineRequiredDisabledTextFields(
+                        MyForm.inlineRequiredDisabledTextFields(
                           "Town/City",
                           "Country",
                           cityController,
                           countryController,
                         ),
-                        requiredTextField("Postcode", postcodeController),
+                        MyForm.requiredTextField(
+                            "Postcode", postcodeController),
                         const SizedBox(height: 12.0),
-                        formFieldHeader('Personal Details*'),
-                        inlineRequiredTextFields(
+                        MyForm.formFieldHeader('Personal Details*'),
+                        MyForm.inlineRequiredTextFields(
                           "First Name",
                           "Last Name",
                           firstNameController,
                           lastNameController,
                         ),
-                        inlineRequiredTextFields(
+                        MyForm.inlineRequiredTextFields(
                           "Phone Number",
                           "Email",
                           phoneNumberController,
                           emailController,
                         ),
                         const SizedBox(height: 12.0),
-                        formFieldHeader(
+                        MyForm.formFieldHeader(
                             'Which postcodes or towns do you cover?*'),
-                        multiSelectField(postcodes, const Text("Postcodes"),
+                        MyForm.multiSelectField(
+                            postcodes,
+                            const Text("Postcodes"),
                             "Enter postcodes like (EB3 5DJ, E14 OBQ)",
                             (results) {
                           model.selectedPostcodes = results;
                         }, Icons.location_city, formSelectedPostcodes),
                         const SizedBox(height: 12.0),
-                        formFieldHeader('Which services can you offer?*'),
+                        MyForm.formFieldHeader(
+                            'Which services can you offer?*'),
                         if (model.formSubmitted &&
                             model.selectedServices.isEmpty) ...[
                           const Text(
@@ -193,7 +197,7 @@ class _YourDetailsSectionState extends State<YourDetailsSection> {
                                   widget.onboardingModel.setCurrentIndex(1);
                                 },
                               )
-                            : submitButton("Submit", () async {
+                            : MyForm.submitButton("Submit", () async {
                                 onSubmitCallback(model);
                               }),
                         const SizedBox(height: 30.0)
@@ -203,7 +207,7 @@ class _YourDetailsSectionState extends State<YourDetailsSection> {
             )));
   }
 
-  void onSubmitCallback(YourDetails model) {
+  void onSubmitCallback(YourDetailsModel model) {
     model.setFormSubmitted(true);
     if (_formKey.currentState!.validate()) {
       if (model.selectedServices.isNotEmpty) {
@@ -229,7 +233,7 @@ class _YourDetailsSectionState extends State<YourDetailsSection> {
     }
   }
 
-  void createServiceCheckboxes(YourDetails model, List<Row> serviceRows) {
+  void createServiceCheckboxes(YourDetailsModel model, List<Row> serviceRows) {
     for (int i = 0; i < availableServices.length; i += servicesPerRow) {
       List<Widget> rowChildren = [];
       for (int j = i;
