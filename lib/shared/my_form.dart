@@ -6,13 +6,15 @@ import 'package:maison_mate/constants.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 
 class MyForm {
-  static Container formFieldHeader(String label) {
+  static Container formFieldHeader(String label, [Color? color]) {
+    color ??= Colors.black;
     return Container(
         padding: const EdgeInsets.only(left: 10, top: 18, bottom: 18),
         alignment: Alignment.bottomLeft,
         child: Text(
           label,
-          style: const TextStyle(fontSize: 15.0, fontWeight: FontWeight.w500),
+          style: TextStyle(
+              fontSize: 15.0, fontWeight: FontWeight.w500, color: color),
         ));
   }
 
