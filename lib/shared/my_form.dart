@@ -311,11 +311,8 @@ class MyForm {
     );
   }
 
-  static Widget datePickerFormField(
-    String label,
-    TextEditingController controller,
-    BuildContext context,
-  ) {
+  static Widget datePickerFormField(String label,
+      TextEditingController controller, BuildContext context, dynamic model) {
     return Opacity(
       opacity: 0.5,
       child: Container(
@@ -353,6 +350,7 @@ class MyForm {
             );
             if (pickedDate != null && pickedDate != DateTime.now()) {
               controller.text = pickedDate.toString();
+              model.epochString = pickedDate.millisecondsSinceEpoch.toString();
             }
           },
         ),

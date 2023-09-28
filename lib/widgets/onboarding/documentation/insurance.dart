@@ -70,7 +70,7 @@ class _InsuranceState extends State<Insurance> {
                         MyForm.formFieldHeader(
                             'When does Public Liability insurance expire?*'),
                         MyForm.datePickerFormField('DD/MM/YYYY',
-                            insuranceExpiryDateController, context),
+                            insuranceExpiryDateController, context, model),
                         MyForm.formFieldHeader(
                             'Attach a copy of your public liability insurance. Please make sure the company name, limit of insurance, and expiry date are all visible.*'),
                         MyForm.uploadImageSection(model),
@@ -125,7 +125,7 @@ class _InsuranceState extends State<Insurance> {
               model.minimum2MillionInsurancePresent == 'Yes',
           'minimum_one_million_insurance':
               model.minimum1MillionInsurancePresent == 'Yes',
-          'expiry_date_in_epoch': insuranceExpiryDateController.text,
+          'expiry_date_in_epoch': model.epochString,
           'file': model.selectedFile,
         };
         // TODO: Update URL

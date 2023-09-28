@@ -10,6 +10,7 @@ class InsuranceModel extends ChangeNotifier {
   String minimum1MillionInsurancePresent = '';
   Color minimum2MillionInsurancePresentColor = Colors.black;
   Color minimum1MillionInsurancePresentColor = Colors.black;
+  String epochString = '';
 
   void setSelectedFile(File value) {
     selectedFile = value;
