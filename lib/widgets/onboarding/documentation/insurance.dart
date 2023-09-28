@@ -52,9 +52,8 @@ class _InsuranceState extends State<Insurance> {
                             model.minimum2MillionInsurancePresentColor),
                         MyForm.buildRadioButtons(['Yes', 'No'],
                             model.minimum2MillionInsurancePresent, (value) {
-                          if (value == 'Yes') {
-                            // registeredNameController.text = '';
-                          }
+                          model.setMinimum2MillionInsurancePresentColor(
+                              Colors.black);
                           model.setMinimum2MillionInsurancePresent(value);
                         }),
                         if (model.minimum2MillionInsurancePresent == 'No') ...[
@@ -64,6 +63,8 @@ class _InsuranceState extends State<Insurance> {
                           MyForm.buildRadioButtons(
                               ['Yes'], model.minimum1MillionInsurancePresent,
                               (value) {
+                            model.setMinimum1MillionInsurancePresentColor(
+                                Colors.black);
                             model.setMinimum1MillionInsurancePresent(value);
                           }),
                         ],
@@ -99,22 +100,19 @@ class _InsuranceState extends State<Insurance> {
   }
 
   void onSubmitCallback(InsuranceModel model) {
-    if (_formKey.currentState!.validate()) {
-      if (model.minimum2MillionInsurancePresent == '') {
-        model.setMinimum2MillionInsurancePresentColor(Colors.red);
-        ScaffoldMessenger.of(context).showSnackBar(
-            MySnackBar(message: 'Insurance is required', error: true)
-                .getSnackbar());
-      } else if (model.minimum2MillionInsurancePresent == 'No' &&
-          model.minimum1MillionInsurancePresent == '') {
-        model.setMinimum2MillionInsurancePresentColor(Colors.black);
-        model.setMinimum1MillionInsurancePresentColor(Colors.red);
-        ScaffoldMessenger.of(context).showSnackBar(
-            MySnackBar(message: 'Insurance is required', error: true)
-                .getSnackbar());
-      } else if (model.selectedFile == null) {
-        model.setMinimum2MillionInsurancePresentColor(Colors.black);
-        model.setMinimum1MillionInsurancePresentColor(Colors.black);
+    if (model.minimum2MillionInsurancePresent == '') {
+      model.setMinimum2MillionInsurancePresentColor(Colors.red);
+      ScaffoldMessenger.of(context).showSnackBar(
+          MySnackBar(message: 'Insurance is required', error: true)
+              .getSnackbar());
+    } else if (model.minimum2MillionInsurancePresent == 'No' &&
+        model.minimum1MillionInsurancePresent == '') {
+      model.setMinimum1MillionInsurancePresentColor(Colors.red);
+      ScaffoldMessenger.of(context).showSnackBar(
+          MySnackBar(message: 'Insurance is required', error: true)
+              .getSnackbar());
+    } else if (_formKey.currentState!.validate()) {
+      if (model.selectedFile == null) {
         ScaffoldMessenger.of(context).showSnackBar(MySnackBar(
                 message: 'Please upload image before submitting', error: true)
             .getSnackbar());
