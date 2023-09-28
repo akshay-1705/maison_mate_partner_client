@@ -55,31 +55,33 @@ class _YourDetailsSectionState extends State<YourDetailsSection> {
 
   void initializeFormData() {
     futureData.then((apiResponse) {
-      var stateModel = Provider.of<YourDetailsModel>(context, listen: false);
-      final YourDetailsResponse data = apiResponse.data;
-      availableServices = data.servicesAvailable!;
-      stateModel.selectedServices = data.servicesOffered!.toSet();
+      if (mounted) {
+        var stateModel = Provider.of<YourDetailsModel>(context, listen: false);
+        final YourDetailsResponse data = apiResponse.data;
+        availableServices = data.servicesAvailable!;
+        stateModel.selectedServices = data.servicesOffered!.toSet();
 
-      postcodes = data.postcodesAvailable!.map((String postcode) {
-        return MultiSelectItem<String>(postcode, postcode);
-      }).toList();
+        postcodes = data.postcodesAvailable!.map((String postcode) {
+          return MultiSelectItem<String>(postcode, postcode);
+        }).toList();
 
-      stateModel.selectedPostcodes = data.postcodesCovered!.cast<String>();
-      formSelectedPostcodes = data.postcodesCovered!;
+        stateModel.selectedPostcodes = data.postcodesCovered!.cast<String>();
+        formSelectedPostcodes = data.postcodesCovered!;
 
-      stateModel.selectedValue =
-          data.isLimited == true ? 'Limited' : 'Self Trader';
+        stateModel.selectedValue =
+            data.isLimited == true ? 'Limited' : 'Self Trader';
 
-      firstNameController.text = data.firstName;
-      lastNameController.text = data.lastName;
-      emailController.text = data.email!;
-      companyNameController.text = data.companyTradingName!;
-      registeredNameController.text = data.companyRegisteredName!;
-      addressController.text = data.addressDetails!;
-      cityController.text = data.city!;
-      countryController.text = data.country!;
-      postcodeController.text = data.postcode!;
-      phoneNumberController.text = data.phoneNumber!;
+        firstNameController.text = data.firstName;
+        lastNameController.text = data.lastName;
+        emailController.text = data.email!;
+        companyNameController.text = data.companyTradingName!;
+        registeredNameController.text = data.companyRegisteredName!;
+        addressController.text = data.addressDetails!;
+        cityController.text = data.city!;
+        countryController.text = data.country!;
+        postcodeController.text = data.postcode!;
+        phoneNumberController.text = data.phoneNumber!;
+      }
     });
   }
 
