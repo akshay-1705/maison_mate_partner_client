@@ -101,7 +101,7 @@ class _OnboardingWidgetState extends State<OnboardingWidget> {
             color: Colors.green,
           )
         : const Icon(
-            Icons.pending,
+            Icons.edit_note,
             color: Colors.orange,
           );
     return GestureDetector(

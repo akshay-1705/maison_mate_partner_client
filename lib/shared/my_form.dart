@@ -300,9 +300,10 @@ class MyForm {
 
   static Widget checkbox(String textLabel, bool value) {
     return CheckboxListTile(
-      title: Text(textLabel),
+      title: Text(textLabel, style: const TextStyle(fontSize: 12)),
       value: value,
       controlAffinity: ListTileControlAffinity.leading,
+      visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
       onChanged: (newValue) {
         // setState(() {
         //   // checkbox3Value = newValue!;
