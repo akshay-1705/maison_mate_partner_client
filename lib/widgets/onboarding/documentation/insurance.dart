@@ -27,16 +27,16 @@ class _InsuranceState extends State<Insurance> {
         child: Scaffold(
           appBar: CustomAppBar.show(
               context, "Insurance", const Icon(Icons.arrow_back)),
-          body: WillPopScope(
-            onWillPop: () async {
-              return Future.value(false);
-            },
-            child: GestureDetector(
-              onTap: () {
-                FocusScope.of(context).unfocus();
+          body: SingleChildScrollView(
+            padding: const EdgeInsets.all(5.0),
+            child: WillPopScope(
+              onWillPop: () async {
+                return Future.value(false);
               },
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(5.0),
+              child: GestureDetector(
+                onTap: () {
+                  FocusScope.of(context).unfocus();
+                },
                 child: Consumer<InsuranceModel>(
                     builder: (context, banking, child) {
                   final InsuranceModel model =
@@ -89,6 +89,7 @@ class _InsuranceState extends State<Insurance> {
                             : MyForm.submitButton("Submit", () async {
                                 onSubmitCallback(model);
                               }),
+                        const SizedBox(height: 40),
                       ],
                     ),
                   );
