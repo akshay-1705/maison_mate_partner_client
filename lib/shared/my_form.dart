@@ -20,7 +20,8 @@ class MyForm {
 
   static Opacity requiredTextField(
       String label, TextEditingController controller,
-      [bool? obscure]) {
+      [bool? obscure, TextInputType? keyboardType]) {
+    keyboardType ??= TextInputType.text;
     obscure ??= false;
     return Opacity(
         opacity: 0.5,
@@ -29,6 +30,7 @@ class MyForm {
           child: TextFormField(
             controller: controller,
             obscureText: obscure,
+            keyboardType: keyboardType,
             decoration: customInputDecoration(label),
             validator: (value) {
               if ((value == null || value.isEmpty)) {
@@ -118,12 +120,18 @@ class MyForm {
   }
 
   static inlineRequiredTextFields(String label1, String label2,
-      TextEditingController controller1, TextEditingController controller2) {
+      TextEditingController controller1, TextEditingController controller2,
+      [TextInputType? keyboardType1, TextInputType? keyboardType2]) {
+    keyboardType1 ??= TextInputType.text;
+    keyboardType2 ??= TextInputType.text;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
-        Flexible(child: requiredTextField(label1, controller1)),
-        Flexible(child: requiredTextField(label2, controller2))
+        Flexible(
+            child:
+                requiredTextField(label1, controller1, false, keyboardType1)),
+        Flexible(
+            child: requiredTextField(label2, controller2, false, keyboardType2))
       ],
     );
   }

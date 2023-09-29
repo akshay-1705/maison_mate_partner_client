@@ -50,13 +50,17 @@ class _BankingState extends State<Banking> {
                           const SizedBox(height: 10),
                           MyForm.formFieldHeader('Bank Details'),
                           MyForm.inlineRequiredTextFields(
-                            'Bank Name*',
-                            'Sort code*',
-                            bankNameController,
-                            sortCodeController,
-                          ),
+                              'Bank Name*',
+                              'Sort code*',
+                              bankNameController,
+                              sortCodeController,
+                              TextInputType.text,
+                              TextInputType.number),
                           MyForm.requiredTextField(
-                              "Account Number*", accountNumberController),
+                              "Account Number*",
+                              accountNumberController,
+                              false,
+                              TextInputType.number),
                           const SizedBox(height: 25),
                           MyForm.formFieldHeader(
                             'Attach a photo of your bank proof. This can include any of the following*:',
