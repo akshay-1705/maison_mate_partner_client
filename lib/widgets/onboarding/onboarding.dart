@@ -85,6 +85,7 @@ class _OnboardingWidgetState extends State<OnboardingWidget> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
+          // _buildTabItem(2, Icons.email, 'Verify Email', model),
           _buildTabItem(0, Icons.person, 'Your Details', model),
           _buildTabItem(1, Icons.library_books, 'Documentation', model),
         ],
@@ -95,15 +96,10 @@ class _OnboardingWidgetState extends State<OnboardingWidget> {
   Widget _buildTabItem(
       int index, IconData icon, String label, OnboardingModel model) {
     final isSelected = index == model.currentIndex;
-    Icon secondaryIcon = widget.yourDetailsSection
-        ? const Icon(
-            Icons.check_circle,
-            color: Colors.green,
-          )
-        : const Icon(
-            Icons.edit_note,
-            color: Colors.orange,
-          );
+    Icon secondaryIcon = const Icon(
+      Icons.verified,
+      color: Colors.green,
+    );
     return GestureDetector(
       onTap: () async {
         if (model.currentIndex != index) {
@@ -138,7 +134,8 @@ class _OnboardingWidgetState extends State<OnboardingWidget> {
                 color: isSelected ? const Color(themeColor) : Colors.grey,
               ),
             ),
-            if (label == 'Your Details') secondaryIcon
+            if (label == 'Your Details' && widget.yourDetailsSection)
+              secondaryIcon
           ],
         ),
       ),

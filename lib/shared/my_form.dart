@@ -14,7 +14,7 @@ class MyForm {
         child: Text(
           label,
           style: TextStyle(
-              fontSize: 15.0, fontWeight: FontWeight.w500, color: color),
+              fontSize: 17.0, fontWeight: FontWeight.w500, color: color),
         ));
   }
 
@@ -313,6 +313,7 @@ class MyForm {
       value: value,
       controlAffinity: ListTileControlAffinity.leading,
       visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
       onChanged: (value) {
         callback(value!);
       },

@@ -30,71 +30,68 @@ class _DocumentationState extends State<Documentation> {
 
   @override
   Widget build(BuildContext context) {
-    const status = 'Incomplete';
+    const status = 'Completed';
     Color color = getColor(status);
     return ChangeNotifierProvider(
         create: (context) => DocumentationModel(),
-        child: Scaffold(
-            body: SingleChildScrollView(
-                padding: const EdgeInsets.all(5.0),
-                child: Consumer<DocumentationModel>(
-                    builder: (context, banking, child) {
-                  final DocumentationModel model =
-                      Provider.of<DocumentationModel>(context);
+        child: Scaffold(body: SingleChildScrollView(child:
+            Consumer<DocumentationModel>(builder: (context, banking, child) {
+          final DocumentationModel model =
+              Provider.of<DocumentationModel>(context);
+          return Column(
+            children: [
+              Column(
+                children: documentationParts.map((part) {
                   return Column(
                     children: [
-                      Column(
-                        children: documentationParts.map((part) {
-                          return Column(
-                            children: [
-                              ListTile(
-                                title: Text(part.title,
-                                    style: const TextStyle(fontSize: 17)),
-                                trailing: getIcon(status, color),
-                                onTap: () {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) => part.page,
-                                    ),
-                                  );
-                                },
-                              ),
-                              const Divider(
-                                height: 10,
-                                color: Colors.grey,
-                              ),
-                            ],
+                      ListTile(
+                        title: Text(part.title,
+                            style: const TextStyle(fontSize: 17)),
+                        trailing: getIcon(status, color),
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => part.page,
+                            ),
                           );
-                        }).toList(),
+                        },
                       ),
-                      const SizedBox(height: 20),
-                      MyForm.checkbox(
-                          'Have the right to work in the UK', model.canWorkInUK,
-                          (value) {
-                        model.setCanWorkInUK(value);
-                      }),
-                      MyForm.checkbox(
-                          'Do not have any criminal offences which are currently unspent under the Rehabilitation of Offenders Act 1974',
-                          model.notHaveCriminalOffence, (value) {
-                        model.setNotHaveCriminalOffence(value);
-                      }),
-                      MyForm.checkbox(
-                          'Agree to the Maison Mate, Terms of Use, Commercial Terms and Code of Conduct, and that you will follow the processes set out within them',
-                          model.agree, (value) {
-                        model.setAgree(value);
-                      }),
-                      const SizedBox(height: 20),
-                      MyForm.submitButton("Finish", () {}),
-                      const SizedBox(height: 50),
+                      const Divider(
+                        height: 10,
+                        color: Colors.grey,
+                      ),
                     ],
                   );
-                }))));
+                }).toList(),
+              ),
+              const SizedBox(height: 20),
+              MyForm.checkbox(
+                  'Have the right to work in the UK', model.canWorkInUK,
+                  (value) {
+                model.setCanWorkInUK(value);
+              }),
+              MyForm.checkbox(
+                  'Do not have any criminal offences which are currently unspent under the Rehabilitation of Offenders Act 1974',
+                  model.notHaveCriminalOffence, (value) {
+                model.setNotHaveCriminalOffence(value);
+              }),
+              MyForm.checkbox(
+                  'Agree to the Maison Mate, Terms of Use, Commercial Terms and Code of Conduct, and that you will follow the processes set out within them',
+                  model.agree, (value) {
+                model.setAgree(value);
+              }),
+              const SizedBox(height: 20),
+              MyForm.submitButton("Finish", () {}),
+              const SizedBox(height: 50),
+            ],
+          );
+        }))));
   }
 
   Icon getIcon(String status, Color color) {
     switch (status) {
       case 'Completed':
-        return Icon(Icons.check_circle, color: color);
+        return Icon(Icons.verified, color: color);
       case 'Incomplete':
         return Icon(Icons.edit_note, color: color);
       case 'Failed':

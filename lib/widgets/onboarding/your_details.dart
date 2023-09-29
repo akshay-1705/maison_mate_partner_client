@@ -156,12 +156,9 @@ class _YourDetailsSectionState extends State<YourDetailsSection> {
                           firstNameController,
                           lastNameController,
                         ),
-                        MyForm.inlineRequiredTextFields(
-                          "Phone Number",
-                          "Email",
-                          phoneNumberController,
-                          emailController,
-                        ),
+                        MyForm.requiredTextField(
+                            "Phone Number", phoneNumberController),
+                        MyForm.requiredTextField("Email", emailController),
                         const SizedBox(height: 12.0),
                         MyForm.formFieldHeader(
                             'Which postcodes or towns do you cover?*'),
