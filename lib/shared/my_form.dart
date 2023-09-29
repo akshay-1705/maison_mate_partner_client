@@ -306,16 +306,15 @@ class MyForm {
     );
   }
 
-  static Widget checkbox(String textLabel, bool value) {
+  static Widget checkbox(
+      String textLabel, bool value, CheckboxCallback callback) {
     return CheckboxListTile(
       title: Text(textLabel, style: const TextStyle(fontSize: 12)),
       value: value,
       controlAffinity: ListTileControlAffinity.leading,
       visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
-      onChanged: (newValue) {
-        // setState(() {
-        //   // checkbox3Value = newValue!;
-        // });
+      onChanged: (value) {
+        callback(value!);
       },
     );
   }
@@ -371,3 +370,4 @@ class MyForm {
 typedef RadioButtonCallback = void Function(String);
 typedef MultiSelectFieldCallback = void Function(List<dynamic>);
 typedef SubmitButtonCallback = void Function();
+typedef CheckboxCallback = void Function(bool);
