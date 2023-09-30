@@ -1,10 +1,12 @@
 // import 'dart:convert';
 // import 'dart:io';
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-// import 'package:maison_mate/constants.dart';
+import 'package:maison_mate/constants.dart';
 import 'package:maison_mate/network/client/get_client.dart';
-import 'package:maison_mate/network/client/post_client.dart';
+import 'package:maison_mate/network/client/put_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/provider/documentation/profile_picture_model.dart';
 import 'package:maison_mate/shared/custom_app_bar.dart';
@@ -24,28 +26,28 @@ class _ProfilePictureState extends State<ProfilePicture> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   Future<ApiResponse>? futureData;
   late Future<ApiResponse> getFutureData;
-  // static const String apiUrl =
-  //     '$baseApiUrl/partners/onboarding/profile_picture';
+  static const String apiUrl =
+      '$baseApiUrl/partners/onboarding/profile_picture';
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   getFutureData = GetClient.fetchData(apiUrl);
-  //   // var model = Provider.of<ProfilePictureModel>(context, listen: false);
-  //   getFutureData.then((apiResponse) async {
-  //     if (mounted) {
-  //       if (apiResponse.data.profile_picture.isNotEmpty) {
-  //         var profilePicture = apiResponse.data.profile_picture;
-  //         var filename = apiResponse.data.file_name;
-  //         final imageBytes = base64Decode(profilePicture);
-  //         final tempDir = await getTemporaryDirectory();
-  //         final tempFile = File('${tempDir.path}/$filename');
-  //         await tempFile.writeAsBytes(imageBytes);
-  //         // model.setSelectedFile(tempFile);
-  //       }
-  //     }
-  //   });
-  // }
+  @override
+  void initState() {
+    super.initState();
+    getFutureData = GetClient.fetchData(apiUrl);
+    // var model = Provider.of<ProfilePictureModel>(context, listen: false);
+    // getFutureData.then((apiResponse) async {
+    //   if (mounted) {
+    //     if (apiResponse.data.profile_picture.isNotEmpty) {
+    //       var profilePicture = apiResponse.data.profile_picture;
+    //       var filename = apiResponse.data.file_name;
+    //       final imageBytes = base64Decode(profilePicture);
+    //       final tempDir = await getTemporaryDirectory();
+    //       final tempFile = File('${tempDir.path}/$filename');
+    //       await tempFile.writeAsBytes(imageBytes);
+    //       // model.setSelectedFile(tempFile);
+    //     }
+    //   }
+    // });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +90,7 @@ class _ProfilePictureState extends State<ProfilePicture> {
                     MyForm.uploadImageSection(model),
                     const SizedBox(height: 20),
                     (futureData != null)
-                        ? PostClient.futureBuilder(
+                        ? PutClient.futureBuilder(
                             model,
                             futureData!,
                             "Submit",
@@ -116,11 +118,10 @@ class _ProfilePictureState extends State<ProfilePicture> {
             .getSnackbar());
       } else {
         model.setIsSubmitting(true);
-        var formData = {
-          'file': model.selectedFile,
-        };
-        // TODO: Update URL
-        futureData = PostClient.request('', formData, model, (response) {});
+        List<File?>? fileList = [model.selectedFile];
+
+        futureData = PutClient.request(apiUrl, {}, model, (response) {},
+            imageFiles: fileList, imageFieldName: 'profile_picture');
       }
     }
   }

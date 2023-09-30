@@ -273,11 +273,6 @@ class MyForm {
   static Widget uploadImageSection(dynamic model) {
     return Column(children: [
       uploadImageButton(model),
-      if (model.fileName.isNotEmpty)
-        Container(
-            padding: const EdgeInsets.only(left: 10),
-            alignment: Alignment.centerLeft,
-            child: Text(model.fileName)),
       if (model.selectedFile != null) // Check if an image is selected
         Container(
           padding: const EdgeInsets.all(10),
