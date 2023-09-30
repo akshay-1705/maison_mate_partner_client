@@ -16,7 +16,7 @@ class HomeWidget extends StatefulWidget {
 
 class _HomeWidgetState extends State<HomeWidget> {
   late Future<ApiResponse> futureData;
-  static const String apiUrl = '$baseApiUrl/partners/onboarding_status';
+  static const String apiUrl = '$baseApiUrl/partners/onboarding/status';
 
   @override
   void initState() {

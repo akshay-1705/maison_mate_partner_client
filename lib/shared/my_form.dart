@@ -277,7 +277,18 @@ class MyForm {
         Container(
             padding: const EdgeInsets.only(left: 10),
             alignment: Alignment.centerLeft,
-            child: Text(model.fileName))
+            child: Text(model.fileName)),
+      if (model.selectedFile != null) // Check if an image is selected
+        Container(
+          padding: const EdgeInsets.all(10),
+          alignment: Alignment.topLeft,
+          child: Image.file(
+            model.selectedFile!, // Display the selected image
+            width: 100, // Set the width of the image preview container
+            height: 100, // Set the height of the image preview container
+            fit: BoxFit.cover, // Adjust the image fit as needed
+          ),
+        ),
     ]);
   }
 
@@ -359,7 +370,7 @@ class MyForm {
             );
             if (pickedDate != null && pickedDate != DateTime.now()) {
               controller.text = pickedDate.toString();
-              model.epochString = pickedDate.millisecondsSinceEpoch.toString();
+              model.epochString = pickedDate.millisecondsSinceEpoch.toInt();
             }
           },
         ),
