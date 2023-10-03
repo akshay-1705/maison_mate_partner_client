@@ -1,9 +1,9 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:maison_mate/network/response/banking_response.dart';
-import 'package:maison_mate/network/response/employees_response.dart';
-import 'package:maison_mate/network/response/health_and_safety_response.dart';
+import 'package:maison_mate/network/response/documentation/banking_response.dart';
+import 'package:maison_mate/network/response/documentation/employees_response.dart';
+import 'package:maison_mate/network/response/documentation/health_and_safety_response.dart';
 import 'package:maison_mate/network/response/image_response.dart';
-import 'package:maison_mate/network/response/insurance_response.dart';
+import 'package:maison_mate/network/response/documentation/insurance_response.dart';
 import 'package:maison_mate/network/response/onboarding_status_response.dart';
 import 'package:maison_mate/network/response/sign_in_response.dart';
 import 'package:maison_mate/network/response/your_details_response.dart';
