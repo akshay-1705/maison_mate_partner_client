@@ -34,15 +34,16 @@ class _InsuranceState extends State<Insurance> {
     getFutureData.then((apiResponse) {
       if (mounted) {
         var stateModel = Provider.of<InsuranceModel>(context, listen: false);
-        stateModel.epochString = apiResponse.data.expiryDate.toString();
+
         if (apiResponse.data.expiryDate == null) {
-          stateModel.epochString = DateTime.now().toString();
+          stateModel.epochString =
+              DateTime.now().millisecondsSinceEpoch.toString();
         } else {
           stateModel.epochString = apiResponse.data.expiryDate.toString();
+          insuranceExpiryDateController.text =
+              DateTime.fromMillisecondsSinceEpoch(apiResponse.data.expiryDate)
+                  .toString();
         }
-        insuranceExpiryDateController.text =
-            DateTime.fromMillisecondsSinceEpoch(apiResponse.data.expiryDate)
-                .toString();
 
         stateModel.minimum2MillionInsurancePresent =
             apiResponse.data.twoMillionInsurance == true ? 'Yes' : 'No';
@@ -78,71 +79,68 @@ class _InsuranceState extends State<Insurance> {
           onTap: () {
             FocusScope.of(context).unfocus();
           },
-          child: Consumer<InsuranceModel>(builder: (context, banking, child) {
-            final InsuranceModel model = Provider.of<InsuranceModel>(context);
-            return Form(
-                key: _formKey,
-                child: AbsorbPointer(
-                  absorbing: model.isSubmitting,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      const SizedBox(height: 10),
+          child: Form(
+              key: _formKey,
+              child: AbsorbPointer(
+                absorbing: model.isSubmitting,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const SizedBox(height: 10),
+                    MyForm.formFieldHeader(
+                        'Do you have the minimum of a £2 million Public Liability insurance?*',
+                        model.minimum2MillionInsurancePresentColor),
+                    MyForm.buildRadioButtons(
+                        ['Yes', 'No'], model.minimum2MillionInsurancePresent,
+                        (value) {
+                      model.setMinimum2MillionInsurancePresentColor(
+                          Colors.black);
+                      model.setMinimum2MillionInsurancePresent(value);
+                    }),
+                    if (model.minimum2MillionInsurancePresent == 'No') ...[
                       MyForm.formFieldHeader(
-                          'Do you have the minimum of a £2 million Public Liability insurance?*',
-                          model.minimum2MillionInsurancePresentColor),
+                          'Do you have the minimum of a £1 million Public Liability insurance?*',
+                          model.minimum1MillionInsurancePresentColor),
                       MyForm.buildRadioButtons(
-                          ['Yes', 'No'], model.minimum2MillionInsurancePresent,
+                          ['Yes'], model.minimum1MillionInsurancePresent,
                           (value) {
-                        model.setMinimum2MillionInsurancePresentColor(
+                        model.setMinimum1MillionInsurancePresentColor(
                             Colors.black);
-                        model.setMinimum2MillionInsurancePresent(value);
+                        model.setMinimum1MillionInsurancePresent(value);
                       }),
-                      if (model.minimum2MillionInsurancePresent == 'No') ...[
-                        MyForm.formFieldHeader(
-                            'Do you have the minimum of a £1 million Public Liability insurance?*',
-                            model.minimum1MillionInsurancePresentColor),
-                        MyForm.buildRadioButtons(
-                            ['Yes'], model.minimum1MillionInsurancePresent,
-                            (value) {
-                          model.setMinimum1MillionInsurancePresentColor(
-                              Colors.black);
-                          model.setMinimum1MillionInsurancePresent(value);
-                        }),
-                      ],
-                      MyForm.formFieldHeader(
-                          'When does Public Liability insurance expire?*'),
-                      MyForm.datePickerFormField(
-                          'DD/MM/YYYY',
-                          insuranceExpiryDateController,
-                          context,
-                          model,
-                          DateTime.fromMillisecondsSinceEpoch(
-                              int.parse(model.epochString))),
-                      MyForm.formFieldHeader(
-                          'Attach a copy of your public liability insurance. Please make sure the company name, limit of insurance, and expiry date are all visible.*'),
-                      MyForm.uploadImageSection(model),
-                      const SizedBox(height: 20),
-                      (futureData != null)
-                          ? PutClient.futureBuilder(
-                              model,
-                              futureData!,
-                              "Submit",
-                              () async {
-                                onSubmitCallback(model);
-                              },
-                              () {
-                                Navigator.of(context).pop();
-                              },
-                            )
-                          : MyForm.submitButton("Submit", () async {
-                              onSubmitCallback(model);
-                            }),
-                      const SizedBox(height: 40),
                     ],
-                  ),
-                ));
-          }),
+                    MyForm.formFieldHeader(
+                        'When does Public Liability insurance expire?*'),
+                    MyForm.datePickerFormField(
+                        'DD/MM/YYYY',
+                        insuranceExpiryDateController,
+                        context,
+                        model,
+                        DateTime.fromMillisecondsSinceEpoch(
+                            int.parse(model.epochString))),
+                    MyForm.formFieldHeader(
+                        'Attach a copy of your public liability insurance. Please make sure the company name, limit of insurance, and expiry date are all visible.*'),
+                    MyForm.uploadImageSection(model),
+                    const SizedBox(height: 20),
+                    (futureData != null)
+                        ? PutClient.futureBuilder(
+                            model,
+                            futureData!,
+                            "Submit",
+                            () async {
+                              onSubmitCallback(model);
+                            },
+                            () {
+                              Navigator.of(context).pop();
+                            },
+                          )
+                        : MyForm.submitButton("Submit", () async {
+                            onSubmitCallback(model);
+                          }),
+                    const SizedBox(height: 40),
+                  ],
+                ),
+              )),
         ),
       ),
     );
@@ -155,7 +153,7 @@ class _InsuranceState extends State<Insurance> {
           MySnackBar(message: 'Insurance is required', error: true)
               .getSnackbar());
     } else if (model.minimum2MillionInsurancePresent == 'No' &&
-        model.minimum1MillionInsurancePresent == '') {
+        model.minimum1MillionInsurancePresent == 'No') {
       model.setMinimum1MillionInsurancePresentColor(Colors.red);
       ScaffoldMessenger.of(context).showSnackBar(
           MySnackBar(message: 'Insurance is required', error: true)
