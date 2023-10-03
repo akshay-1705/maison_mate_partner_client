@@ -10,7 +10,6 @@ import 'package:maison_mate/widgets/onboarding/documentation/insurance.dart';
 import 'package:maison_mate/widgets/onboarding/documentation/profile_picture.dart';
 import 'package:provider/provider.dart';
 // import 'package:maison_mate/widgets/onboarding/documentation/platform_rules_acceptance.dart';
-// import 'package:maison_mate/widgets/onboarding/documentation/profile_picture.dart';
 // import 'package:maison_mate/widgets/onboarding/documentation/selected_services.dart';
 
 class Documentation extends StatefulWidget {

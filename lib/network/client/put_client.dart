@@ -56,11 +56,8 @@ class PutClient {
       final streamedResponse = await request.send();
       final response = await http.Response.fromStream(streamedResponse);
 
-      print(response.body);
       final Map<String, dynamic> data = json.decode(response.body);
-      print(data);
       ApiResponse<T> apiResponse = ApiResponse.fromJson(data);
-      print('here1');
 
       if (apiResponse.success) {
         apiSpecificTask(apiResponse);
@@ -68,7 +65,6 @@ class PutClient {
       model.setIsSubmitting(false);
       return apiResponse;
     } catch (e) {
-      print(e);
       model.setIsSubmitting(false);
       throw (somethingWentWrong);
     }
@@ -79,7 +75,7 @@ class PutClient {
     Future<ApiResponse> putFutureData,
     String buttonText,
     VoidCallback buttonAction,
-    VoidCallback onNavigation, // Generic navigation function
+    VoidCallback onNavigation,
   ) {
     return FutureBuilder<ApiResponse>(
       future: putFutureData,
@@ -106,6 +102,9 @@ class PutClient {
             snapshot.connectionState == ConnectionState.done) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             onNavigation();
+            ScaffoldMessenger.of(context).showSnackBar(
+                MySnackBar(message: "Updated successfully", error: false)
+                    .getSnackbar());
           });
           return MyForm.submitButton(buttonText, buttonAction);
         }

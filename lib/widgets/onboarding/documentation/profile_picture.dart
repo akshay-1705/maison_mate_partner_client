@@ -1,6 +1,3 @@
-// import 'dart:convert';
-// import 'dart:io';
-
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -10,10 +7,10 @@ import 'package:maison_mate/network/client/put_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/provider/documentation/profile_picture_model.dart';
 import 'package:maison_mate/shared/custom_app_bar.dart';
+import 'package:maison_mate/shared/image_helper.dart';
 import 'package:maison_mate/shared/my_form.dart';
 import 'package:maison_mate/shared/my_snackbar.dart';
 import 'package:provider/provider.dart';
-// import 'package:path_provider/path_provider.dart';
 
 class ProfilePicture extends StatefulWidget {
   const ProfilePicture({Key? key}) : super(key: key);
@@ -33,38 +30,30 @@ class _ProfilePictureState extends State<ProfilePicture> {
   void initState() {
     super.initState();
     getFutureData = GetClient.fetchData(apiUrl);
-    // var model = Provider.of<ProfilePictureModel>(context, listen: false);
-    // getFutureData.then((apiResponse) async {
-    //   if (mounted) {
-    //     if (apiResponse.data.profile_picture.isNotEmpty) {
-    //       var profilePicture = apiResponse.data.profile_picture;
-    //       var filename = apiResponse.data.file_name;
-    //       final imageBytes = base64Decode(profilePicture);
-    //       final tempDir = await getTemporaryDirectory();
-    //       final tempFile = File('${tempDir.path}/$filename');
-    //       await tempFile.writeAsBytes(imageBytes);
-    //       // model.setSelectedFile(tempFile);
-    //     }
-    //   }
-    // });
+    getFutureData.then((apiResponse) {
+      if (mounted) {
+        var stateModel =
+            Provider.of<ProfilePictureModel>(context, listen: false);
+        ImageHelper.initialize(apiResponse.data, stateModel, context);
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-        create: (context) => ProfilePictureModel(),
-        child: Scaffold(
-            appBar: CustomAppBar.show(
-                context, "Profile picture", const Icon(Icons.arrow_back)),
-            body: GetRequestFutureBuilder<dynamic>(
-              future: getFutureData,
-              builder: (context, data) {
-                return renderForm(context);
-              },
-            )));
+    final ProfilePictureModel model = Provider.of<ProfilePictureModel>(context);
+    return Scaffold(
+        appBar: CustomAppBar.show(
+            context, "Profile picture", const Icon(Icons.arrow_back)),
+        body: GetRequestFutureBuilder<dynamic>(
+          future: getFutureData,
+          builder: (context, data) {
+            return renderForm(context, data, model);
+          },
+        ));
   }
 
-  WillPopScope renderForm(BuildContext context) {
+  Widget renderForm(BuildContext context, data, ProfilePictureModel model) {
     return WillPopScope(
       onWillPop: () async {
         return Future.value(false);
@@ -75,37 +64,38 @@ class _ProfilePictureState extends State<ProfilePicture> {
         },
         child: SingleChildScrollView(
             padding: const EdgeInsets.all(5.0),
-            child: Consumer<ProfilePictureModel>(
-                builder: (context, banking, child) {
-              final ProfilePictureModel model =
-                  Provider.of<ProfilePictureModel>(context);
-              return Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const SizedBox(height: 10),
-                    MyForm.formFieldHeader(
-                        'Attach a professional picture of yourself. No selfies or group photos; this is the photo customers will see when you book a job.*'),
-                    MyForm.uploadImageSection(model),
-                    const SizedBox(height: 20),
-                    (futureData != null)
-                        ? PutClient.futureBuilder(
-                            model,
-                            futureData!,
-                            "Submit",
-                            () async {
+            child:
+                // setImage(data, model);
+                Form(
+              key: _formKey,
+              child: AbsorbPointer(
+                  absorbing: model.isSubmitting,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const SizedBox(height: 10),
+                      MyForm.formFieldHeader(
+                          'Attach a professional picture of yourself. No selfies or group photos; this is the photo customers will see when you book a job.*'),
+                      MyForm.uploadImageSection(model),
+                      const SizedBox(height: 20),
+                      (futureData != null)
+                          ? PutClient.futureBuilder(
+                              model,
+                              futureData!,
+                              "Submit",
+                              () async {
+                                onSubmitCallback(model);
+                              },
+                              () {
+                                Navigator.of(context).pop();
+                              },
+                            )
+                          : MyForm.submitButton("Submit", () async {
                               onSubmitCallback(model);
-                            },
-                            () {},
-                          )
-                        : MyForm.submitButton("Submit", () async {
-                            onSubmitCallback(model);
-                          }),
-                  ],
-                ),
-              );
-            })),
+                            }),
+                    ],
+                  )),
+            )),
       ),
     );
   }
