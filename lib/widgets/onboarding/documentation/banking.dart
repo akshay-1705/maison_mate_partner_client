@@ -48,81 +48,86 @@ class _BankingState extends State<Banking> {
   Widget build(BuildContext context) {
     final BankingModel model = Provider.of<BankingModel>(context);
     return Scaffold(
-      appBar:
-          CustomAppBar.show(context, "Banking", const Icon(Icons.arrow_back)),
-      body: WillPopScope(
-        onWillPop: () async {
-          return Future.value(false);
-        },
-        child: GestureDetector(
-          onTap: () {
-            FocusScope.of(context).unfocus();
+        appBar:
+            CustomAppBar.show(context, "Banking", const Icon(Icons.arrow_back)),
+        body: GetRequestFutureBuilder<dynamic>(
+          future: getFutureData,
+          builder: (context, data) {
+            return renderForm(context, model);
           },
-          child: SingleChildScrollView(
-              padding: const EdgeInsets.all(5.0),
-              child: Form(
-                key: _formKey,
-                child: AbsorbPointer(
-                    absorbing: model.isSubmitting,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        const SizedBox(height: 10),
-                        MyForm.formFieldHeader('Bank Details'),
-                        MyForm.inlineRequiredTextFields(
-                            'Bank Name*',
-                            'Sort code*',
-                            bankNameController,
-                            sortCodeController,
-                            TextInputType.text,
-                            TextInputType.number),
-                        MyForm.requiredTextField(
-                            "Account Number*",
-                            accountNumberController,
-                            false,
-                            TextInputType.number),
-                        const SizedBox(height: 25),
-                        MyForm.formFieldHeader(
-                          'Attach a photo of your bank proof. This can include any of the following*:',
+        ));
+  }
+
+  WillPopScope renderForm(BuildContext context, BankingModel model) {
+    return WillPopScope(
+      onWillPop: () async {
+        return Future.value(false);
+      },
+      child: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: SingleChildScrollView(
+            padding: const EdgeInsets.all(5.0),
+            child: Form(
+              key: _formKey,
+              child: AbsorbPointer(
+                  absorbing: model.isSubmitting,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const SizedBox(height: 10),
+                      MyForm.formFieldHeader('Bank Details'),
+                      MyForm.inlineRequiredTextFields(
+                          'Bank Name*',
+                          'Sort code*',
+                          bankNameController,
+                          sortCodeController,
+                          TextInputType.text,
+                          TextInputType.number),
+                      MyForm.requiredTextField("Account Number*",
+                          accountNumberController, false, TextInputType.number),
+                      const SizedBox(height: 25),
+                      MyForm.formFieldHeader(
+                        'Attach a photo of your bank proof. This can include any of the following*:',
+                      ),
+                      const SizedBox(height: 10),
+                      Container(
+                        padding: const EdgeInsets.only(left: 20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            MyForm.buildBulletPoint(
+                                'Top-half of bank statement'),
+                            const SizedBox(height: 10),
+                            MyForm.buildBulletPoint('Paying-in slip'),
+                            const SizedBox(height: 10),
+                            MyForm.buildBulletPoint(
+                                'Screenshot of mobile banking'),
+                          ],
                         ),
-                        const SizedBox(height: 10),
-                        Container(
-                          padding: const EdgeInsets.only(left: 20),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              MyForm.buildBulletPoint(
-                                  'Top-half of bank statement'),
-                              const SizedBox(height: 10),
-                              MyForm.buildBulletPoint('Paying-in slip'),
-                              const SizedBox(height: 10),
-                              MyForm.buildBulletPoint(
-                                  'Screenshot of mobile banking'),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        MyForm.uploadImageSection(model),
-                        const SizedBox(height: 20),
-                        (futureData != null)
-                            ? PutClient.futureBuilder(
-                                model,
-                                futureData!,
-                                "Submit",
-                                () async {
-                                  onSubmitCallback(model);
-                                },
-                                () {
-                                  Navigator.of(context).pop();
-                                },
-                              )
-                            : MyForm.submitButton("Submit", () async {
+                      ),
+                      const SizedBox(height: 20),
+                      MyForm.uploadImageSection(model),
+                      const SizedBox(height: 20),
+                      (futureData != null)
+                          ? PutClient.futureBuilder(
+                              model,
+                              futureData!,
+                              "Submit",
+                              () async {
                                 onSubmitCallback(model);
-                              }),
-                      ],
-                    )),
-              )),
-        ),
+                              },
+                              () {
+                                Navigator.of(context).pop();
+                              },
+                            )
+                          : MyForm.submitButton("Submit", () async {
+                              onSubmitCallback(model);
+                            }),
+                    ],
+                  )),
+            )),
       ),
     );
   }

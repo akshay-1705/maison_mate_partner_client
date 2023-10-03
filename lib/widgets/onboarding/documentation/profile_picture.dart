@@ -48,12 +48,12 @@ class _ProfilePictureState extends State<ProfilePicture> {
         body: GetRequestFutureBuilder<dynamic>(
           future: getFutureData,
           builder: (context, data) {
-            return renderForm(context, data, model);
+            return renderForm(context, model);
           },
         ));
   }
 
-  Widget renderForm(BuildContext context, data, ProfilePictureModel model) {
+  Widget renderForm(BuildContext context, ProfilePictureModel model) {
     return WillPopScope(
       onWillPop: () async {
         return Future.value(false);
@@ -64,9 +64,7 @@ class _ProfilePictureState extends State<ProfilePicture> {
         },
         child: SingleChildScrollView(
             padding: const EdgeInsets.all(5.0),
-            child:
-                // setImage(data, model);
-                Form(
+            child: Form(
               key: _formKey,
               child: AbsorbPointer(
                   absorbing: model.isSubmitting,
