@@ -67,8 +67,12 @@ class _EmployeesState extends State<Employees> {
                           }),
                           MyForm.formFieldHeader(
                               "When does your employers' liability insurance expire?*"),
-                          MyForm.datePickerFormField('DD/MM/YYYY',
-                              insuranceExpiryDateController, context, model),
+                          MyForm.datePickerFormField(
+                              'DD/MM/YYYY',
+                              insuranceExpiryDateController,
+                              context,
+                              model,
+                              insuranceExpiryDateController.text as DateTime),
                           MyForm.formFieldHeader(
                               'Attach a copy of your public liability insurance. Please make sure the company name, limit of insurance, and expiry date are all visible.*'),
                           MyForm.uploadImageSection(model),

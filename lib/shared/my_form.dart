@@ -326,8 +326,12 @@ class MyForm {
     );
   }
 
-  static Widget datePickerFormField(String label,
-      TextEditingController controller, BuildContext context, dynamic model) {
+  static Widget datePickerFormField(
+      String label,
+      TextEditingController controller,
+      BuildContext context,
+      dynamic model,
+      DateTime initialDate) {
     return Opacity(
       opacity: 0.5,
       child: Container(
@@ -345,7 +349,7 @@ class MyForm {
           onTap: () async {
             final DateTime? pickedDate = await showDatePicker(
               context: context,
-              initialDate: DateTime.now(),
+              initialDate: initialDate,
               firstDate: DateTime.now(),
               lastDate: DateTime(2101),
               builder: (BuildContext context, Widget? child) {
@@ -365,7 +369,7 @@ class MyForm {
             );
             if (pickedDate != null && pickedDate != DateTime.now()) {
               controller.text = pickedDate.toString();
-              model.epochString = pickedDate.millisecondsSinceEpoch.toInt();
+              model.epochString = pickedDate.millisecondsSinceEpoch.toString();
             }
           },
         ),

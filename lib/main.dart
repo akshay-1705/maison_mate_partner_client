@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:maison_mate/provider/documentation/banking_model.dart';
+import 'package:maison_mate/provider/documentation/insurance_model.dart';
 import 'package:maison_mate/provider/documentation/profile_picture_model.dart';
 import 'package:maison_mate/widgets/auth/sign_in.dart';
 import 'package:maison_mate/widgets/home.dart';
@@ -34,6 +35,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (_) => ForgotPasswordModel()),
           ChangeNotifierProvider(create: (_) => ProfilePictureModel()),
           ChangeNotifierProvider(create: (_) => BankingModel()),
+          ChangeNotifierProvider(create: (_) => InsuranceModel()),
         ],
         child: MaterialApp(
           title: _title,

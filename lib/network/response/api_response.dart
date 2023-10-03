@@ -1,6 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:maison_mate/network/response/banking_response.dart';
 import 'package:maison_mate/network/response/image_response.dart';
+import 'package:maison_mate/network/response/insurance_response.dart';
 import 'package:maison_mate/network/response/onboarding_status_response.dart';
 import 'package:maison_mate/network/response/sign_in_response.dart';
 import 'package:maison_mate/network/response/your_details_response.dart';
@@ -41,6 +42,9 @@ class _Converter<T> implements JsonConverter<T, Object> {
     } else if (map.containsKey('account_number') &&
         map.containsKey('sort_code')) {
       return BankingResponse.fromJson(map) as T;
+    } else if (map.containsKey('two_million_insurance') &&
+        map.containsKey('one_million_insurance')) {
+      return InsuranceResponse.fromJson(map) as T;
     } else if (map.containsKey('image_url') && map.containsKey('image_name')) {
       return ImageResponse.fromJson(map) as T;
     } else {
