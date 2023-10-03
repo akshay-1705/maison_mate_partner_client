@@ -14,7 +14,19 @@ class MyForm {
         child: Text(
           label,
           style: TextStyle(
-              fontSize: 17.0, fontWeight: FontWeight.w500, color: color),
+              fontSize: 15.0, fontWeight: FontWeight.w500, color: color),
+        ));
+  }
+
+  static Container header(String label, [Color? color]) {
+    color ??= Colors.black;
+    return Container(
+        padding: const EdgeInsets.only(left: 10, top: 18, bottom: 18),
+        alignment: Alignment.bottomLeft,
+        child: Text(
+          label,
+          style: TextStyle(
+              fontSize: 19.0, fontWeight: FontWeight.w500, color: color),
         ));
   }
 
