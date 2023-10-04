@@ -3,13 +3,12 @@ import 'package:maison_mate/constants.dart';
 import 'package:maison_mate/network/client/get_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/provider/documentation_model.dart';
-// import 'package:maison_mate/provider/onboarding_model.dart';
 import 'package:maison_mate/shared/my_form.dart';
 import 'package:maison_mate/widgets/onboarding/documentation/banking.dart';
-// import 'package:maison_mate/widgets/onboarding/documentation/company_owner_identification.dart';
 import 'package:maison_mate/widgets/onboarding/documentation/employees.dart';
 import 'package:maison_mate/widgets/onboarding/documentation/health_and_safety.dart';
 import 'package:maison_mate/widgets/onboarding/documentation/insurance.dart';
+import 'package:maison_mate/widgets/onboarding/documentation/owner_identification.dart';
 import 'package:maison_mate/widgets/onboarding/documentation/profile_picture.dart';
 import 'package:provider/provider.dart';
 
@@ -53,10 +52,10 @@ class _DocumentationState extends State<Documentation> {
           title: 'Insurance',
           page: const Insurance(),
           status: data.status.insurance),
-      // DocumentationPart(
-      //     title: 'Company owner identification',
-      //     page: const CompanyOwnerIdentification(),
-      //     status: data.status.ownerIdentification),
+      DocumentationPart(
+          title: 'Owner identification',
+          page: const OwnerIdentification(),
+          status: data.status.ownerIdentification),
       DocumentationPart(
           title: 'Employees',
           page: const Employees(),

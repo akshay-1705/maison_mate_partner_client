@@ -1,23 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:maison_mate/shared/custom_app_bar.dart';
 
-class CompanyOwnerIdentification extends StatefulWidget {
-  const CompanyOwnerIdentification({Key? key}) : super(key: key);
+class OwnerIdentification extends StatefulWidget {
+  const OwnerIdentification({Key? key}) : super(key: key);
 
   @override
-  State<CompanyOwnerIdentification> createState() =>
-      _CompanyOwnerIdentificationState();
+  State<OwnerIdentification> createState() => _OwnerIdentificationState();
 }
 
-class _CompanyOwnerIdentificationState
-    extends State<CompanyOwnerIdentification> {
+class _OwnerIdentificationState extends State<OwnerIdentification> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar.show(context, "Company owner identification",
-          const Icon(Icons.arrow_back)),
+      appBar: CustomAppBar.show(
+          context, "Owner identification", const Icon(Icons.arrow_back)),
       body: WillPopScope(
         onWillPop: () async {
           return Future.value(false);
