@@ -7,7 +7,10 @@ class OnboardingStatusResponse {
   @JsonKey(name: "your_details_section", required: true, defaultValue: false)
   final bool? yourDetailsSection;
 
-  OnboardingStatusResponse(this.yourDetailsSection);
+  @JsonKey(required: true, defaultValue: false)
+  final bool? documentation;
+
+  OnboardingStatusResponse(this.yourDetailsSection, this.documentation);
 
   factory OnboardingStatusResponse.fromJson(Map<String, dynamic> json) =>
       _$OnboardingStatusResponseFromJson(json);

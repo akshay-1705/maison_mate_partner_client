@@ -34,13 +34,53 @@ class _HomeWidgetState extends State<HomeWidget> {
               child: Column(
             children: [
               header(),
-              completeOnboarding(data.yourDetailsSection),
+              if (data.documentation == true) ...[
+                const SizedBox(height: 110),
+                onboardingComplete(),
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  alignment: Alignment.center,
+                  child: const Text(
+                    'Your submitted documents are being analysed by our officials',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    textAlign: TextAlign.center, // Align text to center
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  alignment: Alignment.center,
+                  child: const Text(
+                    'we will update you once the acceptance process completes',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w300,
+                    ),
+                    textAlign: TextAlign.center, // Align text to center
+                  ),
+                )
+              ] else ...[
+                completeOnboarding(data.yourDetailsSection)
+              ],
             ],
           )),
-          bottomNavigationBar: bottomNavigation(),
+          // bottomNavigationBar: bottomNavigation(),
         );
       },
     );
+  }
+
+  Widget onboardingComplete() {
+    return Container(
+        padding: const EdgeInsets.all(10),
+        alignment: Alignment.center,
+        child: Image.asset(
+          'assets/analysing_documents.jpg',
+          width: 250,
+          height: 250,
+        ));
   }
 
   BottomNavigationBar bottomNavigation() {
@@ -160,12 +200,11 @@ class Account extends StatelessWidget {
         bool confirm = await CustomAppBar.showConfirmationDialog(
             context, "Are you sure you want to Logout?");
         if (confirm) {
-          await storage.delete(key: authTokenKey);
-          if (!context.mounted) {
-            return;
-          }
-          Navigator.pushReplacement(context,
-              MaterialPageRoute(builder: (context) => const SignInWidget()));
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            storage.delete(key: authTokenKey);
+            Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (context) => const SignInWidget()));
+          });
         }
       },
     );
