@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:maison_mate/provider/onboarding_model.dart';
 import 'package:maison_mate/shared/custom_app_bar.dart';
-import 'package:maison_mate/widgets/home.dart';
 import 'package:maison_mate/widgets/onboarding/documentation.dart';
 import 'package:maison_mate/widgets/onboarding/your_details.dart';
 import 'package:maison_mate/constants.dart';
@@ -37,15 +36,7 @@ class _OnboardingWidgetState extends State<OnboardingWidget> {
                 },
                 child: Scaffold(
                   appBar: CustomAppBar.show(
-                      context, "Onboarding", const Icon(Icons.home_rounded),
-                      () {
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (context) => const HomeWidget()),
-                      );
-                    });
-                  }),
+                      context, "Onboarding", const Icon(Icons.home_rounded)),
                   body: buildBody(),
                 ))));
   }
