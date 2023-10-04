@@ -126,6 +126,7 @@ class _BankingState extends State<Banking> {
                                           const OnboardingWidget(
                                               yourDetailsSection: true)),
                                 );
+                                Navigator.of(context).pop();
                               },
                             )
                           : MyForm.submitButton("Submit", () async {

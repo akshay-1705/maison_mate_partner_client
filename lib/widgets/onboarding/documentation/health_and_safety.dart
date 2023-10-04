@@ -177,6 +177,7 @@ class _HealthAndSafetyState extends State<HealthAndSafety> {
                                           const OnboardingWidget(
                                               yourDetailsSection: true)),
                                 );
+                                Navigator.of(context).pop();
                               },
                             )
                           : MyForm.submitButton("Submit", () async {

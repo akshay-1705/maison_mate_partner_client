@@ -138,6 +138,7 @@ class _InsuranceState extends State<Insurance> {
                                         const OnboardingWidget(
                                             yourDetailsSection: true)),
                               );
+                              Navigator.of(context).pop();
                             },
                           )
                         : MyForm.submitButton("Submit", () async {

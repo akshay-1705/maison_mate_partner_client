@@ -92,6 +92,7 @@ class _ProfilePictureState extends State<ProfilePicture> {
                                           const OnboardingWidget(
                                               yourDetailsSection: true)),
                                 );
+                                Navigator.of(context).pop();
                               },
                             )
                           : MyForm.submitButton("Submit", () async {

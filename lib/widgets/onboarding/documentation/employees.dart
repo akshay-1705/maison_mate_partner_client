@@ -137,6 +137,7 @@ class _EmployeesState extends State<Employees> {
                                           const OnboardingWidget(
                                               yourDetailsSection: true)),
                                 );
+                                Navigator.of(context).pop();
                               },
                             )
                           : MyForm.submitButton("Submit", () async {
