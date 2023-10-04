@@ -13,7 +13,8 @@ class CustomAppBar {
         icon: icon,
         color: const Color(secondaryColor),
         onPressed: () async {
-          bool confirm = await showConfirmationDialog(context, title);
+          bool confirm = await showConfirmationDialog(
+              context, "Are you sure you want to leave this page?");
           if (confirm) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               Navigator.of(context).pop();
