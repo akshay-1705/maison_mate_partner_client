@@ -6,6 +6,7 @@ import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/provider/documentation/health_and_safety_model.dart';
 import 'package:maison_mate/shared/custom_app_bar.dart';
 import 'package:maison_mate/shared/my_form.dart';
+import 'package:maison_mate/widgets/onboarding/onboarding.dart';
 import 'package:provider/provider.dart';
 
 class HealthAndSafety extends StatefulWidget {
@@ -170,7 +171,12 @@ class _HealthAndSafetyState extends State<HealthAndSafety> {
                                 onSubmitCallback(model);
                               },
                               () {
-                                Navigator.of(context).pop();
+                                Navigator.of(context).pushReplacement(
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const OnboardingWidget(
+                                              yourDetailsSection: true)),
+                                );
                               },
                             )
                           : MyForm.submitButton("Submit", () async {

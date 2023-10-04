@@ -10,6 +10,7 @@ import 'package:maison_mate/shared/custom_app_bar.dart';
 import 'package:maison_mate/shared/image_helper.dart';
 import 'package:maison_mate/shared/my_form.dart';
 import 'package:maison_mate/shared/my_snackbar.dart';
+import 'package:maison_mate/widgets/onboarding/onboarding.dart';
 import 'package:provider/provider.dart';
 
 class Banking extends StatefulWidget {
@@ -119,7 +120,12 @@ class _BankingState extends State<Banking> {
                                 onSubmitCallback(model);
                               },
                               () {
-                                Navigator.of(context).pop();
+                                Navigator.of(context).pushReplacement(
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const OnboardingWidget(
+                                              yourDetailsSection: true)),
+                                );
                               },
                             )
                           : MyForm.submitButton("Submit", () async {

@@ -10,6 +10,7 @@ import 'package:maison_mate/shared/custom_app_bar.dart';
 import 'package:maison_mate/shared/image_helper.dart';
 import 'package:maison_mate/shared/my_form.dart';
 import 'package:maison_mate/shared/my_snackbar.dart';
+import 'package:maison_mate/widgets/onboarding/onboarding.dart';
 import 'package:provider/provider.dart';
 
 class Employees extends StatefulWidget {
@@ -130,7 +131,12 @@ class _EmployeesState extends State<Employees> {
                                 onSubmitCallback(model);
                               },
                               () {
-                                Navigator.of(context).pop();
+                                Navigator.of(context).pushReplacement(
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const OnboardingWidget(
+                                              yourDetailsSection: true)),
+                                );
                               },
                             )
                           : MyForm.submitButton("Submit", () async {

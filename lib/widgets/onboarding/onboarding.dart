@@ -59,9 +59,7 @@ class _OnboardingWidgetState extends State<OnboardingWidget> {
                 model.currentIndex == 0
                     ? YourDetailsSection(onboardingModel: model)
                     : Container(),
-                model.currentIndex == 1
-                    ? Documentation(onboardingModel: model)
-                    : Container(),
+                model.currentIndex == 1 ? const Documentation() : Container(),
               ],
             ),
           ),
@@ -102,7 +100,12 @@ class _OnboardingWidgetState extends State<OnboardingWidget> {
     );
     return GestureDetector(
       onTap: () async {
-        if (model.currentIndex != index) {
+        if (model.currentIndex == 0 &&
+            index == 1 &&
+            !widget.yourDetailsSection) {
+          await CustomAppBar.warning(
+              context, "Please complete this section first");
+        } else if (model.currentIndex != index) {
           bool confirm = await CustomAppBar.showConfirmationDialog(
               context, "Are you sure you want to go to '$label' section?");
           if (confirm) {

@@ -189,7 +189,7 @@ class _YourDetailsSectionState extends State<YourDetailsSection> {
                             ? PostClient.futureBuilder(
                                 model,
                                 postFutureData!,
-                                "Submit",
+                                "Next step",
                                 () async {
                                   bool confirm =
                                       await CustomAppBar.showConfirmationDialog(
@@ -203,7 +203,7 @@ class _YourDetailsSectionState extends State<YourDetailsSection> {
                                   widget.onboardingModel.setCurrentIndex(1);
                                 },
                               )
-                            : MyForm.submitButton("Submit", () async {
+                            : MyForm.submitButton("Next step", () async {
                                 bool confirm =
                                     await CustomAppBar.showConfirmationDialog(
                                         context,
