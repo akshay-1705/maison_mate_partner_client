@@ -3,10 +3,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:maison_mate/constants.dart';
+import 'package:maison_mate/main.dart';
 import 'package:maison_mate/network/response/api_response.dart';
 import 'package:http/http.dart' as http;
 import 'package:maison_mate/shared/my_form.dart';
-import 'package:maison_mate/widgets/home.dart';
 
 class GetClient {
   static Future<ApiResponse<T>> fetchData<T>(String apiUrl) async {
@@ -22,6 +22,9 @@ class GetClient {
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = json.decode(response.body);
         return ApiResponse.fromJson(data);
+      } else if (response.statusCode == 401) {
+        await storage.delete(key: authTokenKey);
+        throw Exception('Failed to load data from the API');
       } else {
         throw Exception('Failed to load data from the API');
       }
@@ -54,7 +57,7 @@ class GetRequestFutureBuilder<T> extends StatelessWidget {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => const HomeWidget()),
+              MaterialPageRoute(builder: (context) => const MyApp()),
             );
           });
           return Container();
