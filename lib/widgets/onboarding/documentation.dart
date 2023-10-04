@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:maison_mate/constants.dart';
 import 'package:maison_mate/network/client/get_client.dart';
+import 'package:maison_mate/network/client/put_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/provider/documentation_model.dart';
 import 'package:maison_mate/shared/my_form.dart';
+import 'package:maison_mate/shared/my_snackbar.dart';
+import 'package:maison_mate/widgets/home.dart';
 import 'package:maison_mate/widgets/onboarding/documentation/banking.dart';
 import 'package:maison_mate/widgets/onboarding/documentation/employees.dart';
 import 'package:maison_mate/widgets/onboarding/documentation/health_and_safety.dart';
@@ -21,6 +24,7 @@ class Documentation extends StatefulWidget {
 
 class _DocumentationState extends State<Documentation> {
   late Future<ApiResponse> getFutureData;
+  Future<ApiResponse>? futureData;
   static const String apiUrl = '$baseApiUrl/partners/onboarding/documentation';
 
   @override
@@ -80,82 +84,110 @@ class _DocumentationState extends State<Documentation> {
     ];
 
     return SingleChildScrollView(
+        padding: const EdgeInsets.all(5.0),
         child: Consumer<DocumentationModel>(builder: (context, banking, child) {
-      return Column(
-        children: [
-          Column(
-            children:
-                documentationParts.where((part) => !part.hide).map((part) {
-              Color color = getColor(part.status);
-              Icon icon = getIcon(part.status, color);
-              return Column(
-                children: [
-                  ListTile(
-                    title:
-                        Text(part.title, style: const TextStyle(fontSize: 17)),
-                    trailing: icon,
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => part.page,
-                        ),
-                      );
-                    },
-                  ),
-                  const Divider(
-                    height: 10,
-                    color: Colors.grey,
-                  ),
-                ],
-              );
-            }).toList(),
-          ),
-          const SizedBox(height: 20),
-          MyForm.checkbox('Have the right to work in the UK', model.canWorkInUK,
-              (value) {
-            model.setCanWorkInUK(value);
-          }),
-          MyForm.checkbox(
-              'Do not have any criminal offences which are currently unspent under the Rehabilitation of Offenders Act 1974',
-              model.notHaveCriminalOffence, (value) {
-            model.setNotHaveCriminalOffence(value);
-          }),
-          MyForm.checkbox(
-              'Agree to the Maison Mate, Terms of Use, Commercial Terms and Code of Conduct, and that you will follow the processes set out within them',
-              model.agree, (value) {
-            model.setAgree(value);
-          }),
-          const SizedBox(height: 20),
-          MyForm.submitButton("Finish", () {}),
-          const SizedBox(height: 50),
-        ],
-      );
-    }));
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Column(
+                children:
+                    documentationParts.where((part) => !part.hide).map((part) {
+                  Icon icon = getIcon(part.status, model);
+                  return Column(
+                    children: [
+                      ListTile(
+                        title: Text(part.title,
+                            style: const TextStyle(fontSize: 17)),
+                        trailing: icon,
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => part.page,
+                            ),
+                          );
+                        },
+                      ),
+                      const Divider(
+                        height: 10,
+                        color: Colors.grey,
+                      ),
+                    ],
+                  );
+                }).toList(),
+              ),
+              const SizedBox(height: 20),
+              MyForm.checkbox(
+                  'Have the right to work in the UK', model.canWorkInUK,
+                  (value) {
+                model.setCanWorkInUK(value);
+              }),
+              MyForm.checkbox(
+                  'Do not have any criminal offences which are currently unspent under the Rehabilitation of Offenders Act 1974',
+                  model.notHaveCriminalOffence, (value) {
+                model.setNotHaveCriminalOffence(value);
+              }),
+              MyForm.checkbox(
+                  'Agree to the Maison Mate, Terms of Use, Commercial Terms and Code of Conduct, and that you will follow the processes set out within them',
+                  model.agree, (value) {
+                model.setAgree(value);
+              }),
+              const SizedBox(height: 20),
+              (futureData != null)
+                  ? PutClient.futureBuilder(
+                      model,
+                      futureData!,
+                      "Finish",
+                      () async {
+                        onSubmitCallback(model);
+                      },
+                      () {
+                        Navigator.of(context).pop();
+                        Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(
+                              builder: (context) => const HomeWidget()),
+                        );
+                      },
+                    )
+                  : MyForm.submitButton("Finish", () async {
+                      onSubmitCallback(model);
+                    }),
+              const SizedBox(height: 50),
+            ],
+          );
+        }));
   }
 
-  Icon getIcon(String status, Color color) {
-    switch (status) {
-      case 'completed':
-        return Icon(Icons.verified, color: color);
-      case 'pending':
-        return Icon(Icons.edit_note, color: color);
-      case 'failed':
-        return Icon(Icons.error, color: color);
-      default:
-        return Icon(Icons.help, color: color);
+  void onSubmitCallback(DocumentationModel model) {
+    if (model.agree && model.canWorkInUK && model.notHaveCriminalOffence) {
+      model.setIsSubmitting(true);
+      var formData = {
+        'agree_to_tnc': model.agree.toString(),
+        'can_work_in_uk': model.canWorkInUK.toString(),
+        'not_have_criminal_offence': model.notHaveCriminalOffence.toString(),
+      };
+      futureData = PutClient.request(apiUrl, formData, model, (response) {});
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(MySnackBar(
+              message:
+                  'Please review and agree to all policies before submitting',
+              error: true)
+          .getSnackbar());
     }
   }
 
-  Color getColor(String status) {
+  Icon getIcon(String status, DocumentationModel model) {
     switch (status) {
       case 'completed':
-        return Colors.green;
+        return const Icon(Icons.verified, color: Colors.green);
       case 'pending':
-        return Colors.orange;
+        model.pendingDocuments = true;
+        return const Icon(Icons.edit_note, color: Colors.orange);
       case 'failed':
-        return Colors.red;
+        model.pendingDocuments = true;
+        return const Icon(Icons.error, color: Colors.red);
       default:
-        return Colors.orange;
+        model.pendingDocuments = true;
+        return const Icon(Icons.help, color: Colors.orange);
     }
   }
 }
