@@ -35,7 +35,7 @@ class _HomeWidgetState extends State<HomeWidget> {
             children: [
               header(),
               if (data.documentation == true) ...[
-                const SizedBox(height: 110),
+                const SizedBox(height: 125),
                 onboardingComplete(),
                 Container(
                   padding: const EdgeInsets.all(10),
@@ -60,7 +60,8 @@ class _HomeWidgetState extends State<HomeWidget> {
                     ),
                     textAlign: TextAlign.center, // Align text to center
                   ),
-                )
+                ),
+                const SizedBox(height: 50),
               ] else ...[
                 completeOnboarding(data.yourDetailsSection)
               ],
