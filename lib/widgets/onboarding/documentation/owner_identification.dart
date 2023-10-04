@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:maison_mate/shared/custom_app_bar.dart';
 
 class OwnerIdentification extends StatefulWidget {
-  const OwnerIdentification({Key? key}) : super(key: key);
+  const OwnerIdentification({Key? key, required bool limited})
+      : super(key: key);
 
   @override
   State<OwnerIdentification> createState() => _OwnerIdentificationState();

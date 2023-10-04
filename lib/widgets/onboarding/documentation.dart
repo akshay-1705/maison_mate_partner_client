@@ -44,30 +44,39 @@ class _DocumentationState extends State<Documentation> {
 
   SingleChildScrollView renderForm(
       DocumentationModel model, data, BuildContext context) {
+    bool limited = data.isLimited;
     // TODO: This approach is not good. Fix this.
     List<DocumentationPart> documentationParts = [
       DocumentationPart(
-          title: 'Banking', page: const Banking(), status: data.status.banking),
+          title: 'Banking',
+          page: const Banking(),
+          status: data.status.banking,
+          hide: false),
       DocumentationPart(
           title: 'Insurance',
           page: const Insurance(),
-          status: data.status.insurance),
+          status: data.status.insurance,
+          hide: false),
       DocumentationPart(
           title: 'Owner identification',
-          page: const OwnerIdentification(),
-          status: data.status.ownerIdentification),
+          page: OwnerIdentification(limited: limited),
+          status: data.status.ownerIdentification,
+          hide: false),
       DocumentationPart(
           title: 'Employees',
           page: const Employees(),
-          status: data.status.employees),
+          status: data.status.employees,
+          hide: false),
       DocumentationPart(
           title: 'Profile picture',
           page: const ProfilePicture(),
-          status: data.status.profilePicture),
+          status: data.status.profilePicture,
+          hide: false),
       DocumentationPart(
           title: 'Health and safety',
           page: const HealthAndSafety(),
-          status: data.status.healthAndSafety),
+          status: data.status.healthAndSafety,
+          hide: !limited),
     ];
 
     return SingleChildScrollView(
@@ -75,7 +84,8 @@ class _DocumentationState extends State<Documentation> {
       return Column(
         children: [
           Column(
-            children: documentationParts.map((part) {
+            children:
+                documentationParts.where((part) => !part.hide).map((part) {
               Color color = getColor(part.status);
               Icon icon = getIcon(part.status, color);
               return Column(
@@ -154,7 +164,11 @@ class DocumentationPart {
   final String title;
   final Widget page;
   final String status;
+  final bool hide;
 
   DocumentationPart(
-      {required this.title, required this.page, required this.status});
+      {required this.title,
+      required this.page,
+      required this.status,
+      required this.hide});
 }

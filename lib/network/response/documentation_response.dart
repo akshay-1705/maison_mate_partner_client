@@ -5,9 +5,12 @@ part 'documentation_response.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class DocumentationResponse {
-  DocumentationResponse(this.status);
+  @JsonKey(name: "is_limited", defaultValue: false)
+  final bool isLimited;
+
   SectionStatusResponse status;
 
+  DocumentationResponse(this.status, this.isLimited);
   factory DocumentationResponse.fromJson(Map<String, dynamic> json) =>
       _$DocumentationResponseFromJson(json);
   Map<String, dynamic> toJson() => _$DocumentationResponseToJson(this);
