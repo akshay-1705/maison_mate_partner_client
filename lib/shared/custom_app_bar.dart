@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:maison_mate/constants.dart';
 
 class CustomAppBar {
-  static AppBar show(BuildContext context, String title, Icon icon) {
+  static AppBar show(BuildContext context, String title, Icon icon,
+      [VoidCallback? navigation]) {
     return AppBar(
       backgroundColor: const Color(themeColor), // Match the color scheme
       title: Text(
@@ -16,9 +17,13 @@ class CustomAppBar {
           bool confirm = await showConfirmationDialog(
               context, "Are you sure you want to leave this page?");
           if (confirm) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              Navigator.of(context).pop();
-            });
+            if (navigation == null) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                Navigator.of(context).pop();
+              });
+            } else {
+              navigation();
+            }
           }
         },
       ),
