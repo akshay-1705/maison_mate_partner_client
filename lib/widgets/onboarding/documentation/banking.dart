@@ -37,9 +37,9 @@ class _BankingState extends State<Banking> {
       if (mounted) {
         var stateModel = Provider.of<BankingModel>(context, listen: false);
         bankNameController.text = apiResponse.data.bankName;
-        sortCodeController.text = apiResponse.data.sortCode.toString();
+        sortCodeController.text = (apiResponse.data.sortCode ?? '').toString();
         accountNumberController.text =
-            apiResponse.data.accountNumber.toString();
+            (apiResponse.data.accountNumber ?? '').toString();
         ImageHelper.initialize(apiResponse.data.image, stateModel, context);
       }
     });
@@ -120,13 +120,13 @@ class _BankingState extends State<Banking> {
                                 onSubmitCallback(model);
                               },
                               () {
+                                Navigator.of(context).pop();
                                 Navigator.of(context).pushReplacement(
                                   MaterialPageRoute(
                                       builder: (context) =>
                                           const OnboardingWidget(
                                               yourDetailsSection: true)),
                                 );
-                                Navigator.of(context).pop();
                               },
                             )
                           : MyForm.submitButton("Submit", () async {

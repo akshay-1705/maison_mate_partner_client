@@ -8,7 +8,7 @@ part of 'banking_response.dart';
 
 BankingResponse _$BankingResponseFromJson(Map<String, dynamic> json) =>
     BankingResponse(
-      json['bank_name'] as String?,
+      json['bank_name'] as String? ?? '',
       json['account_number'] as int?,
       json['sort_code'] as int?,
       ImageResponse.fromJson(json['image'] as Map<String, dynamic>),

@@ -21,6 +21,9 @@ class ImageHelper {
           await tempFile.writeAsBytes(bytes);
           model.setSelectedFile(tempFile);
         }
+      } else {
+        model.selectedFile = null;
+        model.fileName = '';
       }
     } catch (e) {
       WidgetsBinding.instance.addPostFrameCallback((_) {

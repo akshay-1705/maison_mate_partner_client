@@ -131,13 +131,13 @@ class _EmployeesState extends State<Employees> {
                                 onSubmitCallback(model);
                               },
                               () {
+                                Navigator.of(context).pop();
                                 Navigator.of(context).pushReplacement(
                                   MaterialPageRoute(
                                       builder: (context) =>
                                           const OnboardingWidget(
                                               yourDetailsSection: true)),
                                 );
-                                Navigator.of(context).pop();
                               },
                             )
                           : MyForm.submitButton("Submit", () async {

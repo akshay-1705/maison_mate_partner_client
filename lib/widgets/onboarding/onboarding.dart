@@ -137,7 +137,8 @@ class _OnboardingWidgetState extends State<OnboardingWidget> {
                 color: isSelected ? const Color(themeColor) : Colors.grey,
               ),
             ),
-            if (label == 'Your Details' && widget.yourDetailsSection)
+            if (label == 'Your Details' &&
+                (widget.yourDetailsSection || model.currentIndex == 1))
               secondaryIcon
           ],
         ),

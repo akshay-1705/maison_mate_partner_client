@@ -93,7 +93,11 @@ class _HomeWidgetState extends State<HomeWidget> {
               MaterialPageRoute(
                   builder: (context) =>
                       OnboardingWidget(yourDetailsSection: yourDetailsSection)),
-            );
+            ).then((value) {
+              setState(() {
+                futureData = GetClient.fetchData(apiUrl);
+              });
+            });
           },
           style: ButtonStyle(
             backgroundColor: MaterialStateProperty.all<Color>(

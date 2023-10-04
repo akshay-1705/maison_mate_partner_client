@@ -7,13 +7,13 @@ part 'banking_response.g.dart';
 class BankingResponse {
   BankingResponse(this.bankName, this.accountNumber, this.sortCode, this.image);
 
-  @JsonKey(name: "bank_name")
+  @JsonKey(name: "bank_name", defaultValue: '')
   final String? bankName;
 
-  @JsonKey(name: "account_number")
+  @JsonKey(name: "account_number", defaultValue: null)
   final int? accountNumber;
 
-  @JsonKey(name: "sort_code")
+  @JsonKey(name: "sort_code", defaultValue: null)
   final int? sortCode;
 
   ImageResponse image;
