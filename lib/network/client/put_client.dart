@@ -33,7 +33,9 @@ class PutClient {
       request.headers['Partner-Authorization'] = authToken;
       request.fields.addAll(bodyData);
 
-      if (imageFiles != null && imageFiles.isNotEmpty) {
+      if (imageFiles != null &&
+          imageFiles.isNotEmpty &&
+          imageFiles.any((element) => element != null)) {
         for (var i = 0; i < imageFiles.length; i++) {
           final image = imageFiles[i];
           final stream = http.ByteStream(Stream.castFrom(image!.openRead()));
