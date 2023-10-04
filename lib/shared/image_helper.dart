@@ -33,4 +33,34 @@ class ImageHelper {
       });
     }
   }
+
+  static Future<void> customInitialize(
+      ImageResponse imageResponse,
+      BuildContext context,
+      SuccessCallback successAction,
+      VoidCallback failureAction) async {
+    try {
+      if (imageResponse.imageUrl != null) {
+        final response =
+            await http.get(Uri.parse("$baseDomain${imageResponse.imageUrl}"));
+        if (response.statusCode == 200) {
+          final bytes = response.bodyBytes;
+          final tempDir = await getTemporaryDirectory();
+          final tempFile = File('${tempDir.path}/${imageResponse.imageName}');
+          await tempFile.writeAsBytes(bytes);
+          successAction(tempFile);
+        }
+      } else {
+        failureAction();
+      }
+    } catch (e) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            MySnackBar(message: "Unable to load image", error: true)
+                .getSnackbar());
+      });
+    }
+  }
 }
+
+typedef SuccessCallback = void Function(File);

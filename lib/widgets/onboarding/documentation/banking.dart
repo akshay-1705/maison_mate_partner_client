@@ -153,8 +153,9 @@ class _BankingState extends State<Banking> {
           'account_number': accountNumberController.text,
         };
         List<File?>? fileList = [model.selectedFile];
+        List<String?>? imageFieldName = ['image'];
         futureData = PutClient.request(apiUrl, formData, model, (response) {},
-            imageFiles: fileList, imageFieldName: 'image');
+            imageFiles: fileList, imageFieldName: imageFieldName);
       }
     }
   }

@@ -2,7 +2,8 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:maison_mate/network/response/documentation/banking_response.dart';
 import 'package:maison_mate/network/response/documentation/employees_response.dart';
 import 'package:maison_mate/network/response/documentation/health_and_safety_response.dart';
-import 'package:maison_mate/network/response/documentation_response.dart';
+import 'package:maison_mate/network/response/documentation/documentation_response.dart';
+import 'package:maison_mate/network/response/documentation/self_trader_response.dart';
 import 'package:maison_mate/network/response/image_response.dart';
 import 'package:maison_mate/network/response/documentation/insurance_response.dart';
 import 'package:maison_mate/network/response/onboarding_status_response.dart';
@@ -58,6 +59,9 @@ class _Converter<T> implements JsonConverter<T, Object> {
       return ImageResponse.fromJson(map) as T;
     } else if (map.containsKey('status')) {
       return DocumentationResponse.fromJson(map) as T;
+    } else if (map.containsKey('proof_of_id') &&
+        map.containsKey('proof_of_address')) {
+      return SelfTraderResponse.fromJson(map) as T;
     } else {
       return map as T;
     }

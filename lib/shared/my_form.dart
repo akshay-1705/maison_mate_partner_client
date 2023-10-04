@@ -284,22 +284,32 @@ class MyForm {
 
   static Widget uploadImageSection(dynamic model) {
     return Column(children: [
-      uploadImageButton(model),
-      if (model.selectedFile != null) // Check if an image is selected
-        Container(
-          padding: const EdgeInsets.all(10),
-          alignment: Alignment.topLeft,
-          child: Image.file(
-            model.selectedFile!, // Display the selected image
-            width: 100, // Set the width of the image preview container
-            height: 100, // Set the height of the image preview container
-            fit: BoxFit.cover, // Adjust the image fit as needed
-          ),
-        ),
+      uploadImageButton(() async {
+        FilePickerResult? result = await FilePicker.platform.pickFiles(
+          type: FileType.image,
+        );
+        if (result != null) {
+          model.setSelectedFile(File(result.files.single.path!));
+        }
+      }),
+      if (model.selectedFile != null) showSelectedImage(model.selectedFile!)
     ]);
   }
 
-  static Widget uploadImageButton(dynamic model) {
+  static Widget showSelectedImage(File file) {
+    return Container(
+      padding: const EdgeInsets.all(10),
+      alignment: Alignment.topLeft,
+      child: Image.file(
+        file,
+        width: 100,
+        height: 100,
+        fit: BoxFit.cover,
+      ),
+    );
+  }
+
+  static Widget uploadImageButton(VoidCallback callback) {
     return Container(
       padding: const EdgeInsets.only(left: 10),
       alignment: Alignment.centerLeft,
@@ -310,13 +320,8 @@ class MyForm {
             borderRadius: BorderRadius.circular(5),
           ),
         ),
-        onPressed: () async {
-          FilePickerResult? result = await FilePicker.platform.pickFiles(
-            type: FileType.image,
-          );
-          if (result != null) {
-            model.setSelectedFile(File(result.files.single.path!));
-          }
+        onPressed: () {
+          callback();
         },
         icon: const Icon(Icons.upload_file),
         label: const Text('Upload Image'),

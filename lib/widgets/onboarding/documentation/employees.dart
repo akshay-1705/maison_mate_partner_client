@@ -178,8 +178,9 @@ class _EmployeesState extends State<Employees> {
             'insurance_expiry_date': model.epochString,
           };
           List<File?>? fileList = [model.selectedFile];
+          List<String?>? imageFieldName = ['insurance_proof'];
           futureData = PutClient.request(apiUrl, formData, model, (response) {},
-              imageFiles: fileList, imageFieldName: 'insurance_proof');
+              imageFiles: fileList, imageFieldName: imageFieldName);
         }
       }
     }

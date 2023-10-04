@@ -114,9 +114,9 @@ class _ProfilePictureState extends State<ProfilePicture> {
       } else {
         model.setIsSubmitting(true);
         List<File?>? fileList = [model.selectedFile];
-
+        List<String?>? imageFieldName = ['profile_picture'];
         futureData = PutClient.request(apiUrl, {}, model, (response) {},
-            imageFiles: fileList, imageFieldName: 'profile_picture');
+            imageFiles: fileList, imageFieldName: imageFieldName);
       }
     }
   }

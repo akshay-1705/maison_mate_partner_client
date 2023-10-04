@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:maison_mate/network/response/section_status_response.dart';
+import 'package:maison_mate/network/response/documentation/section_status_response.dart';
 
 part 'documentation_response.g.dart';
 

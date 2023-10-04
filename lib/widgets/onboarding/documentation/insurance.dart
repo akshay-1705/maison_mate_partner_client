@@ -180,8 +180,9 @@ class _InsuranceState extends State<Insurance> {
           'expiry_date': model.epochString,
         };
         List<File?>? fileList = [model.selectedFile];
+        List<String?>? imageFieldName = ['image'];
         futureData = PutClient.request(apiUrl, formData, model, (response) {},
-            imageFiles: fileList, imageFieldName: 'image');
+            imageFiles: fileList, imageFieldName: imageFieldName);
       }
     }
   }

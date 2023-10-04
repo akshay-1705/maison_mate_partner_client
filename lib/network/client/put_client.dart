@@ -19,7 +19,7 @@ class PutClient {
     dynamic model,
     void Function(ApiResponse<T>) apiSpecificTask, {
     List<File?>? imageFiles,
-    String imageFieldName = 'image',
+    List<String?>? imageFieldName,
   }) async {
     try {
       isSnackbarShown = false;
@@ -44,7 +44,7 @@ class PutClient {
               lookupMimeType(image.path) ?? 'application/octet-stream';
 
           final multipartFile = http.MultipartFile(
-            imageFieldName,
+            imageFieldName![i]!,
             stream,
             length,
             filename: image.path.split('/').last,
