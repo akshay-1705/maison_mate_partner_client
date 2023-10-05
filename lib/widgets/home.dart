@@ -35,7 +35,7 @@ class _HomeWidgetState extends State<HomeWidget> {
             children: [
               header(),
               if (data.documentation == true) ...[
-                const SizedBox(height: 125),
+                const SizedBox(height: 150),
                 onboardingComplete(),
                 Container(
                   padding: const EdgeInsets.all(10),
@@ -109,7 +109,7 @@ class _HomeWidgetState extends State<HomeWidget> {
     String buttonText = yourDetailsSection ? 'Resume' : 'Proceed';
     return Column(
       children: [
-        const SizedBox(height: 240),
+        const SizedBox(height: 250),
         Container(
           alignment: Alignment.bottomLeft,
           child: Center(
