@@ -10,7 +10,7 @@ import 'package:maison_mate/provider/documentation/self_trader_identification_mo
 import 'package:maison_mate/shared/image_helper.dart';
 import 'package:maison_mate/shared/my_form.dart';
 import 'package:maison_mate/shared/my_snackbar.dart';
-import 'package:maison_mate/widgets/onboarding/onboarding.dart';
+import 'package:maison_mate/screens/onboarding_screen.dart';
 import 'package:provider/provider.dart';
 
 class SelfTraderIdentification extends StatefulWidget {
@@ -157,7 +157,7 @@ class _SelfTraderIdentificationState extends State<SelfTraderIdentification> {
                         Navigator.of(context).pop();
                         Navigator.of(context).pushReplacement(
                           MaterialPageRoute(
-                              builder: (context) => const OnboardingWidget(
+                              builder: (context) => const OnboardingScreen(
                                   yourDetailsSection: true)),
                         );
                       },

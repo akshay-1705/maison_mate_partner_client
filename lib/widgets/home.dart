@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:maison_mate/constants.dart';
 import 'package:maison_mate/network/client/get_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
-import 'package:maison_mate/widgets/onboarding/onboarding.dart';
+import 'package:maison_mate/screens/onboarding_screen.dart';
 
 class HomeWidget extends StatefulWidget {
   const HomeWidget({Key? key}) : super(key: key);
@@ -110,7 +110,7 @@ class _HomeWidgetState extends State<HomeWidget> {
               context,
               MaterialPageRoute(
                   builder: (context) =>
-                      OnboardingWidget(yourDetailsSection: yourDetailsSection)),
+                      OnboardingScreen(yourDetailsSection: yourDetailsSection)),
             ).then((value) {
               setState(() {
                 futureData = GetClient.fetchData(apiUrl);

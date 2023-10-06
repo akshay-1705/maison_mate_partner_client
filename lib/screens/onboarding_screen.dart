@@ -7,16 +7,16 @@ import 'package:maison_mate/constants.dart';
 import 'package:provider/provider.dart';
 import 'package:maison_mate/provider/your_details_model.dart';
 
-class OnboardingWidget extends StatefulWidget {
+class OnboardingScreen extends StatefulWidget {
   final bool yourDetailsSection;
-  const OnboardingWidget({Key? key, required this.yourDetailsSection})
+  const OnboardingScreen({Key? key, required this.yourDetailsSection})
       : super(key: key);
 
   @override
-  State<OnboardingWidget> createState() => _OnboardingWidgetState();
+  State<OnboardingScreen> createState() => _OnboardingScreenState();
 }
 
-class _OnboardingWidgetState extends State<OnboardingWidget> {
+class _OnboardingScreenState extends State<OnboardingScreen> {
   bool tabClicked = false;
   @override
   Widget build(BuildContext context) {
@@ -31,7 +31,6 @@ class _OnboardingWidgetState extends State<OnboardingWidget> {
             },
             child: GestureDetector(
                 onTap: () {
-                  // Dismiss the keyboard when tapped outside of any focused input field
                   FocusScope.of(context).unfocus();
                 },
                 child: Scaffold(

@@ -10,7 +10,7 @@ import 'package:maison_mate/shared/custom_app_bar.dart';
 import 'package:maison_mate/shared/image_helper.dart';
 import 'package:maison_mate/shared/my_form.dart';
 import 'package:maison_mate/shared/my_snackbar.dart';
-import 'package:maison_mate/widgets/onboarding/onboarding.dart';
+import 'package:maison_mate/screens/onboarding_screen.dart';
 import 'package:provider/provider.dart';
 
 class Banking extends StatefulWidget {
@@ -125,7 +125,7 @@ class _BankingState extends State<Banking> {
                                 Navigator.of(context).pushReplacement(
                                   MaterialPageRoute(
                                       builder: (context) =>
-                                          const OnboardingWidget(
+                                          const OnboardingScreen(
                                               yourDetailsSection: true)),
                                 );
                               },
