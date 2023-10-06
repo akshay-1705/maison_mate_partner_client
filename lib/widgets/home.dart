@@ -18,14 +18,13 @@ class _HomeWidgetState extends State<HomeWidget> {
   @override
   void initState() {
     super.initState();
-    // print('requesting now...');
+    print('requesting now...');
     futureData = GetClient.fetchData(apiUrl);
-    // print('request done...');
+    print('request done...');
   }
 
   @override
   Widget build(BuildContext context) {
-    // print('here');
     return Expanded(
         child: GetRequestFutureBuilder<dynamic>(
       future: futureData,
@@ -56,7 +55,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                     'we will update you once the acceptance process completes',
                     style: TextStyle(
                       fontSize: 15,
-                      fontWeight: FontWeight.w300,
+                      fontWeight: FontWeight.w200,
                     ),
                     textAlign: TextAlign.center, // Align text to center
                   ),
@@ -67,7 +66,6 @@ class _HomeWidgetState extends State<HomeWidget> {
               ],
             ],
           ),
-          // bottomNavigationBar: bottomNavigation(),
         );
       },
     ));
