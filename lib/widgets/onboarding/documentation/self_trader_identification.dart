@@ -77,6 +77,7 @@ class _SelfTraderIdentificationState extends State<SelfTraderIdentification> {
     final SelfTraderIdentificationModel model =
         Provider.of<SelfTraderIdentificationModel>(context);
     return GetRequestFutureBuilder<dynamic>(
+      apiUrl: apiUrl,
       future: getFutureData,
       builder: (context, data) {
         return renderForm(model, context);

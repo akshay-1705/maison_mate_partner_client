@@ -39,6 +39,7 @@ class _DocumentationState extends State<Documentation> {
 
     return Scaffold(
         body: GetRequestFutureBuilder<dynamic>(
+      apiUrl: apiUrl,
       future: getFutureData,
       builder: (context, data) {
         return renderForm(model, data, context);

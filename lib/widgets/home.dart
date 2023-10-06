@@ -18,20 +18,24 @@ class _HomeWidgetState extends State<HomeWidget> {
   @override
   void initState() {
     super.initState();
+    // print('requesting now...');
     futureData = GetClient.fetchData(apiUrl);
+    // print('request done...');
   }
 
   @override
   Widget build(BuildContext context) {
+    // print('here');
     return Expanded(
         child: GetRequestFutureBuilder<dynamic>(
       future: futureData,
+      apiUrl: apiUrl,
       builder: (context, data) {
         return SingleChildScrollView(
           child: Column(
             children: [
               if (data.documentation == true) ...[
-                const SizedBox(height: 150),
+                const SizedBox(height: 120),
                 onboardingComplete(),
                 Container(
                   padding: const EdgeInsets.all(10),

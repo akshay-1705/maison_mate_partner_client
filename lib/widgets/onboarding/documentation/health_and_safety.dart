@@ -72,6 +72,7 @@ class _HealthAndSafetyState extends State<HealthAndSafety> {
         appBar: CustomAppBar.show(
             context, "Health and safety", const Icon(Icons.arrow_back)),
         body: GetRequestFutureBuilder<dynamic>(
+          apiUrl: apiUrl,
           future: getFutureData,
           builder: (context, data) {
             return renderForm(context, model);

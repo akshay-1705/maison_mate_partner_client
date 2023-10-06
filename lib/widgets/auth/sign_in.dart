@@ -84,8 +84,10 @@ class _SignInWidgetState extends State<SignInWidget> {
 
       futureData =
           PostClient.request(loginUrl, formData, model, (response) async {
+        // print(response.data.token);
         var authToken = response.data.token;
         await storage.write(key: authTokenKey, value: authToken);
+        // print('finished');
       });
     }
   }

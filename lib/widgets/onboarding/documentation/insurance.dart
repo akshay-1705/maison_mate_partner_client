@@ -62,6 +62,7 @@ class _InsuranceState extends State<Insurance> {
         appBar: CustomAppBar.show(
             context, "Insurance", const Icon(Icons.arrow_back)),
         body: GetRequestFutureBuilder<dynamic>(
+          apiUrl: apiUrl,
           future: getFutureData,
           builder: (context, data) {
             return renderForm(context, model);

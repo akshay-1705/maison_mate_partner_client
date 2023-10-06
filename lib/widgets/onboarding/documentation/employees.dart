@@ -64,6 +64,7 @@ class _EmployeesState extends State<Employees> {
         appBar: CustomAppBar.show(
             context, "Employees", const Icon(Icons.arrow_back)),
         body: GetRequestFutureBuilder<dynamic>(
+          apiUrl: apiUrl,
           future: getFutureData,
           builder: (context, data) {
             return renderForm(context, model);

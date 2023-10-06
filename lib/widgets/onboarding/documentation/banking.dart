@@ -52,6 +52,7 @@ class _BankingState extends State<Banking> {
         appBar:
             CustomAppBar.show(context, "Banking", const Icon(Icons.arrow_back)),
         body: GetRequestFutureBuilder<dynamic>(
+          apiUrl: apiUrl,
           future: getFutureData,
           builder: (context, data) {
             return renderForm(context, model);

@@ -47,6 +47,7 @@ class _ProfilePictureState extends State<ProfilePicture> {
         appBar: CustomAppBar.show(
             context, "Profile picture", const Icon(Icons.arrow_back)),
         body: GetRequestFutureBuilder<dynamic>(
+          apiUrl: apiUrl,
           future: getFutureData,
           builder: (context, data) {
             return renderForm(context, model);

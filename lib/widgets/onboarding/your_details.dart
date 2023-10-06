@@ -93,6 +93,7 @@ class _YourDetailsSectionState extends State<YourDetailsSection> {
 
     return Scaffold(
         body: GetRequestFutureBuilder<dynamic>(
+      apiUrl: apiUrl,
       future: futureData,
       builder: (context, data) {
         return renderData(context, model, data);
