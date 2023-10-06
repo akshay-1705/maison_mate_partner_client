@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:maison_mate/network/client/post_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
+import 'package:maison_mate/screens/home_screen.dart';
 import 'package:maison_mate/shared/my_form.dart';
 import 'package:maison_mate/widgets/auth/forgot_password.dart';
 import 'package:maison_mate/widgets/auth/sign_up.dart';
-import 'package:maison_mate/widgets/home.dart';
 import 'package:provider/provider.dart';
 import 'package:maison_mate/provider/auth/sign_in_model.dart';
 import 'package:maison_mate/constants.dart';
@@ -61,7 +61,7 @@ class _SignInWidgetState extends State<SignInWidget> {
                                       Navigator.of(context).pushReplacement(
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                                const HomeWidget()),
+                                                const HomeScreen()),
                                       );
                                     },
                                   )

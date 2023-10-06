@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:maison_mate/constants.dart';
 import 'package:maison_mate/network/client/get_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
-import 'package:maison_mate/shared/custom_app_bar.dart';
-import 'package:maison_mate/widgets/auth/sign_in.dart';
 import 'package:maison_mate/widgets/onboarding/onboarding.dart';
 
 class HomeWidget extends StatefulWidget {
@@ -26,14 +23,13 @@ class _HomeWidgetState extends State<HomeWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return GetRequestFutureBuilder<dynamic>(
+    return Expanded(
+        child: GetRequestFutureBuilder<dynamic>(
       future: futureData,
       builder: (context, data) {
-        return Scaffold(
-          body: SingleChildScrollView(
-              child: Column(
+        return SingleChildScrollView(
+          child: Column(
             children: [
-              header(),
               if (data.documentation == true) ...[
                 const SizedBox(height: 150),
                 onboardingComplete(),
@@ -66,11 +62,11 @@ class _HomeWidgetState extends State<HomeWidget> {
                 completeOnboarding(data.yourDetailsSection)
               ],
             ],
-          )),
+          ),
           // bottomNavigationBar: bottomNavigation(),
         );
       },
-    );
+    ));
   }
 
   Widget onboardingComplete() {
@@ -82,27 +78,6 @@ class _HomeWidgetState extends State<HomeWidget> {
           width: 250,
           height: 250,
         ));
-  }
-
-  BottomNavigationBar bottomNavigation() {
-    return BottomNavigationBar(
-      items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
-          icon: Icon(Icons.dashboard),
-          label: 'Dashboard',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.payment),
-          label: 'Payments',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.favorite),
-          label: 'Favorites',
-        ),
-      ],
-      selectedItemColor: const Color(themeColor), // Selected tab color
-      unselectedItemColor: Colors.grey, // Unselected tab color
-    );
   }
 
   Column completeOnboarding(yourDetailsSection) {
@@ -156,58 +131,6 @@ class _HomeWidgetState extends State<HomeWidget> {
         ),
         const SizedBox(height: 240),
       ],
-    );
-  }
-
-  Container header() {
-    return Container(
-      color: const Color(themeColor), // Header background color
-      padding: const EdgeInsets.only(top: 50.0),
-      child: const Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Padding(
-            padding: EdgeInsets.only(left: 16),
-            child: Text(
-              'Maison Mate', // Company name
-              style: TextStyle(
-                color: Color(secondaryColor), // Text color
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          Account(),
-        ],
-      ),
-    );
-  }
-}
-
-class Account extends StatelessWidget {
-  static const storage = FlutterSecureStorage();
-  const Account({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      icon: const Icon(
-        Icons.logout_outlined,
-        color: Color(secondaryColor),
-      ),
-      onPressed: () async {
-        bool confirm = await CustomAppBar.showConfirmationDialog(
-            context, "Are you sure you want to Logout?");
-        if (confirm) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            storage.delete(key: authTokenKey);
-            Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (context) => const SignInWidget()));
-          });
-        }
-      },
     );
   }
 }

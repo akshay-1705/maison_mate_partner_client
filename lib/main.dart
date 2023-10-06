@@ -6,8 +6,8 @@ import 'package:maison_mate/provider/documentation/insurance_model.dart';
 import 'package:maison_mate/provider/documentation/profile_picture_model.dart';
 import 'package:maison_mate/provider/documentation/self_trader_identification_model.dart';
 import 'package:maison_mate/provider/documentation_model.dart';
+import 'package:maison_mate/screens/home_screen.dart';
 import 'package:maison_mate/widgets/auth/sign_in.dart';
-import 'package:maison_mate/widgets/home.dart';
 import 'package:maison_mate/provider/auth/sign_in_model.dart';
 import 'package:maison_mate/provider/auth/sign_up_model.dart';
 import 'package:maison_mate/provider/auth/forgot_password_model.dart';
@@ -48,7 +48,7 @@ class MyApp extends StatelessWidget {
         ],
         child: MaterialApp(
           title: _title,
-          home: isUserLoggedIn ? const HomeWidget() : const SignInWidget(),
+          home: isUserLoggedIn ? const HomeScreen() : const SignInWidget(),
           theme: ThemeData(
             useMaterial3: true,
             colorScheme: ColorScheme.fromSeed(
