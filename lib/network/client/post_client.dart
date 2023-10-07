@@ -15,7 +15,7 @@ class PostClient {
     String apiUrl,
     Map<String, dynamic> bodyData,
     dynamic model,
-    void Function(ApiResponse<T>) apiSpecificTask,
+    Future Function(ApiResponse<T>) apiSpecificTask,
   ) async {
     try {
       isSnackbarShown = false;
@@ -37,7 +37,7 @@ class PostClient {
       ApiResponse<T> apiResponse = ApiResponse.fromJson(data);
 
       if (apiResponse.success) {
-        apiSpecificTask(apiResponse);
+        await apiSpecificTask(apiResponse);
       }
       model.setIsSubmitting(false);
       return apiResponse;

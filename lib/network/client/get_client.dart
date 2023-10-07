@@ -13,7 +13,6 @@ class GetClient {
       const storage = FlutterSecureStorage();
       var authToken = await storage.read(key: authTokenKey);
       authToken ??= '';
-      print(authToken);
       final response = await http.get(
         Uri.parse(apiUrl),
         headers: <String, String>{'Partner-Authorization': authToken},

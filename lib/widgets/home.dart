@@ -18,9 +18,7 @@ class _HomeWidgetState extends State<HomeWidget> {
   @override
   void initState() {
     super.initState();
-    print('requesting now...');
     futureData = GetClient.fetchData(apiUrl);
-    print('request done...');
   }
 
   @override

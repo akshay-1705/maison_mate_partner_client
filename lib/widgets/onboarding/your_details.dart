@@ -241,7 +241,7 @@ class _YourDetailsSectionState extends State<YourDetailsSection> {
           'postcodes_covered': model.selectedPostcodes.toList(),
         };
         postFutureData =
-            PostClient.request(apiUrl, formData, model, (response) {});
+            PostClient.request(apiUrl, formData, model, (response) async {});
       }
     }
   }

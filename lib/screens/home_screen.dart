@@ -69,16 +69,17 @@ class HomeScreen extends StatelessWidget {
         Icons.logout_outlined,
         color: Color(secondaryColor),
       ),
-      onPressed: () async {
-        bool confirm = await CustomAppBar.showConfirmationDialog(
+      onPressed: () {
+        Future<bool> confirm = CustomAppBar.showConfirmationDialog(
             context, "Are you sure you want to Logout?");
-        if (confirm) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
+
+        confirm.then((value) {
+          if (value) {
             storage.delete(key: authTokenKey);
             Navigator.pushReplacement(context,
                 MaterialPageRoute(builder: (context) => const SignInWidget()));
-          });
-        }
+          }
+        });
       },
     );
   }

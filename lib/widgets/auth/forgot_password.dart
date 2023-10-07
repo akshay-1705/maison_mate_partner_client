@@ -74,8 +74,8 @@ class _ResetPasswordWidgetState extends State<ResetPasswordWidget> {
       var formData = {
         'email': emailController.text,
       };
-      futureData =
-          PostClient.request(forgotPasswordUrl, formData, model, (response) {
+      futureData = PostClient.request(forgotPasswordUrl, formData, model,
+          (response) async {
         ScaffoldMessenger.of(context).showSnackBar(
             MySnackBar(message: response.message, error: false).getSnackbar());
         model.setSuccessMessage(response.message);
