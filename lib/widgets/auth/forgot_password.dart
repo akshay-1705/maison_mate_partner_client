@@ -32,7 +32,6 @@ class _ResetPasswordWidgetState extends State<ResetPasswordWidget> {
         absorbing: model.isLoading,
         child: GestureDetector(
             onTap: () {
-              // Dismiss the keyboard when tapped on a non-actionable item
               FocusScope.of(context).unfocus();
             },
             child: Padding(
@@ -60,7 +59,16 @@ class _ResetPasswordWidgetState extends State<ResetPasswordWidget> {
                                 () async {
                                   onSubmitCallback(model);
                                 },
-                                () {},
+                                () {
+                                  model.setSuccessMessage(
+                                      'Password reset instructions sent to your email');
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      MySnackBar(
+                                              message:
+                                                  'Password reset instructions sent to your email',
+                                              error: false)
+                                          .getSnackbar());
+                                },
                               )
                             : MyForm.submitButton("Send Email", () async {
                                 onSubmitCallback(model);
@@ -70,16 +78,13 @@ class _ResetPasswordWidgetState extends State<ResetPasswordWidget> {
 
   void onSubmitCallback(ForgotPasswordModel model) {
     if (!model.isSubmitting && _formKey.currentState!.validate()) {
+      model.setIsSubmitting(true);
       const String forgotPasswordUrl = '$baseApiUrl/partner/forgot_password';
       var formData = {
         'email': emailController.text,
       };
-      futureData = PostClient.request(forgotPasswordUrl, formData, model,
-          (response) async {
-        ScaffoldMessenger.of(context).showSnackBar(
-            MySnackBar(message: response.message, error: false).getSnackbar());
-        model.setSuccessMessage(response.message);
-      });
+      futureData = PostClient.request(
+          forgotPasswordUrl, formData, model, (response) async {});
     }
   }
 
