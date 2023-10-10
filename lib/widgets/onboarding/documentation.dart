@@ -36,6 +36,7 @@ class _DocumentationState extends State<Documentation> {
   @override
   Widget build(BuildContext context) {
     final DocumentationModel model = Provider.of<DocumentationModel>(context);
+    model.pendingDocuments = false;
 
     return Scaffold(
         body: GetRequestFutureBuilder<dynamic>(
@@ -50,7 +51,6 @@ class _DocumentationState extends State<Documentation> {
   SingleChildScrollView renderForm(
       DocumentationModel model, data, BuildContext context) {
     bool limited = data.isLimited;
-    // TODO: This approach is not good. Fix this.
     List<DocumentationPart> documentationParts = [
       DocumentationPart(
           title: 'Banking',
@@ -159,18 +159,25 @@ class _DocumentationState extends State<Documentation> {
   }
 
   void onSubmitCallback(DocumentationModel model) {
-    if (model.agree && model.canWorkInUK && model.notHaveCriminalOffence) {
-      model.setIsSubmitting(true);
-      var formData = {
-        'agree_to_tnc': model.agree.toString(),
-        'can_work_in_uk': model.canWorkInUK.toString(),
-        'not_have_criminal_offence': model.notHaveCriminalOffence.toString(),
-      };
-      futureData = PutClient.request(apiUrl, formData, model, (response) {});
+    if (!model.pendingDocuments) {
+      if (model.agree && model.canWorkInUK && model.notHaveCriminalOffence) {
+        model.setIsSubmitting(true);
+        var formData = {
+          'agree_to_tnc': model.agree.toString(),
+          'can_work_in_uk': model.canWorkInUK.toString(),
+          'not_have_criminal_offence': model.notHaveCriminalOffence.toString(),
+        };
+        futureData = PutClient.request(apiUrl, formData, model, (response) {});
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(MySnackBar(
+                message:
+                    'Please review and agree to all policies before submitting',
+                error: true)
+            .getSnackbar());
+      }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(MySnackBar(
-              message:
-                  'Please review and agree to all policies before submitting',
+              message: 'Kindly complete all the documentation steps',
               error: true)
           .getSnackbar());
     }
