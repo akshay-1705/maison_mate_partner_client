@@ -4,9 +4,9 @@ import 'package:maison_mate/network/client/get_client.dart';
 import 'package:maison_mate/network/client/put_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/provider/documentation_model.dart';
+import 'package:maison_mate/screens/home_screen.dart';
 import 'package:maison_mate/shared/my_form.dart';
 import 'package:maison_mate/shared/my_snackbar.dart';
-import 'package:maison_mate/widgets/home.dart';
 import 'package:maison_mate/widgets/onboarding/documentation/banking.dart';
 import 'package:maison_mate/widgets/onboarding/documentation/employees.dart';
 import 'package:maison_mate/widgets/onboarding/documentation/health_and_safety.dart';
@@ -145,7 +145,7 @@ class _DocumentationState extends State<Documentation> {
                         Navigator.of(context).pop();
                         Navigator.of(context).pushReplacement(
                           MaterialPageRoute(
-                              builder: (context) => const HomeWidget()),
+                              builder: (context) => const HomeScreen()),
                         );
                       },
                     )

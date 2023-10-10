@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:maison_mate/network/client/post_client.dart';
+import 'package:maison_mate/screens/home_screen.dart';
 import 'package:maison_mate/shared/my_form.dart';
 import 'package:maison_mate/shared/my_snackbar.dart';
 import 'package:maison_mate/widgets/auth/sign_in.dart';
@@ -10,7 +11,6 @@ import 'package:provider/provider.dart';
 import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/constants.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:maison_mate/widgets/home.dart';
 
 class SignUpWidget extends StatefulWidget {
   const SignUpWidget({Key? key}) : super(key: key);
@@ -70,7 +70,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                               () {
                                 Navigator.of(context).pushReplacement(
                                   MaterialPageRoute(
-                                      builder: (context) => const HomeWidget()),
+                                      builder: (context) => const HomeScreen()),
                                 );
                               },
                             )
