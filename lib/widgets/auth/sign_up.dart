@@ -154,7 +154,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                   text: "Terms & Conditions",
                   style: const TextStyle(
                     fontSize: 13,
-                    color: Color(awesomeColor),
+                    color: Colors.green,
                   ),
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
@@ -175,7 +175,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                   text: "Privacy Policy",
                   style: const TextStyle(
                     fontSize: 13,
-                    color: Color(awesomeColor),
+                    color: Colors.green,
                   ),
                   recognizer: TapGestureRecognizer()
                     ..onTap = () {
