@@ -101,9 +101,11 @@ class PutClient {
         } else if (snapshot.connectionState == ConnectionState.waiting) {
           return MyForm.circularLoader();
         } else if (snapshot.data!.success &&
-            snapshot.connectionState == ConnectionState.done) {
+            snapshot.connectionState == ConnectionState.done &&
+            !isSnackbarShown) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             onNavigation();
+            isSnackbarShown = true;
             ScaffoldMessenger.of(context).showSnackBar(
                 MySnackBar(message: "Updated successfully", error: false)
                     .getSnackbar());
