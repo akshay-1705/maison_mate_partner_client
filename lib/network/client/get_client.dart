@@ -65,7 +65,7 @@ class _GetRequestFutureBuilderState<T>
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Text(
-                'Something went wrong',
+                somethingWentWrong,
                 style: TextStyle(
                   fontSize: 20.0,
                 ),
