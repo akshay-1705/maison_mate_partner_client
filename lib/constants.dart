@@ -1,5 +1,5 @@
-const String baseDomain = "https://maisonmate.co.uk/";
-const String secretHeader = '1e802fb752174d1c3145cc657872b0a1';
+const String baseDomain = "http://192.168.0.158:3000";
+const String secretHeader = 'keyi';
 const String authTokenKey = "authToken";
 const String baseApiUrl = "$baseDomain/api/v1";
 const String networkError = "Network Error";
