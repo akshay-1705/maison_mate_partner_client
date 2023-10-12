@@ -7,8 +7,10 @@ class EmailVerificationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
-      body: Container(
+        body: SingleChildScrollView(
+      child: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [
@@ -27,6 +29,9 @@ class EmailVerificationScreen extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
+                    SizedBox(
+                      height: screenHeight * 0.2,
+                    ),
                     CircleAvatar(
                       radius: constraints.maxWidth * 0.1, // Responsive sizing
                       backgroundColor: const Color(themeColor),
@@ -104,6 +109,6 @@ class EmailVerificationScreen extends StatelessWidget {
           },
         ),
       ),
-    );
+    ));
   }
 }
