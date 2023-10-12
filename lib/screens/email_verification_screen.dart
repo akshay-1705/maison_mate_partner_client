@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:maison_mate/constants.dart';
-import 'package:maison_mate/network/client/get_client.dart';
+import 'package:maison_mate/network/client/post_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
+import 'package:maison_mate/provider/email_verification_model.dart';
 import 'package:maison_mate/shared/custom_app_bar.dart';
+import 'package:maison_mate/shared/my_form.dart';
 import 'package:maison_mate/shared/my_snackbar.dart';
 import 'package:maison_mate/widgets/auth/sign_in.dart';
+import 'package:provider/provider.dart';
 
 class EmailVerificationScreen extends StatefulWidget {
   const EmailVerificationScreen({super.key});
@@ -16,16 +19,10 @@ class EmailVerificationScreen extends StatefulWidget {
 }
 
 class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
-  late Future<ApiResponse> futureData;
-  Future<ApiResponse>? resentfutureData;
+  Future<ApiResponse>? futureData;
   static const String apiUrl =
       '$baseApiUrl/partners/onboarding/email_verification';
-
-  @override
-  void initState() {
-    super.initState();
-    futureData = GetClient.fetchData(apiUrl);
-  }
+  var snackbarShown = false;
 
   @override
   Widget build(BuildContext context) {
@@ -55,15 +52,12 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
             ),
           ],
         ),
-        body: GetRequestFutureBuilder<dynamic>(
-            future: futureData,
-            apiUrl: apiUrl,
-            builder: (context, data) {
-              return renderData(context);
-            }));
+        body: renderData(context));
   }
 
   Widget renderData(BuildContext context) {
+    final EmailVerificationModel model =
+        Provider.of<EmailVerificationModel>(context);
     final screenHeight = MediaQuery.of(context).size.height;
     return SingleChildScrollView(
       child: Container(
@@ -116,20 +110,35 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                       child: Column(
                         children: <Widget>[
                           const Text(
-                            'A verification link has been sent to your email address. Please click the link to verify your email.',
+                            'A verification link will be sent to your email address. Please click the link to verify your email.',
                             style: TextStyle(
                                 fontSize: 18, color: Color(themeColor)),
                             textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: 20),
-                          (resentfutureData != null)
-                              ? GetRequestFutureBuilder<dynamic>(
-                                  future: resentfutureData,
-                                  apiUrl: apiUrl,
-                                  builder: (context, data) {
-                                    return resentButton(context);
-                                  })
-                              : resentButton(context),
+                          (futureData != null)
+                              ? PostClient.futureBuilder(
+                                  model,
+                                  futureData!,
+                                  "Send",
+                                  () async {
+                                    onSubmitCallback(model);
+                                  },
+                                  () {
+                                    if (!snackbarShown) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(MySnackBar(
+                                                  message:
+                                                      'Email verification link sent',
+                                                  error: false)
+                                              .getSnackbar());
+                                      snackbarShown = true;
+                                    }
+                                  },
+                                )
+                              : MyForm.submitButton("Send", () async {
+                                  onSubmitCallback(model);
+                                }),
                         ],
                       ),
                     ),
@@ -143,30 +152,9 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
     );
   }
 
-  ElevatedButton resentButton(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {
-        setState(() {
-          resentfutureData = GetClient.fetchData(apiUrl);
-        });
-        resentfutureData?.then((response) {
-          ScaffoldMessenger.of(context).showSnackBar(
-              MySnackBar(message: 'Email verification link sent', error: false)
-                  .getSnackbar());
-        });
-      },
-      style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all<Color>(
-          const Color(themeColor),
-        ),
-      ),
-      child: const Text(
-        'Resend Verification Email',
-        style: TextStyle(
-          fontSize: 18,
-          color: Color(secondaryColor),
-        ),
-      ),
-    );
+  void onSubmitCallback(EmailVerificationModel model) {
+    model.setIsSubmitting(true);
+    snackbarShown = false;
+    futureData = PostClient.request(apiUrl, {}, model, (response) async {});
   }
 }

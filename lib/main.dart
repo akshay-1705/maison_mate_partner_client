@@ -6,6 +6,7 @@ import 'package:maison_mate/provider/documentation/insurance_model.dart';
 import 'package:maison_mate/provider/documentation/profile_picture_model.dart';
 import 'package:maison_mate/provider/documentation/self_trader_identification_model.dart';
 import 'package:maison_mate/provider/documentation_model.dart';
+import 'package:maison_mate/provider/email_verification_model.dart';
 import 'package:maison_mate/screens/home_screen.dart';
 import 'package:maison_mate/widgets/auth/sign_in.dart';
 import 'package:maison_mate/provider/auth/sign_in_model.dart';
@@ -43,6 +44,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (_) => EmployeesModel()),
           ChangeNotifierProvider(create: (_) => HealthAndSafetyModel()),
           ChangeNotifierProvider(create: (_) => DocumentationModel()),
+          ChangeNotifierProvider(create: (_) => EmailVerificationModel()),
           ChangeNotifierProvider(
               create: (_) => SelfTraderIdentificationModel()),
         ],
