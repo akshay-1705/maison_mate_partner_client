@@ -23,6 +23,7 @@ class _HomeWidgetState extends State<HomeWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
     return Expanded(
         child: GetRequestFutureBuilder<dynamic>(
       future: futureData,
@@ -32,7 +33,7 @@ class _HomeWidgetState extends State<HomeWidget> {
           child: Column(
             children: [
               if (data.documentation == true) ...[
-                const SizedBox(height: 120),
+                SizedBox(height: screenHeight * 0.15),
                 onboardingComplete(),
                 Container(
                   padding: const EdgeInsets.all(10),
@@ -58,9 +59,9 @@ class _HomeWidgetState extends State<HomeWidget> {
                     textAlign: TextAlign.center, // Align text to center
                   ),
                 ),
-                const SizedBox(height: 50),
               ] else ...[
-                completeOnboarding(data.yourDetailsSection)
+                SizedBox(height: screenHeight * 0.3),
+                completeOnboarding(data.yourDetailsSection, screenHeight)
               ],
             ],
           ),
@@ -80,11 +81,10 @@ class _HomeWidgetState extends State<HomeWidget> {
         ));
   }
 
-  Column completeOnboarding(yourDetailsSection) {
+  Column completeOnboarding(yourDetailsSection, double screenHeight) {
     String buttonText = yourDetailsSection ? 'Resume' : 'Proceed';
     return Column(
       children: [
-        const SizedBox(height: 250),
         Container(
           alignment: Alignment.bottomLeft,
           child: Center(
@@ -101,7 +101,7 @@ class _HomeWidgetState extends State<HomeWidget> {
             ),
           ),
         ),
-        const SizedBox(height: 20),
+        SizedBox(height: screenHeight * 0.02),
         ElevatedButton(
           onPressed: () {
             Navigator.push(
@@ -129,7 +129,6 @@ class _HomeWidgetState extends State<HomeWidget> {
             ),
           ),
         ),
-        const SizedBox(height: 240),
       ],
     );
   }
