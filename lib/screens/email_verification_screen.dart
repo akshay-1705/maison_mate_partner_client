@@ -36,21 +36,6 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
   void initState() {
     super.initState();
     authToken();
-    channel.stream.listen((message) {
-      var decodedMessage = jsonDecode(message)['message'];
-      channel.sink.add(jsonEncode({
-        'command': 'subscribe',
-        'identifier': jsonEncode({'channel': 'EmailVerificationChannel'})
-      }));
-
-      if (decodedMessage is Map &&
-          decodedMessage['token'] == token &&
-          decodedMessage['status'] == 'verified') {
-        Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (context) => const HomeScreen(),
-        ));
-      }
-    });
   }
 
   Future<String?> authToken() async {
@@ -85,7 +70,29 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
             ),
           ],
         ),
-        body: renderData(context));
+        body: StreamBuilder(
+            stream: channel.stream,
+            builder: (context, snapshot) {
+              checkIfVerified(snapshot, context);
+              return renderData(context);
+            }));
+  }
+
+  void checkIfVerified(AsyncSnapshot<dynamic> snapshot, BuildContext context) {
+    if (snapshot.data != null) {
+      var data = jsonDecode(snapshot.data);
+      var decodedMessage = data['message'];
+
+      if (decodedMessage is Map &&
+          decodedMessage['token'] == token &&
+          decodedMessage['status'] == 'verified') {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (context) => const HomeScreen(),
+          ));
+        });
+      }
+    }
   }
 
   Widget renderData(BuildContext context) {
@@ -188,6 +195,10 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
   void onSubmitCallback(EmailVerificationModel model) {
     model.setIsSubmitting(true);
     snackbarShown = false;
+    channel.sink.add(jsonEncode({
+      'command': 'subscribe',
+      'identifier': jsonEncode({'channel': 'EmailVerificationChannel'})
+    }));
     futureData = PostClient.request(apiUrl, {}, model, (response) async {});
   }
 }
