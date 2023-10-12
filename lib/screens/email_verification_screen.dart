@@ -1,14 +1,19 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:maison_mate/constants.dart';
 import 'package:maison_mate/network/client/post_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/provider/email_verification_model.dart';
+import 'package:maison_mate/screens/home_screen.dart';
 import 'package:maison_mate/shared/custom_app_bar.dart';
 import 'package:maison_mate/shared/my_form.dart';
 import 'package:maison_mate/shared/my_snackbar.dart';
 import 'package:maison_mate/widgets/auth/sign_in.dart';
 import 'package:provider/provider.dart';
+import 'package:web_socket_channel/io.dart';
 
 class EmailVerificationScreen extends StatefulWidget {
   const EmailVerificationScreen({super.key});
@@ -20,13 +25,41 @@ class EmailVerificationScreen extends StatefulWidget {
 
 class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
   Future<ApiResponse>? futureData;
+  FlutterSecureStorage storage = const FlutterSecureStorage();
   static const String apiUrl =
       '$baseApiUrl/partners/onboarding/email_verification';
   var snackbarShown = false;
+  final channel = IOWebSocketChannel.connect('$webSocketUrl/cable');
+  late String token;
+
+  @override
+  void initState() {
+    super.initState();
+    authToken();
+    channel.stream.listen((message) {
+      var decodedMessage = jsonDecode(message)['message'];
+      channel.sink.add(jsonEncode({
+        'command': 'subscribe',
+        'identifier': jsonEncode({'channel': 'EmailVerificationChannel'})
+      }));
+
+      if (decodedMessage is Map &&
+          decodedMessage['token'] == token &&
+          decodedMessage['status'] == 'verified') {
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (context) => const HomeScreen(),
+        ));
+      }
+    });
+  }
+
+  Future<String?> authToken() async {
+    token = (await storage.read(key: authTokenKey))!;
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
-    const storage = FlutterSecureStorage();
     return Scaffold(
         appBar: AppBar(
           actions: <Widget>[

@@ -1,7 +1,8 @@
-const String baseDomain = "http://192.168.0.158:3000";
+const String baseDomain = "192.168.0.158";
 const String secretHeader = 'keyi';
 const String authTokenKey = "authToken";
-const String baseApiUrl = "$baseDomain/api/v1";
+const String baseApiUrl = "http://$baseDomain:3000/api/v1";
+const String webSocketUrl = "ws://$baseDomain:3000";
 const String networkError = "Network Error";
 const String somethingWentWrong =
     "Something Went Wrong. Try again after sometime";
