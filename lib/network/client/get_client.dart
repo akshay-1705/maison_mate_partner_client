@@ -32,7 +32,7 @@ class GetClient {
 
 // ignore: must_be_immutable
 class GetRequestFutureBuilder<T> extends StatefulWidget {
-  late Future<ApiResponse<T>> future;
+  late Future<ApiResponse<T>>? future;
   final Widget Function(BuildContext context, T data) builder;
   final String apiUrl;
 
@@ -83,7 +83,7 @@ class _GetRequestFutureBuilderState<T>
             ],
           ));
         }
-        return MyForm.circularLoader();
+        return Container();
       },
     );
   }
