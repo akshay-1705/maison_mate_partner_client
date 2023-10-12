@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:maison_mate/constants.dart';
 import 'package:http/http.dart' as http;
 import 'package:maison_mate/network/response/image_response.dart';
 import 'package:maison_mate/shared/my_snackbar.dart';
@@ -12,8 +11,7 @@ class ImageHelper {
       ImageResponse imageResponse, dynamic model, BuildContext context) async {
     try {
       if (imageResponse.imageUrl != null) {
-        final response =
-            await http.get(Uri.parse("$baseDomain${imageResponse.imageUrl}"));
+        final response = await http.get(Uri.parse("${imageResponse.imageUrl}"));
         if (response.statusCode == 200) {
           final bytes = response.bodyBytes;
           final tempDir = await getTemporaryDirectory();
@@ -41,8 +39,7 @@ class ImageHelper {
       VoidCallback failureAction) async {
     try {
       if (imageResponse.imageUrl != null) {
-        final response =
-            await http.get(Uri.parse("$baseDomain${imageResponse.imageUrl}"));
+        final response = await http.get(Uri.parse("${imageResponse.imageUrl}"));
         if (response.statusCode == 200) {
           final bytes = response.bodyBytes;
           final tempDir = await getTemporaryDirectory();
