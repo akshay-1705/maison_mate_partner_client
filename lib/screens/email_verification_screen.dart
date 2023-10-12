@@ -12,8 +12,8 @@ class EmailVerificationScreen extends StatelessWidget {
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              Colors.blueGrey,
-              Colors.grey
+              Color(secondaryColor),
+              Color(secondaryColor)
             ], // Customize your gradient colors
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
@@ -28,12 +28,12 @@ class EmailVerificationScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     CircleAvatar(
-                      radius: constraints.maxWidth * 0.2, // Responsive sizing
-                      backgroundColor: Colors.white,
+                      radius: constraints.maxWidth * 0.1, // Responsive sizing
+                      backgroundColor: const Color(themeColor),
                       child: Icon(
                         Icons.email,
-                        color: const Color(themeColor),
-                        size: constraints.maxWidth * 0.25, // Responsive sizing
+                        color: const Color(secondaryColor),
+                        size: constraints.maxWidth * 0.1, // Responsive sizing
                       ),
                     ),
                     const SizedBox(height: 20),
@@ -42,14 +42,14 @@ class EmailVerificationScreen extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 30,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        color: Color(themeColor),
                       ),
                     ),
                     const SizedBox(height: 20),
                     Container(
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: const Color(secondaryColor),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Column(
@@ -57,8 +57,7 @@ class EmailVerificationScreen extends StatelessWidget {
                           const Text(
                             'A verification link has been sent to your email address. Please click the link to verify your email.',
                             style: TextStyle(
-                              fontSize: 18,
-                            ),
+                                fontSize: 18, color: Color(themeColor)),
                             textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: 20),
@@ -75,14 +74,13 @@ class EmailVerificationScreen extends StatelessWidget {
                               'Resend Verification Email',
                               style: TextStyle(
                                 fontSize: 18,
-                                color: Colors.white,
+                                color: Color(secondaryColor),
                               ),
                             ),
                           ),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 20),
                     TextButton(
                       onPressed: () {
                         Navigator.push(
@@ -95,7 +93,7 @@ class EmailVerificationScreen extends StatelessWidget {
                         'Not now',
                         style: TextStyle(
                           fontSize: 18,
-                          color: Colors.white,
+                          color: Color(themeColor),
                         ),
                       ),
                     ),
