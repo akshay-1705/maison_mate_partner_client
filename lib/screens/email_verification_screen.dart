@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:maison_mate/constants.dart';
-import 'package:maison_mate/screens/home_screen.dart';
+import 'package:maison_mate/shared/custom_app_bar.dart';
+import 'package:maison_mate/widgets/auth/sign_in.dart';
 
 class EmailVerificationScreen extends StatelessWidget {
   const EmailVerificationScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    const storage = FlutterSecureStorage();
     final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
         body: SingleChildScrollView(
@@ -86,21 +89,27 @@ class EmailVerificationScreen extends StatelessWidget {
                         ],
                       ),
                     ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const HomeScreen()),
-                        );
-                      },
-                      child: const Text(
-                        'Not now',
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: Color(themeColor),
-                        ),
+                    IconButton(
+                      icon: const Icon(
+                        Icons.logout_outlined,
+                        color: Color(themeColor),
                       ),
+                      onPressed: () {
+                        Future<bool> confirm =
+                            CustomAppBar.showConfirmationDialog(
+                                context, "Are you sure you want to Logout?");
+
+                        confirm.then((value) {
+                          if (value) {
+                            storage.delete(key: authTokenKey);
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const SignInWidget()));
+                          }
+                        });
+                      },
                     ),
                   ],
                 ),

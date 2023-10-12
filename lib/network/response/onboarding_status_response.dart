@@ -10,7 +10,11 @@ class OnboardingStatusResponse {
   @JsonKey(required: true, defaultValue: false)
   final bool? documentation;
 
-  OnboardingStatusResponse(this.yourDetailsSection, this.documentation);
+  @JsonKey(name: 'email_verified', required: true, defaultValue: false)
+  final bool? emailVerified;
+
+  OnboardingStatusResponse(
+      this.yourDetailsSection, this.documentation, this.emailVerified);
 
   factory OnboardingStatusResponse.fromJson(Map<String, dynamic> json) =>
       _$OnboardingStatusResponseFromJson(json);

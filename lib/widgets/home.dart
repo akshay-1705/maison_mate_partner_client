@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:maison_mate/constants.dart';
 import 'package:maison_mate/network/client/get_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
+import 'package:maison_mate/screens/email_verification_screen.dart';
 import 'package:maison_mate/screens/onboarding_screen.dart';
 
 class HomeWidget extends StatefulWidget {
@@ -29,43 +30,53 @@ class _HomeWidgetState extends State<HomeWidget> {
       future: futureData,
       apiUrl: apiUrl,
       builder: (context, data) {
-        return SingleChildScrollView(
-          child: Column(
-            children: [
-              if (data.documentation == true) ...[
-                SizedBox(height: screenHeight * 0.15),
-                onboardingComplete(),
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  alignment: Alignment.center,
-                  child: const Text(
-                    'Your submitted documents are being analysed by our officials',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w500,
+        if (!data.emailVerified) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                  builder: (context) => const EmailVerificationScreen()),
+            );
+          });
+          return Container();
+        } else {
+          return SingleChildScrollView(
+            child: Column(
+              children: [
+                if (data.documentation == true) ...[
+                  SizedBox(height: screenHeight * 0.15),
+                  onboardingComplete(),
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    alignment: Alignment.center,
+                    child: const Text(
+                      'Your submitted documents are being analysed by our officials',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      textAlign: TextAlign.center, // Align text to center
                     ),
-                    textAlign: TextAlign.center, // Align text to center
                   ),
-                ),
-                Container(
-                  padding: const EdgeInsets.only(left: 20, right: 20),
-                  alignment: Alignment.center,
-                  child: const Text(
-                    'we will update you once the acceptance process completes',
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w200,
+                  Container(
+                    padding: const EdgeInsets.only(left: 20, right: 20),
+                    alignment: Alignment.center,
+                    child: const Text(
+                      'we will update you once the acceptance process completes',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w200,
+                      ),
+                      textAlign: TextAlign.center, // Align text to center
                     ),
-                    textAlign: TextAlign.center, // Align text to center
                   ),
-                ),
-              ] else ...[
-                SizedBox(height: screenHeight * 0.3),
-                completeOnboarding(data.yourDetailsSection, screenHeight)
+                ] else ...[
+                  SizedBox(height: screenHeight * 0.3),
+                  completeOnboarding(data.yourDetailsSection, screenHeight)
+                ],
               ],
-            ],
-          ),
-        );
+            ),
+          );
+        }
       },
     ));
   }
