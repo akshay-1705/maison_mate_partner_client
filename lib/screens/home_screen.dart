@@ -4,22 +4,40 @@ import 'package:maison_mate/constants.dart';
 import 'package:maison_mate/shared/custom_app_bar.dart';
 import 'package:maison_mate/widgets/auth/sign_in.dart';
 import 'package:maison_mate/widgets/home.dart';
+import 'package:maison_mate/widgets/payments.dart';
 
-class HomeScreen extends StatelessWidget {
-  static const storage = FlutterSecureStorage();
-
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  var currentIndex = 0;
+  static const storage = FlutterSecureStorage();
+  final List<Widget> pages = [
+    const HomeWidget(),
+    const PaymentsWidget(),
+    const HomeWidget(),
+  ];
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(children: [header(context, storage), const HomeWidget()]),
+      appBar: header(context, storage),
+      body: SingleChildScrollView(child: pages[currentIndex]),
       bottomNavigationBar: bottomNavigation(),
     );
   }
 
   Widget bottomNavigation() {
     return BottomNavigationBar(
+      currentIndex: currentIndex,
+      onTap: (index) {
+        setState(() {
+          currentIndex = index;
+        });
+      },
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(Icons.dashboard),
@@ -39,27 +57,18 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget header(BuildContext context, FlutterSecureStorage storage) {
-    return Container(
-      color: const Color(themeColor), // Header background color
-      padding: const EdgeInsets.only(top: 50.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          const Padding(
-            padding: EdgeInsets.only(left: 16),
-            child: Text(
-              'Maison Mate', // Company name
-              style: TextStyle(
-                color: Color(secondaryColor), // Text color
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          logout(context, storage),
-        ],
+  AppBar header(BuildContext context, FlutterSecureStorage storage) {
+    return AppBar(
+      backgroundColor: const Color(themeColor), // Header background color
+      title: const Text(
+        'Maison Mate',
+        style: TextStyle(
+          color: Color(secondaryColor), // Text color
+          fontSize: 24,
+          fontWeight: FontWeight.bold,
+        ),
       ),
+      actions: [logout(context, storage)],
     );
   }
 

@@ -56,7 +56,7 @@ class _GetRequestFutureBuilderState<T>
       future: widget.future,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return MyForm.circularLoader();
+          return MyForm.circularLoader(context);
         } else if (snapshot.hasData) {
           return widget.builder(context, snapshot.data!.data);
         } else if (snapshot.hasError) {
