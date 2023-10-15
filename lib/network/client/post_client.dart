@@ -66,8 +66,8 @@ class PostClient {
                   : somethingWentWrong);
 
           if (!isSnackbarShown) {
+            isSnackbarShown = true;
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              isSnackbarShown = true;
               ScaffoldMessenger.of(context).showSnackBar(
                   MySnackBar(message: errorMessage, error: true).getSnackbar());
             });
