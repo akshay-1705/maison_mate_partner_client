@@ -1,4 +1,4 @@
-const String baseDomain = "192.168.0.158";
+const String baseDomain = "192.168.1.7";
 const String secretHeader = 'keyi';
 const String authTokenKey = "authToken";
 const String baseApiUrl = "http://$baseDomain:3000/api/v1";
