@@ -97,9 +97,13 @@ class PutClient {
                   MySnackBar(message: errorMessage, error: true).getSnackbar());
             });
           }
-          return MyForm.submitButton(buttonText, buttonAction);
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
         } else if (snapshot.connectionState == ConnectionState.waiting) {
-          return MyForm.circularLoader();
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
         } else if (snapshot.data!.success &&
             snapshot.connectionState == ConnectionState.done &&
             !isSnackbarShown) {
@@ -113,7 +117,9 @@ class PutClient {
           return MyForm.submitButton(buttonText, buttonAction);
         }
 
-        return MyForm.circularLoader();
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
       },
     );
   }

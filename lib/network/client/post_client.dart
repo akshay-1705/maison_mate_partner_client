@@ -74,7 +74,9 @@ class PostClient {
           }
           return MyForm.submitButton(buttonText, buttonAction);
         } else if (snapshot.connectionState == ConnectionState.waiting) {
-          return MyForm.circularLoader();
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
         } else if (snapshot.data!.success &&
             snapshot.connectionState == ConnectionState.done) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -83,7 +85,9 @@ class PostClient {
           return MyForm.submitButton(buttonText, buttonAction);
         }
 
-        return MyForm.circularLoader();
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
       },
     );
   }

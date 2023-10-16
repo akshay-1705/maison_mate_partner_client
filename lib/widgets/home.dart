@@ -25,8 +25,7 @@ class _HomeWidgetState extends State<HomeWidget> {
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
-    return Expanded(
-        child: GetRequestFutureBuilder<dynamic>(
+    return GetRequestFutureBuilder<dynamic>(
       future: futureData,
       apiUrl: apiUrl,
       builder: (context, data) {
@@ -39,46 +38,44 @@ class _HomeWidgetState extends State<HomeWidget> {
           });
           return Container();
         } else {
-          return SingleChildScrollView(
-            child: Column(
-              children: [
-                if (data.documentation == true) ...[
-                  SizedBox(height: screenHeight * 0.15),
-                  onboardingComplete(),
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    alignment: Alignment.center,
-                    child: const Text(
-                      'Your submitted documents are being analysed by our officials',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500,
-                      ),
-                      textAlign: TextAlign.center, // Align text to center
+          return Column(
+            children: [
+              if (data.documentation == true) ...[
+                SizedBox(height: screenHeight * 0.15),
+                onboardingComplete(),
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  alignment: Alignment.center,
+                  child: const Text(
+                    'Your submitted documents are being analysed by our officials',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500,
                     ),
+                    textAlign: TextAlign.center, // Align text to center
                   ),
-                  Container(
-                    padding: const EdgeInsets.only(left: 20, right: 20),
-                    alignment: Alignment.center,
-                    child: const Text(
-                      'we will update you once the acceptance process completes',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w200,
-                      ),
-                      textAlign: TextAlign.center, // Align text to center
+                ),
+                Container(
+                  padding: const EdgeInsets.only(left: 20, right: 20),
+                  alignment: Alignment.center,
+                  child: const Text(
+                    'we will update you once the acceptance process completes',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w200,
                     ),
+                    textAlign: TextAlign.center, // Align text to center
                   ),
-                ] else ...[
-                  SizedBox(height: screenHeight * 0.3),
-                  completeOnboarding(data.yourDetailsSection, screenHeight)
-                ],
+                ),
+              ] else ...[
+                SizedBox(height: screenHeight * 0.3),
+                completeOnboarding(data.yourDetailsSection, screenHeight)
               ],
-            ),
+            ],
           );
         }
       },
-    ));
+    );
   }
 
   Widget onboardingComplete() {

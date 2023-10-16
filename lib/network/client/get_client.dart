@@ -56,35 +56,42 @@ class _GetRequestFutureBuilderState<T>
       future: widget.future,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return MyForm.circularLoader();
+          return MyForm.circularLoader(context);
         } else if (snapshot.hasData) {
           return widget.builder(context, snapshot.data!.data);
         } else if (snapshot.hasError) {
-          return Center(
-              child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text(
-                'Something went wrong!',
-                style: TextStyle(
-                  fontSize: 20.0,
-                ),
-              ),
-              // Refresh Icon
-              IconButton(
-                  onPressed: () {
-                    {
-                      setState(() {
-                        widget.future = GetClient.fetchData(widget.apiUrl);
-                      });
-                    }
-                  },
-                  icon: const Icon(Icons.refresh))
-            ],
-          ));
+          return refreshButton(context);
         }
         return Container();
       },
     );
+  }
+
+  Container refreshButton(BuildContext context) {
+    return Container(
+        height: MediaQuery.of(context).size.height * 0.75,
+        alignment: Alignment.center,
+        child: Center(
+            child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text(
+              'Something went wrong!',
+              style: TextStyle(
+                fontSize: 20.0,
+              ),
+            ),
+            // Refresh Icon
+            IconButton(
+                onPressed: () {
+                  {
+                    setState(() {
+                      widget.future = GetClient.fetchData(widget.apiUrl);
+                    });
+                  }
+                },
+                icon: const Icon(Icons.refresh))
+          ],
+        )));
   }
 }
