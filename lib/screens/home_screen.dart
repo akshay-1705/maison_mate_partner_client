@@ -3,6 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:maison_mate/constants.dart';
 import 'package:maison_mate/shared/custom_app_bar.dart';
 import 'package:maison_mate/widgets/auth/sign_in.dart';
+import 'package:maison_mate/widgets/favourites.dart';
 import 'package:maison_mate/widgets/home.dart';
 import 'package:maison_mate/widgets/payments.dart';
 
@@ -19,19 +20,24 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<Widget> pages = [
     const HomeWidget(),
     const PaymentsWidget(),
-    const HomeWidget(),
+    const FavouritesWidget(),
   ];
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: header(context, storage),
-      body: SingleChildScrollView(child: pages[currentIndex]),
-      bottomNavigationBar: bottomNavigation(),
-    );
+    return GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: Scaffold(
+          appBar: header(context),
+          body: SingleChildScrollView(child: pages[currentIndex]),
+          bottomNavigationBar: bottomNavigation(),
+        ));
   }
 
   Widget bottomNavigation() {
     return BottomNavigationBar(
+      type: BottomNavigationBarType.fixed,
       currentIndex: currentIndex,
       onTap: (index) {
         setState(() {
@@ -41,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(Icons.dashboard),
-          label: 'Dashboard',
+          label: 'Home',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.payment),
@@ -52,12 +58,14 @@ class _HomeScreenState extends State<HomeScreen> {
           label: 'Favorites',
         ),
       ],
-      selectedItemColor: const Color(themeColor), // Selected tab color
-      unselectedItemColor: Colors.grey, // Unselected tab color
+      selectedItemColor: const Color(themeColor),
+      unselectedItemColor: Colors.grey,
+      showUnselectedLabels: true,
+      backgroundColor: Colors.white,
     );
   }
 
-  AppBar header(BuildContext context, FlutterSecureStorage storage) {
+  AppBar header(BuildContext context) {
     return AppBar(
       backgroundColor: const Color(themeColor), // Header background color
       title: const Text(
@@ -75,7 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget logout(BuildContext context, FlutterSecureStorage storage) {
     return IconButton(
       icon: const Icon(
-        Icons.logout_outlined,
+        Icons.account_circle,
         color: Color(secondaryColor),
       ),
       onPressed: () {

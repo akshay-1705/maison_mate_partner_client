@@ -30,6 +30,26 @@ class MyForm {
         ));
   }
 
+  static Opacity searchField(TextEditingController controller) {
+    return Opacity(
+        opacity: 0.5,
+        child: Container(
+          margin: const EdgeInsets.only(left: 10, right: 10),
+          padding: const EdgeInsets.all(6),
+          child: TextField(
+            controller: controller,
+            decoration: const InputDecoration(
+              labelText: 'Search',
+              prefixIcon: Icon(Icons.search),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.all(
+                    Radius.circular(8.0)), // Adjust the border radius
+              ),
+            ),
+          ),
+        ));
+  }
+
   static Opacity requiredTextField(
       String label, TextEditingController controller,
       [bool? obscure, TextInputType? keyboardType]) {
