@@ -1,4 +1,4 @@
-package com.example.maison_mate
+package com.maison_mate.partner
 
 import io.flutter.embedding.android.FlutterActivity
 
