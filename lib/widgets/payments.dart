@@ -35,43 +35,43 @@ class _PaymentsWidgetState extends State<PaymentsWidget> {
   }
 
   Column renderData(PaymentsSummaryResponse data) {
-    return Column(children: [
-      const SizedBox(height: 10),
-      Row(
-        children: [
-          Flexible(
-            flex: 1,
-            child: PaymentCard(
-              title: 'Total Payments',
-              count: data.total.toString(),
-              color: Colors.green,
+    return Column(
+      children: [
+        const SizedBox(height: 20),
+        Row(
+          children: [
+            Expanded(
+              child: PaymentCard(
+                title: 'Total Payments',
+                count: data.total.toString(),
+                color: Colors.green,
+              ),
             ),
-          ),
-          Flexible(
-            flex: 1,
-            child: PaymentCard(
-              title: 'Pending Payments',
-              count: data.pending.toString(),
-              color: Colors.red,
+            Expanded(
+              child: PaymentCard(
+                title: 'Pending Payments',
+                count: data.pending.toString(),
+                color: Colors.red,
+              ),
             ),
-          ),
-        ],
-      ),
-      const SizedBox(height: 40),
-
-      Container(
+          ],
+        ),
+        const SizedBox(height: 20),
+        Container(
           alignment: Alignment.center,
           child: const Text(
             'All Payments',
             style: TextStyle(
-              color: Color(themeColor), // Text color
-              fontSize: 25,
+              color: Color(themeColor),
+              fontSize: 28,
+              fontWeight: FontWeight.w500,
             ),
-          )),
-      const SizedBox(
-          height: 20), // Add spacing between the cards and the payment list
-      PaymentList(data),
-    ]);
+          ),
+        ),
+        const SizedBox(height: 20),
+        PaymentList(data),
+      ],
+    );
   }
 }
 
@@ -84,9 +84,18 @@ class PaymentList extends StatelessWidget {
   Widget build(BuildContext context) {
     var format = NumberFormat.simpleCurrency(locale: 'en_GB');
 
+    if (data.payments.isEmpty) {
+      return const Center(
+        child: Text(
+          "No payments available",
+          style: TextStyle(fontSize: 18, color: Colors.grey),
+        ),
+      );
+    }
+
     return ListView.builder(
       shrinkWrap: true,
-      physics: const ScrollPhysics(),
+      physics: const BouncingScrollPhysics(), // Add a bouncing effect
       itemCount: data.payments.length,
       itemBuilder: (context, index) {
         final paymentData = data.payments[index];
