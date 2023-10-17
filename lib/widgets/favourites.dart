@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:maison_mate/constants.dart';
+import 'package:maison_mate/network/client/get_client.dart';
+import 'package:maison_mate/network/response/api_response.dart';
+import 'package:maison_mate/network/response/user_response.dart';
 import 'package:maison_mate/shared/my_form.dart';
+import 'package:maison_mate/widgets/user_card.dart';
 
 class FavouritesWidget extends StatefulWidget {
   const FavouritesWidget({Key? key}) : super(key: key);
@@ -11,43 +16,53 @@ class FavouritesWidget extends StatefulWidget {
 
 class _FavouritesWidgetState extends State<FavouritesWidget> {
   final TextEditingController searchController = TextEditingController();
-  final List<User> favoriteUsers = [
-    User(name: 'Random', serviceOffered: 'ABC'),
-    User(name: 'Random', serviceOffered: 'ABC'),
-    User(name: 'Random', serviceOffered: 'ABC'),
-    User(name: 'Random', serviceOffered: 'ABC'),
-    User(name: 'Random', serviceOffered: 'ABC'),
-    User(name: 'Random', serviceOffered: 'ABC'),
-    User(name: 'Random', serviceOffered: 'ABC'),
-    User(name: 'Random', serviceOffered: 'ABC'),
-  ];
-  List<User> filteredUsers = [];
+  List<UserResponse> filteredUsers = [];
+  late Future<ApiResponse> futureData;
+  static const String apiUrl = '$baseApiUrl/partners/favourites';
 
   @override
   void initState() {
     super.initState();
-    filteredUsers = favoriteUsers;
-    searchController.addListener(onSearchChanged);
+    futureData = GetClient.fetchData(apiUrl);
+    futureData.then((apiResponse) {
+      if (mounted) {
+        filteredUsers = apiResponse.data.favourites;
+        searchController.addListener(() {
+          onSearchChanged(apiResponse.data.favourites);
+        });
+      }
+    });
   }
 
-  void onSearchChanged() {
+  onSearchChanged(List<UserResponse> users) {
     final query = searchController.text.toLowerCase();
-    setState(() {
-      filteredUsers = favoriteUsers
-          .where((user) => user.name.toLowerCase().contains(query))
-          .toList();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        filteredUsers = users
+            .where((user) => user.name!.toLowerCase().contains(query))
+            .toList();
+      });
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    return GetRequestFutureBuilder<dynamic>(
+        future: futureData,
+        apiUrl: apiUrl,
+        builder: (context, data) {
+          return renderData(context);
+        });
+  }
+
+  Column renderData(BuildContext context) {
     return Column(children: [
       const SizedBox(height: 20),
       MyForm.searchField(searchController),
       const SizedBox(height: 20),
       if (filteredUsers.isEmpty)
         Container(
-            height: MediaQuery.of(context).size.height * 0.70,
+            height: MediaQuery.of(context).size.height * 0.50,
             alignment: Alignment.center,
             child: const Center(
               child: Text(
@@ -87,7 +102,7 @@ class _FavouritesWidgetState extends State<FavouritesWidget> {
     ]);
   }
 
-  void _showDeleteConfirmation(User user) {
+  void _showDeleteConfirmation(UserResponse user) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -111,56 +126,6 @@ class _FavouritesWidgetState extends State<FavouritesWidget> {
           ],
         );
       },
-    );
-  }
-}
-
-class User {
-  final String name;
-  final String serviceOffered;
-
-  User({required this.name, required this.serviceOffered});
-}
-
-class UserCard extends StatelessWidget {
-  final User user;
-
-  const UserCard({Key? key, required this.user}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            spreadRadius: 2,
-            blurRadius: 1,
-            offset: const Offset(0, 1),
-          ),
-        ],
-      ),
-      child: ListTile(
-        contentPadding: const EdgeInsets.all(10),
-        title: Text(
-          user.name,
-          style: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w500,
-            color: Colors.black54, // Add a touch of blue color
-          ),
-        ),
-        subtitle: Text(
-          'Service Offered: ${user.serviceOffered}',
-          style: const TextStyle(
-            fontSize: 13,
-            color: Colors.blueGrey, // Add a touch of green color
-          ),
-        ),
-      ),
     );
   }
 }

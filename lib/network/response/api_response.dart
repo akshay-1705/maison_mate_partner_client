@@ -4,6 +4,7 @@ import 'package:maison_mate/network/response/documentation/employees_response.da
 import 'package:maison_mate/network/response/documentation/health_and_safety_response.dart';
 import 'package:maison_mate/network/response/documentation/documentation_response.dart';
 import 'package:maison_mate/network/response/documentation/self_trader_response.dart';
+import 'package:maison_mate/network/response/favourites_response.dart';
 import 'package:maison_mate/network/response/image_response.dart';
 import 'package:maison_mate/network/response/documentation/insurance_response.dart';
 import 'package:maison_mate/network/response/onboarding_status_response.dart';
@@ -67,6 +68,8 @@ class _Converter<T> implements JsonConverter<T, Object> {
         map.containsKey('total') &&
         map.containsKey('pending')) {
       return PaymentsSummaryResponse.fromJson(map) as T;
+    } else if (map.containsKey('favourites')) {
+      return FavouritesResponse.fromJson(map) as T;
     } else {
       return map as T;
     }
