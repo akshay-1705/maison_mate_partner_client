@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:maison_mate/constants.dart';
 import 'package:maison_mate/network/client/get_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/network/response/user_response.dart';
+import 'package:maison_mate/provider/favourites_model.dart';
 import 'package:maison_mate/shared/my_form.dart';
+import 'package:maison_mate/shared/my_snackbar.dart';
 import 'package:maison_mate/widgets/user_card.dart';
+import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class FavouritesWidget extends StatefulWidget {
   const FavouritesWidget({Key? key}) : super(key: key);
@@ -16,29 +21,29 @@ class FavouritesWidget extends StatefulWidget {
 
 class _FavouritesWidgetState extends State<FavouritesWidget> {
   final TextEditingController searchController = TextEditingController();
-  List<UserResponse> filteredUsers = [];
   late Future<ApiResponse> futureData;
   static const String apiUrl = '$baseApiUrl/partners/favourites';
 
   @override
   void initState() {
     super.initState();
+    var stateModel = Provider.of<FavouritesModel>(context, listen: false);
     futureData = GetClient.fetchData(apiUrl);
     futureData.then((apiResponse) {
       if (mounted) {
-        filteredUsers = apiResponse.data.favourites;
+        stateModel.filteredUsers = apiResponse.data.favourites;
         searchController.addListener(() {
-          onSearchChanged(apiResponse.data.favourites);
+          onSearchChanged(apiResponse.data.favourites, stateModel);
         });
       }
     });
   }
 
-  onSearchChanged(List<UserResponse> users) {
+  onSearchChanged(List<UserResponse> users, FavouritesModel stateModel) {
     final query = searchController.text.toLowerCase();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
-        filteredUsers = users
+        stateModel.filteredUsers = users
             .where((user) => user.name!.toLowerCase().contains(query))
             .toList();
       });
@@ -56,11 +61,13 @@ class _FavouritesWidgetState extends State<FavouritesWidget> {
   }
 
   Column renderData(BuildContext context) {
+    final FavouritesModel model = Provider.of<FavouritesModel>(context);
+
     return Column(children: [
       const SizedBox(height: 20),
       MyForm.searchField(searchController),
       const SizedBox(height: 20),
-      if (filteredUsers.isEmpty)
+      if (model.filteredUsers.isEmpty)
         Container(
             height: MediaQuery.of(context).size.height * 0.50,
             alignment: Alignment.center,
@@ -77,16 +84,16 @@ class _FavouritesWidgetState extends State<FavouritesWidget> {
         ListView.builder(
           shrinkWrap: true,
           physics: const BouncingScrollPhysics(),
-          itemCount: filteredUsers.length,
+          itemCount: model.filteredUsers.length,
           itemBuilder: (context, index) {
-            final user = filteredUsers[index];
+            final user = model.filteredUsers[index];
             return Slidable(
               endActionPane: ActionPane(
                 motion: const ScrollMotion(),
                 children: [
                   SlidableAction(
                     onPressed: (context) {
-                      _showDeleteConfirmation(user);
+                      showDeleteConfirmation(user, context, model);
                     },
                     backgroundColor: Colors.red,
                     foregroundColor: Colors.white,
@@ -102,7 +109,8 @@ class _FavouritesWidgetState extends State<FavouritesWidget> {
     ]);
   }
 
-  void _showDeleteConfirmation(UserResponse user) {
+  void showDeleteConfirmation(
+      UserResponse user, BuildContext context, FavouritesModel model) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -121,11 +129,44 @@ class _FavouritesWidgetState extends State<FavouritesWidget> {
               child: const Text('Delete'),
               onPressed: () {
                 Navigator.of(context).pop();
+                deleteUser(user, context, model);
               },
             ),
           ],
         );
       },
     );
+  }
+
+  void deleteUser(
+      UserResponse user, BuildContext context, FavouritesModel model) async {
+    try {
+      const storage = FlutterSecureStorage();
+      var authToken = await storage.read(key: authTokenKey);
+      authToken ??= '';
+      var userId = user.id;
+      String deleteApiUrl = '$baseApiUrl/partners/favourite/$userId';
+
+      final response = await http.delete(
+        Uri.parse(deleteApiUrl),
+        headers: <String, String>{'Partner-Authorization': authToken},
+      );
+      if (response.statusCode == 200 && mounted) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          model.removeItemFromFilteredUsers(user);
+          ScaffoldMessenger.of(context).showSnackBar(MySnackBar(
+                  message: 'Successfully removed from favourites', error: false)
+              .getSnackbar());
+        });
+      } else {
+        throw ('Unable to remove from favourites');
+      }
+    } catch (e) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            MySnackBar(message: 'Unable to remove from favourites', error: true)
+                .getSnackbar());
+      });
+    }
   }
 }

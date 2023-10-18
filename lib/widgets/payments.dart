@@ -42,14 +42,14 @@ class _PaymentsWidgetState extends State<PaymentsWidget> {
           children: [
             Expanded(
               child: PaymentCard(
-                title: 'Total Payments',
+                title: 'Total',
                 count: data.total.toString(),
                 color: Colors.green,
               ),
             ),
             Expanded(
               child: PaymentCard(
-                title: 'Pending Payments',
+                title: 'Pending',
                 count: data.pending.toString(),
                 color: Colors.red,
               ),
