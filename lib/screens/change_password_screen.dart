@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:maison_mate/constants.dart';
 import 'package:maison_mate/network/client/put_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
+import 'package:maison_mate/provider/change_password_model.dart';
 import 'package:maison_mate/shared/my_form.dart';
 import 'package:maison_mate/shared/my_snackbar.dart';
 import 'package:provider/provider.dart';
@@ -110,14 +111,5 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
             )),
       ],
     );
-  }
-}
-
-class ChangePasswordModel extends ChangeNotifier {
-  bool isSubmitting = false;
-
-  void setIsSubmitting(bool value) {
-    isSubmitting = value;
-    notifyListeners();
   }
 }
