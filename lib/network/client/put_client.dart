@@ -97,9 +97,7 @@ class PutClient {
                   MySnackBar(message: errorMessage, error: true).getSnackbar());
             });
           }
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
+          return MyForm.submitButton(buttonText, buttonAction);
         } else if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
             child: CircularProgressIndicator(),

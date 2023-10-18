@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:maison_mate/constants.dart';
-import 'package:maison_mate/shared/custom_app_bar.dart';
-import 'package:maison_mate/widgets/auth/sign_in.dart';
+import 'package:maison_mate/screens/account_screen.dart';
 import 'package:maison_mate/widgets/favourites.dart';
 import 'package:maison_mate/widgets/home.dart';
 import 'package:maison_mate/widgets/payments.dart';
@@ -16,7 +14,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   var currentIndex = 0;
-  static const storage = FlutterSecureStorage();
   final List<Widget> pages = [
     const HomeWidget(),
     const PaymentsWidget(),
@@ -76,27 +73,19 @@ class _HomeScreenState extends State<HomeScreen> {
           fontWeight: FontWeight.bold,
         ),
       ),
-      actions: [logout(context, storage)],
+      actions: [accountButton(context)],
     );
   }
 
-  Widget logout(BuildContext context, FlutterSecureStorage storage) {
+  Widget accountButton(BuildContext context) {
     return IconButton(
       icon: const Icon(
         Icons.account_circle,
         color: Color(secondaryColor),
       ),
       onPressed: () {
-        Future<bool> confirm = CustomAppBar.showConfirmationDialog(
-            context, "Are you sure you want to Logout?");
-
-        confirm.then((value) {
-          if (value) {
-            storage.delete(key: authTokenKey);
-            Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (context) => const SignInWidget()));
-          }
-        });
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const AccountScreen()));
       },
     );
   }
