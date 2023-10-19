@@ -62,20 +62,19 @@ class _AccountScreenState extends State<AccountScreen> {
                   shape: BoxShape.circle,
                   color: Colors.grey,
                 ),
-                child:
-                    imageUrl != null // Assuming imageUrl is the presigned URL
-                        ? ClipOval(
-                            child: Image.network(
-                            imageUrl,
-                            width: 120,
-                            height: 120,
-                            fit: BoxFit.cover,
-                          ))
-                        : const Icon(
-                            Icons.person,
-                            color: Colors.white,
-                            size: 80,
-                          ),
+                child: (imageUrl != null && imageUrl != '')
+                    ? ClipOval(
+                        child: Image.network(
+                        imageUrl,
+                        width: 120,
+                        height: 120,
+                        fit: BoxFit.cover,
+                      ))
+                    : const Icon(
+                        Icons.person,
+                        color: Colors.white,
+                        size: 80,
+                      ),
               ),
               Expanded(
                 child: Padding(
