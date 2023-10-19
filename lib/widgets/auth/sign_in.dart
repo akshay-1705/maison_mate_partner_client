@@ -29,48 +29,52 @@ class _SignInWidgetState extends State<SignInWidget> {
     final model = Provider.of<SignInModel>(context);
 
     return Scaffold(
-        body: AbsorbPointer(
-            absorbing: model.isSubmitting,
-            child: GestureDetector(
-                onTap: () {
-                  // Dismiss the keyboard when tapped on a non-actionable item
-                  FocusScope.of(context).unfocus();
-                },
-                child: Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Form(
-                        key: _formKey,
-                        child: ListView(
-                          children: <Widget>[
-                            const SizedBox(height: 100),
-                            signInHeader(),
-                            const SizedBox(height: 40),
-                            formFields(model),
-                            const SizedBox(height: 10),
-                            forgotPassword(context, model),
-                            const SizedBox(height: 10),
-                            (futureData != null)
-                                ? PostClient.futureBuilder(
-                                    model,
-                                    futureData!,
-                                    "Login",
-                                    () async {
-                                      onSubmitCallback(model);
-                                    },
-                                    () {
-                                      Navigator.of(context).pushReplacement(
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const HomeScreen()),
-                                      );
-                                    },
-                                  )
-                                : MyForm.submitButton("Login", () async {
-                                    onSubmitCallback(model);
-                                  }),
-                            signUp(context, model),
-                          ],
-                        ))))));
+        body: WillPopScope(
+            onWillPop: () async {
+              return Future.value(false);
+            },
+            child: AbsorbPointer(
+                absorbing: model.isSubmitting,
+                child: GestureDetector(
+                    onTap: () {
+                      // Dismiss the keyboard when tapped on a non-actionable item
+                      FocusScope.of(context).unfocus();
+                    },
+                    child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Form(
+                            key: _formKey,
+                            child: ListView(
+                              children: <Widget>[
+                                const SizedBox(height: 100),
+                                signInHeader(),
+                                const SizedBox(height: 40),
+                                formFields(model),
+                                const SizedBox(height: 10),
+                                forgotPassword(context, model),
+                                const SizedBox(height: 10),
+                                (futureData != null)
+                                    ? PostClient.futureBuilder(
+                                        model,
+                                        futureData!,
+                                        "Login",
+                                        () async {
+                                          onSubmitCallback(model);
+                                        },
+                                        () {
+                                          Navigator.of(context).pushReplacement(
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const HomeScreen()),
+                                          );
+                                        },
+                                      )
+                                    : MyForm.submitButton("Login", () async {
+                                        onSubmitCallback(model);
+                                      }),
+                                signUp(context, model),
+                              ],
+                            )))))));
   }
 
   void onSubmitCallback(SignInModel model) {

@@ -27,7 +27,11 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         child: Scaffold(
           appBar: header(context),
-          body: SingleChildScrollView(child: pages[currentIndex]),
+          body: WillPopScope(
+              onWillPop: () async {
+                return Future.value(false);
+              },
+              child: SingleChildScrollView(child: pages[currentIndex])),
           bottomNavigationBar: bottomNavigation(),
         ));
   }

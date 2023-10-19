@@ -63,6 +63,13 @@ class _BankingState extends State<Banking> {
   WillPopScope renderForm(BuildContext context, BankingModel model) {
     return WillPopScope(
       onWillPop: () async {
+        bool confirm = await CustomAppBar.showConfirmationDialog(
+            context, "Are you sure you want to leave this page?");
+        if (confirm) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            Navigator.of(context).pop();
+          });
+        }
         return Future.value(false);
       },
       child: GestureDetector(

@@ -58,6 +58,13 @@ class _ProfilePictureState extends State<ProfilePicture> {
   Widget renderForm(BuildContext context, ProfilePictureModel model) {
     return WillPopScope(
       onWillPop: () async {
+        bool confirm = await CustomAppBar.showConfirmationDialog(
+            context, "Are you sure you want to leave this page?");
+        if (confirm) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            Navigator.of(context).pop();
+          });
+        }
         return Future.value(false);
       },
       child: GestureDetector(

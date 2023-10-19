@@ -7,6 +7,7 @@ import 'package:maison_mate/network/client/get_client.dart';
 import 'package:maison_mate/network/client/put_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/provider/documentation/self_trader_identification_model.dart';
+import 'package:maison_mate/shared/custom_app_bar.dart';
 import 'package:maison_mate/shared/image_helper.dart';
 import 'package:maison_mate/shared/my_form.dart';
 import 'package:maison_mate/shared/my_snackbar.dart';
@@ -87,88 +88,99 @@ class _SelfTraderIdentificationState extends State<SelfTraderIdentification> {
 
   Widget renderForm(SelfTraderIdentificationModel model, BuildContext context) {
     return Form(
-      key: _formKey,
-      child: AbsorbPointer(
-          absorbing: model.isSubmitting,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              const SizedBox(height: 10),
-              MyForm.formFieldHeader('Are you VAT registered?*'),
-              MyForm.buildRadioButtons(['Yes', 'No'], model.vatRegistered,
-                  (value) {
-                model.setVatRegistered(value);
-              }),
-              if (model.vatRegistered == 'Yes') ...[
-                MyForm.requiredTextField(
-                    "What is your VAT number?*", vatNumberController)
-              ],
-              MyForm.header('Identity Verification'),
-              MyForm.formFieldHeader(
-                  'Please provide additional details to enable us to verify your identity.'),
-              MyForm.formFieldHeader('Date of birth'),
-              MyForm.datePickerFormField(
-                  'DD/MM/YYYY',
-                  dobController,
-                  context,
-                  model,
-                  DateTime.fromMillisecondsSinceEpoch(
-                      int.parse(model.epochString))),
-              MyForm.formFieldHeader(
-                  'Attach proof of ID, a photo or scan of your DRIVING LICENCE or PASSPORT (only jpeg and png file types are supported)'),
-              Column(children: [
-                MyForm.uploadImageButton(() async {
-                  FilePickerResult? result =
-                      await FilePicker.platform.pickFiles(
-                    type: FileType.image,
-                  );
-                  if (result != null) {
-                    model.setSelectedFile1(File(result.files.single.path!));
-                  }
-                }),
-                if (model.selectedFile1 != null)
-                  MyForm.showSelectedImage(model.selectedFile1!)
-              ]),
-              MyForm.formFieldHeader(
-                  'Attach proof of address, a photo or scan of your UTILITY BILL or PERSONAL BANK STATEMENT (only jpeg and png file types are supported).'),
-              Column(children: [
-                MyForm.uploadImageButton(() async {
-                  FilePickerResult? result =
-                      await FilePicker.platform.pickFiles(
-                    type: FileType.image,
-                  );
-                  if (result != null) {
-                    model.setSelectedFile2(File(result.files.single.path!));
-                  }
-                }),
-                if (model.selectedFile2 != null)
-                  MyForm.showSelectedImage(model.selectedFile2!)
-              ]),
-              const SizedBox(height: 40),
-              (futureData != null)
-                  ? PutClient.futureBuilder(
+        key: _formKey,
+        child: WillPopScope(
+          onWillPop: () async {
+            bool confirm = await CustomAppBar.showConfirmationDialog(
+                context, "Are you sure you want to leave this page?");
+            if (confirm) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                Navigator.of(context).pop();
+              });
+            }
+            return Future.value(false);
+          },
+          child: AbsorbPointer(
+              absorbing: model.isSubmitting,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const SizedBox(height: 10),
+                  MyForm.formFieldHeader('Are you VAT registered?*'),
+                  MyForm.buildRadioButtons(['Yes', 'No'], model.vatRegistered,
+                      (value) {
+                    model.setVatRegistered(value);
+                  }),
+                  if (model.vatRegistered == 'Yes') ...[
+                    MyForm.requiredTextField(
+                        "What is your VAT number?*", vatNumberController)
+                  ],
+                  MyForm.header('Identity Verification'),
+                  MyForm.formFieldHeader(
+                      'Please provide additional details to enable us to verify your identity.'),
+                  MyForm.formFieldHeader('Date of birth'),
+                  MyForm.datePickerFormField(
+                      'DD/MM/YYYY',
+                      dobController,
+                      context,
                       model,
-                      futureData!,
-                      "Submit",
-                      () async {
-                        onSubmitCallback(model);
-                      },
-                      () {
-                        Navigator.of(context).pop();
-                        Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(
-                              builder: (context) => const OnboardingScreen(
-                                  yourDetailsSection: true)),
-                        );
-                      },
-                    )
-                  : MyForm.submitButton("Submit", () async {
-                      onSubmitCallback(model);
+                      DateTime.fromMillisecondsSinceEpoch(
+                          int.parse(model.epochString))),
+                  MyForm.formFieldHeader(
+                      'Attach proof of ID, a photo or scan of your DRIVING LICENCE or PASSPORT (only jpeg and png file types are supported)'),
+                  Column(children: [
+                    MyForm.uploadImageButton(() async {
+                      FilePickerResult? result =
+                          await FilePicker.platform.pickFiles(
+                        type: FileType.image,
+                      );
+                      if (result != null) {
+                        model.setSelectedFile1(File(result.files.single.path!));
+                      }
                     }),
-              const SizedBox(height: 40),
-            ],
-          )),
-    );
+                    if (model.selectedFile1 != null)
+                      MyForm.showSelectedImage(model.selectedFile1!)
+                  ]),
+                  MyForm.formFieldHeader(
+                      'Attach proof of address, a photo or scan of your UTILITY BILL or PERSONAL BANK STATEMENT (only jpeg and png file types are supported).'),
+                  Column(children: [
+                    MyForm.uploadImageButton(() async {
+                      FilePickerResult? result =
+                          await FilePicker.platform.pickFiles(
+                        type: FileType.image,
+                      );
+                      if (result != null) {
+                        model.setSelectedFile2(File(result.files.single.path!));
+                      }
+                    }),
+                    if (model.selectedFile2 != null)
+                      MyForm.showSelectedImage(model.selectedFile2!)
+                  ]),
+                  const SizedBox(height: 40),
+                  (futureData != null)
+                      ? PutClient.futureBuilder(
+                          model,
+                          futureData!,
+                          "Submit",
+                          () async {
+                            onSubmitCallback(model);
+                          },
+                          () {
+                            Navigator.of(context).pop();
+                            Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                  builder: (context) => const OnboardingScreen(
+                                      yourDetailsSection: true)),
+                            );
+                          },
+                        )
+                      : MyForm.submitButton("Submit", () async {
+                          onSubmitCallback(model);
+                        }),
+                  const SizedBox(height: 40),
+                ],
+              )),
+        ));
   }
 
   void onSubmitCallback(SelfTraderIdentificationModel model) {

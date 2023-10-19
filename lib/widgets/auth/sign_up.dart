@@ -38,47 +38,52 @@ class _SignUpWidgetState extends State<SignUpWidget> {
 
   renderForm(BuildContext context) {
     final model = Provider.of<SignUpModel>(context);
-    return AbsorbPointer(
-        absorbing: model.isSubmitting,
-        child: GestureDetector(
-            onTap: () {
-              // Dismiss the keyboard when tapped on a non-actionable item
-              FocusScope.of(context).unfocus();
-            },
-            child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Form(
-                    key: _formKey,
-                    child: ListView(children: [
-                      const SizedBox(height: 80),
-                      header(),
-                      const SizedBox(height: 40),
-                      nameFields(),
-                      MyForm.requiredEmailField('Email*', emailController),
-                      passwordFields(),
-                      const SizedBox(height: 10),
-                      termsAndConditions(model),
-                      const SizedBox(height: 10),
-                      (futureData != null)
-                          ? PostClient.futureBuilder(
-                              model,
-                              futureData!,
-                              "Sign Up",
-                              () async {
-                                onSubmitCallback(model);
-                              },
-                              () {
-                                Navigator.of(context).pushReplacement(
-                                  MaterialPageRoute(
-                                      builder: (context) => const HomeScreen()),
-                                );
-                              },
-                            )
-                          : MyForm.submitButton("Sign Up", () async {
-                              onSubmitCallback(model);
-                            }),
-                      signInOption(context, model),
-                    ])))));
+    return WillPopScope(
+        onWillPop: () async {
+          return Future.value(false);
+        },
+        child: AbsorbPointer(
+            absorbing: model.isSubmitting,
+            child: GestureDetector(
+                onTap: () {
+                  // Dismiss the keyboard when tapped on a non-actionable item
+                  FocusScope.of(context).unfocus();
+                },
+                child: Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Form(
+                        key: _formKey,
+                        child: ListView(children: [
+                          const SizedBox(height: 80),
+                          header(),
+                          const SizedBox(height: 40),
+                          nameFields(),
+                          MyForm.requiredEmailField('Email*', emailController),
+                          passwordFields(),
+                          const SizedBox(height: 10),
+                          termsAndConditions(model),
+                          const SizedBox(height: 10),
+                          (futureData != null)
+                              ? PostClient.futureBuilder(
+                                  model,
+                                  futureData!,
+                                  "Sign Up",
+                                  () async {
+                                    onSubmitCallback(model);
+                                  },
+                                  () {
+                                    Navigator.of(context).pushReplacement(
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const HomeScreen()),
+                                    );
+                                  },
+                                )
+                              : MyForm.submitButton("Sign Up", () async {
+                                  onSubmitCallback(model);
+                                }),
+                          signInOption(context, model),
+                        ]))))));
   }
 
   void onSubmitCallback(SignUpModel model) {
