@@ -18,6 +18,7 @@ class _ResetPasswordWidgetState extends State<ResetPasswordWidget> {
   TextEditingController emailController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   Future<ApiResponse>? futureData;
+  var snackbarShown = false;
   @override
   Widget build(BuildContext context) {
     final model = Provider.of<ForgotPasswordModel>(context);
@@ -62,12 +63,15 @@ class _ResetPasswordWidgetState extends State<ResetPasswordWidget> {
                                 () {
                                   model.setSuccessMessage(
                                       'Password reset instructions sent to your email');
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      MySnackBar(
-                                              message:
-                                                  'Password reset instructions sent to your email',
-                                              error: false)
-                                          .getSnackbar());
+                                  if (!snackbarShown) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        MySnackBar(
+                                                message:
+                                                    'Password reset instructions sent to your email',
+                                                error: false)
+                                            .getSnackbar());
+                                    snackbarShown = true;
+                                  }
                                 },
                               )
                             : MyForm.submitButton("Send Email", () async {
@@ -78,6 +82,7 @@ class _ResetPasswordWidgetState extends State<ResetPasswordWidget> {
 
   void onSubmitCallback(ForgotPasswordModel model) {
     if (!model.isSubmitting && _formKey.currentState!.validate()) {
+      snackbarShown = false;
       model.setIsSubmitting(true);
       const String forgotPasswordUrl = '$baseApiUrl/partner/forgot_password';
       var formData = {
