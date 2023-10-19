@@ -30,7 +30,7 @@ class _ResetPasswordWidgetState extends State<ResetPasswordWidget> {
   renderModal(
       TextEditingController emailController, ForgotPasswordModel model) {
     return AbsorbPointer(
-        absorbing: model.isLoading,
+        absorbing: model.isSubmitting,
         child: GestureDetector(
             onTap: () {
               FocusScope.of(context).unfocus();
@@ -61,9 +61,9 @@ class _ResetPasswordWidgetState extends State<ResetPasswordWidget> {
                                   onSubmitCallback(model);
                                 },
                                 () {
-                                  model.setSuccessMessage(
-                                      'Password reset instructions sent to your email');
                                   if (!snackbarShown) {
+                                    model.setSuccessMessage(
+                                        'Password reset instructions sent to your email');
                                     ScaffoldMessenger.of(context).showSnackBar(
                                         MySnackBar(
                                                 message:
