@@ -30,7 +30,8 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
       '$baseApiUrl/partners/onboarding/email_verification';
   var snackbarShown = false;
   final channel = IOWebSocketChannel.connect('$webSocketUrl/cable');
-  late String token;
+  String? token;
+  bool startPinging = false;
 
   @override
   void initState() {
@@ -73,9 +74,20 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
         body: StreamBuilder(
             stream: channel.stream,
             builder: (context, snapshot) {
+              pingStatus();
               checkIfVerified(snapshot, context);
               return renderData(context);
             }));
+  }
+
+  void pingStatus() {
+    if (token != null && startPinging) {
+      channel.sink.add(jsonEncode({
+        'data': jsonEncode({'token': token}),
+        'command': 'message',
+        'identifier': jsonEncode({'channel': 'EmailVerificationChannel'})
+      }));
+    }
   }
 
   void checkIfVerified(AsyncSnapshot<dynamic> snapshot, BuildContext context) {
@@ -195,6 +207,9 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
   void onSubmitCallback(EmailVerificationModel model) {
     model.setIsSubmitting(true);
     snackbarShown = false;
+    setState(() {
+      startPinging = true;
+    });
     channel.sink.add(jsonEncode({
       'command': 'subscribe',
       'identifier': jsonEncode({'channel': 'EmailVerificationChannel'})
