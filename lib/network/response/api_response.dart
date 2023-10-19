@@ -9,6 +9,7 @@ import 'package:maison_mate/network/response/image_response.dart';
 import 'package:maison_mate/network/response/documentation/insurance_response.dart';
 import 'package:maison_mate/network/response/onboarding_status_response.dart';
 import 'package:maison_mate/network/response/payments_summary_response.dart';
+import 'package:maison_mate/network/response/profile_details_response.dart';
 import 'package:maison_mate/network/response/sign_in_response.dart';
 import 'package:maison_mate/network/response/your_details_response.dart';
 
@@ -70,6 +71,11 @@ class _Converter<T> implements JsonConverter<T, Object> {
       return PaymentsSummaryResponse.fromJson(map) as T;
     } else if (map.containsKey('favourites')) {
       return FavouritesResponse.fromJson(map) as T;
+    } else if (map.containsKey('first_name') &&
+        map.containsKey('last_name') &&
+        map.containsKey('email') &&
+        map.containsKey('profile_picture')) {
+      return ProfileDetailsResponse.fromJson(map) as T;
     } else {
       return map as T;
     }

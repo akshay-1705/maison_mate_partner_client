@@ -137,7 +137,7 @@ class _DocumentationState extends State<Documentation> {
                   ? PutClient.futureBuilder(
                       model,
                       futureData!,
-                      "Finish",
+                      "Submit",
                       () async {
                         onSubmitCallback(model);
                       },
@@ -149,7 +149,7 @@ class _DocumentationState extends State<Documentation> {
                         );
                       },
                     )
-                  : MyForm.submitButton("Finish", () async {
+                  : MyForm.submitButton("Submit", () async {
                       onSubmitCallback(model);
                     }),
               const SizedBox(height: 50),

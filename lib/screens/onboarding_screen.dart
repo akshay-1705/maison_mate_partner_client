@@ -35,7 +35,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 },
                 child: Scaffold(
                   appBar: CustomAppBar.show(
-                      context, "Onboarding", const Icon(Icons.home_rounded)),
+                      context, "Edit details", const Icon(Icons.arrow_back)),
                   body: buildBody(),
                 ))));
   }
