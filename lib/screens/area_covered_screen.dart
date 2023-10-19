@@ -76,7 +76,7 @@ class _AreaCoveredScreenState extends State<AreaCoveredScreen> {
             },
             min: 5,
             max: 100,
-            divisions: 10,
+            divisions: 95,
             label: model.selectedRadius.toStringAsFixed(0),
             activeColor: Colors.green, // Change the slider color
           ),
