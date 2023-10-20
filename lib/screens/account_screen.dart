@@ -6,6 +6,7 @@ import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/network/response/profile_details_response.dart';
 import 'package:maison_mate/screens/area_covered_screen.dart';
 import 'package:maison_mate/screens/change_password_screen.dart';
+import 'package:maison_mate/screens/delete_account_screen.dart';
 import 'package:maison_mate/screens/onboarding_screen.dart';
 import 'package:maison_mate/shared/custom_app_bar.dart';
 import 'package:maison_mate/widgets/auth/sign_in.dart';
@@ -136,6 +137,17 @@ class _AccountScreenState extends State<AccountScreen> {
             title: 'Support',
             onTap: () {
               showSupportDialog(context);
+            },
+          ),
+          const Divider(),
+          customListTile(
+            icon: Icons.delete,
+            title: 'Delete account',
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const DeleteAccountScreen()));
             },
           ),
           const Divider(),

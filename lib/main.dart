@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:maison_mate/provider/area_covered_model.dart';
 import 'package:maison_mate/provider/change_password_model.dart';
+import 'package:maison_mate/provider/delete_account_model.dart';
 import 'package:maison_mate/provider/documentation/banking_model.dart';
 import 'package:maison_mate/provider/documentation/employees_model.dart';
 import 'package:maison_mate/provider/documentation/health_and_safety_model.dart';
@@ -51,6 +52,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (_) => FavouritesModel()),
           ChangeNotifierProvider(create: (_) => ChangePasswordModel()),
           ChangeNotifierProvider(create: (_) => AreaCoveredModel()),
+          ChangeNotifierProvider(create: (_) => DeleteAccountModel()),
           ChangeNotifierProvider(
               create: (_) => SelfTraderIdentificationModel()),
         ],
