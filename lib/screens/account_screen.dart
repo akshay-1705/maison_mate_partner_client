@@ -217,7 +217,7 @@ class _AccountScreenState extends State<AccountScreen> {
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  'jatinrawat43@gmail.com',
+                  'helpdesk.maisonmate@gmail.com',
                   style: TextStyle(
                     fontSize: 16.0,
                     fontWeight: FontWeight.w600,
