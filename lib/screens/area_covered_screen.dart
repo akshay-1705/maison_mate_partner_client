@@ -46,9 +46,10 @@ class _AreaCoveredScreenState extends State<AreaCoveredScreen> {
             }));
   }
 
-  Padding renderData(data) {
+  SingleChildScrollView renderData(data) {
     final model = Provider.of<AreaCoveredModel>(context);
-    return Padding(
+    return SingleChildScrollView(
+        child: Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -98,7 +99,7 @@ class _AreaCoveredScreenState extends State<AreaCoveredScreen> {
                 }),
         ],
       ),
-    );
+    ));
   }
 
   void onSubmitCallback(BuildContext context, AreaCoveredModel model) {

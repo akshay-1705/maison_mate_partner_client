@@ -43,13 +43,15 @@ class _AccountScreenState extends State<AccountScreen> {
             }));
   }
 
-  Padding renderData(BuildContext context, ProfileDetailsResponse data) {
+  SingleChildScrollView renderData(
+      BuildContext context, ProfileDetailsResponse data) {
     var firstName = data.firstName;
     var lastName = data.lastName;
     String fullName = '$firstName $lastName';
     var imageUrl = data.profilePicture.imageUrl;
 
-    return Padding(
+    return SingleChildScrollView(
+        child: Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -160,7 +162,7 @@ class _AccountScreenState extends State<AccountScreen> {
           ),
         ],
       ),
-    );
+    ));
   }
 
   void logoutCallback(BuildContext context) {
