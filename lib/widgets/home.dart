@@ -4,6 +4,7 @@ import 'package:maison_mate/network/client/get_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/screens/email_verification_screen.dart';
 import 'package:maison_mate/screens/onboarding_screen.dart';
+import 'package:maison_mate/widgets/dashboard.dart';
 
 class HomeWidget extends StatefulWidget {
   const HomeWidget({Key? key}) : super(key: key);
@@ -29,7 +30,9 @@ class _HomeWidgetState extends State<HomeWidget> {
       future: futureData,
       apiUrl: apiUrl,
       builder: (context, data) {
-        if (!data.emailVerified) {
+        if (data.accountVerified) {
+          return const DashboardWidget();
+        } else if (!data.emailVerified) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(

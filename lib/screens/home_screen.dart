@@ -3,7 +3,7 @@ import 'package:maison_mate/constants.dart';
 import 'package:maison_mate/screens/account_screen.dart';
 import 'package:maison_mate/widgets/favourites.dart';
 import 'package:maison_mate/widgets/home.dart';
-import 'package:maison_mate/widgets/payments.dart';
+import 'package:maison_mate/widgets/my_jobs.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -16,7 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
   var currentIndex = 0;
   final List<Widget> pages = [
     const HomeWidget(),
-    const PaymentsWidget(),
+    const MyJobsWidget(),
     const FavouritesWidget(),
   ];
   @override
@@ -47,12 +47,12 @@ class _HomeScreenState extends State<HomeScreen> {
       },
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
-          icon: Icon(Icons.dashboard),
-          label: 'Home',
+          icon: Icon(Icons.search),
+          label: 'Find Jobs',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.payment),
-          label: 'Payments',
+          icon: Icon(Icons.home_repair_service),
+          label: 'My Jobs',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.favorite),

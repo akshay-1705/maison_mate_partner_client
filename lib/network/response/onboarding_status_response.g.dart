@@ -13,13 +13,15 @@ OnboardingStatusResponse _$OnboardingStatusResponseFromJson(
     requiredKeys: const [
       'your_details_section',
       'documentation',
-      'email_verified'
+      'email_verified',
+      'account_verified'
     ],
   );
   return OnboardingStatusResponse(
     json['your_details_section'] as bool? ?? false,
     json['documentation'] as bool? ?? false,
     json['email_verified'] as bool? ?? false,
+    json['account_verified'] as bool? ?? false,
   );
 }
 
@@ -29,4 +31,5 @@ Map<String, dynamic> _$OnboardingStatusResponseToJson(
       'your_details_section': instance.yourDetailsSection,
       'documentation': instance.documentation,
       'email_verified': instance.emailVerified,
+      'account_verified': instance.accountVerified,
     };
