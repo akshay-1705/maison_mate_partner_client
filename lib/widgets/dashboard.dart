@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:maison_mate/constants.dart';
+import 'package:maison_mate/network/client/get_client.dart';
+import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/screens/nearby_jobs_list.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:geolocator/geolocator.dart';
@@ -15,6 +18,9 @@ class DashboardWidget extends StatefulWidget {
 class _DashboardWidgetState extends State<DashboardWidget> {
   String? address;
   late Position position;
+  late Future<ApiResponse> futureData;
+  static const String apiUrl = '$baseApiUrl/partners/find_jobs';
+
   @override
   void initState() {
     super.initState();
@@ -73,6 +79,10 @@ class _DashboardWidgetState extends State<DashboardWidget> {
 
   @override
   Widget build(BuildContext context) {
+    String url =
+        '$apiUrl/?latitude=${position.latitude}&longitude=${position.latitude}';
+    futureData = GetClient.fetchData(url);
+    print(futureData);
     address ??= '';
     return SingleChildScrollView(
       child: Padding(
