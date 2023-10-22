@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:maison_mate/constants.dart';
+import 'package:maison_mate/screens/nearby_jobs_list.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DashboardWidget extends StatefulWidget {
   const DashboardWidget({Key? key}) : super(key: key);
@@ -10,105 +13,107 @@ class DashboardWidget extends StatefulWidget {
 }
 
 class _DashboardWidgetState extends State<DashboardWidget> {
+  String? address;
+  late Position position;
+  @override
+  void initState() {
+    super.initState();
+    requestLocationPermission();
+  }
+
+  Future<void> getCurrentLocation() async {
+    position = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
+    List<Placemark> placemarks =
+        await placemarkFromCoordinates(position.latitude, position.longitude);
+
+    if (placemarks.isNotEmpty) {
+      Placemark firstPlacemark = placemarks.first;
+      setState(() {
+        address =
+            '${firstPlacemark.street} ${firstPlacemark.subLocality} ${firstPlacemark.locality} ${firstPlacemark.postalCode}';
+      });
+    }
+  }
+
+  void openSettingsWhenDenied() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Location Permission Required'),
+            content: const Text(
+                'Please enable location access for this app in your device settings.'),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('Open Settings'),
+                onPressed: () {
+                  openAppSettings();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    });
+  }
+
+  Future<void> requestLocationPermission() async {
+    final status = await Permission.location.request();
+    if (status.isGranted) {
+      getCurrentLocation();
+    } else if (status.isDenied) {
+      openSettingsWhenDenied();
+    } else if (status.isPermanentlyDenied) {
+      openSettingsWhenDenied();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return const SingleChildScrollView(
+    address ??= '';
+    return SingleChildScrollView(
       child: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            SizedBox(height: 20),
-            NearbyJobsList(),
-            SizedBox(height: 20),
+            GestureDetector(
+              onTap: () async {
+                final Uri mapUrl = Uri.parse(
+                    'https://maps.google.com/?q=${position.latitude},${position.longitude}');
+                if (await canLaunchUrl(mapUrl)) {
+                  await launchUrl(mapUrl);
+                }
+              },
+              child: showLocation(),
+            ),
+            const SizedBox(height: 25),
+            const NearbyJobsList(),
+            const SizedBox(height: 20),
           ],
         ),
       ),
     );
   }
-}
 
-class NearbyJobsList extends StatelessWidget {
-  const NearbyJobsList({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    var format = NumberFormat.simpleCurrency(locale: 'en_GB');
-    final List<Map<String, dynamic>> nearbyJobs = [
-      {
-        'title': 'Plumbing',
-        'amount': '25',
-        'date': 'Oct 20, 2023',
-        'distance': '1km',
-      },
-      {
-        'title': 'Painting',
-        'amount': '79',
-        'date': 'Oct 22, 2023',
-        'distance': '2km',
-      },
-      {
-        'title': 'Plumbing',
-        'amount': '50',
-        'date': 'Oct 20, 2023',
-        'distance': '5km',
-      },
-      {
-        'title': 'Painting',
-        'amount': '45',
-        'date': 'Oct 22, 2023',
-        'distance': '8km',
-      },
-      {
-        'title': 'Plumbing',
-        'amount': '25',
-        'date': 'Oct 20, 2023',
-        'distance': '1km',
-      },
-      {
-        'title': 'Painting',
-        'amount': '79',
-        'date': 'Oct 22, 2023',
-        'distance': '2km',
-      },
-      {
-        'title': 'Plumbing',
-        'amount': '50',
-        'date': 'Oct 20, 2023',
-        'distance': '5km',
-      },
-      {
-        'title': 'Painting',
-        'amount': '45',
-        'date': 'Oct 22, 2023',
-        'distance': '8km',
-      },
-    ];
-
-    return Column(
-      children: nearbyJobs.map((job) {
-        return Container(
-          margin: const EdgeInsets.only(bottom: 15),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15),
-            border: Border.all(
-              color: Colors.grey,
-              width: 1.0,
+  SingleChildScrollView showLocation() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          const Icon(Icons.location_on),
+          const SizedBox(width: 5),
+          Text(
+            '$address',
+            style: const TextStyle(
+              fontSize: 15,
             ),
           ),
-          child: Card(
-            color: const Color(secondaryColor),
-            elevation: 0,
-            child: ListTile(
-              leading: Text(job['distance']),
-              title: Text(job['title']),
-              subtitle:
-                  Text('Amount: ${job['amount']}${format.currencySymbol}'),
-              trailing: Text('Job date: ${job['date']}'),
-            ),
-          ),
-        );
-      }).toList(),
+        ],
+      ),
     );
   }
 }
