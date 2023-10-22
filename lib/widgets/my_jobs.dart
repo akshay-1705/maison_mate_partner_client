@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:maison_mate/constants.dart';
 import 'package:maison_mate/network/client/get_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
-import 'package:maison_mate/network/response/payments_summary_response.dart';
 
 class MyJobsWidget extends StatefulWidget {
   const MyJobsWidget({Key? key}) : super(key: key);
@@ -31,7 +30,7 @@ class _MyJobsWidgetState extends State<MyJobsWidget> {
         });
   }
 
-  SingleChildScrollView renderData(PaymentsSummaryResponse data) {
+  SingleChildScrollView renderData(data) {
     return const SingleChildScrollView(
         child: Padding(
             padding: EdgeInsets.all(16.0),

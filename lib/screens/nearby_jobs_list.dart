@@ -1,46 +1,67 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:maison_mate/constants.dart';
+import 'package:maison_mate/network/response/find_jobs_response.dart';
 
-class NearbyJobsList extends StatelessWidget {
-  const NearbyJobsList({super.key});
+class NearbyJobsList extends StatefulWidget {
+  final FindJobsResponse data;
+  const NearbyJobsList({Key? key, required this.data}) : super(key: key);
+
+  @override
+  State<NearbyJobsList> createState() => _NearbyJobsListState();
+}
+
+class _NearbyJobsListState extends State<NearbyJobsList> {
+  var format = NumberFormat.simpleCurrency(locale: 'en_GB');
 
   @override
   Widget build(BuildContext context) {
-    var format = NumberFormat.simpleCurrency(locale: 'en_GB');
-    final List<Map<String, dynamic>> nearbyJobs = [
-      {
-        'title': 'Plumbing',
-        'amount': '25',
-        'date': 'Oct 20, 2023',
-        'distance': '1km',
-      },
-    ];
+    final nearbyJobs = widget.data.nearbyJobs;
 
-    return Column(
-      children: nearbyJobs.map((job) {
-        return Container(
-          margin: const EdgeInsets.only(bottom: 15),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15),
-            border: Border.all(
-              color: Colors.grey,
-              width: 1.0,
+    if (nearbyJobs.isEmpty) {
+      return Container(
+          height: MediaQuery.of(context).size.height * 0.50,
+          alignment: Alignment.center,
+          child: const Center(
+            child: Text(
+              'No nearby jobs found',
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.grey,
+              ),
             ),
-          ),
-          child: Card(
-            color: const Color(secondaryColor),
-            elevation: 0,
-            child: ListTile(
-              leading: Text(job['distance']),
-              title: Text(job['title']),
-              subtitle:
-                  Text('Amount: ${job['amount']}${format.currencySymbol}'),
-              trailing: Text('Job date: ${job['date']}'),
-            ),
-          ),
-        );
-      }).toList(),
+          ));
+    }
+
+    return CustomScrollView(
+      slivers: <Widget>[
+        SliverList(
+          delegate: SliverChildBuilderDelegate((context, index) {
+            final job = nearbyJobs[index];
+            return Container(
+              margin: const EdgeInsets.only(bottom: 15),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                border: Border.all(
+                  color: Colors.grey,
+                  width: 1.0,
+                ),
+              ),
+              child: Card(
+                color: const Color(secondaryColor),
+                elevation: 0,
+                child: ListTile(
+                  leading: Text(job.distance ?? ''),
+                  title: Text(job.serviceName ?? ''),
+                  subtitle:
+                      Text('Amount: ${job.amount}${format.currencySymbol}'),
+                  trailing: Text('Job date: ${job.completionDate}'),
+                ),
+              ),
+            );
+          }, childCount: nearbyJobs.length),
+        ),
+      ],
     );
   }
 }

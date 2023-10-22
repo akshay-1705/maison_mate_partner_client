@@ -16,9 +16,11 @@ class DashboardWidget extends StatefulWidget {
 }
 
 class _DashboardWidgetState extends State<DashboardWidget> {
+  GlobalKey<RefreshIndicatorState> refreshKey =
+      GlobalKey<RefreshIndicatorState>();
   String? address;
-  late Position position;
-  late Future<ApiResponse> futureData;
+  Position? position;
+  Future<ApiResponse>? futureData;
   static const String apiUrl = '$baseApiUrl/partners/find_jobs';
 
   @override
@@ -32,7 +34,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
       desiredAccuracy: LocationAccuracy.high,
     );
     List<Placemark> placemarks =
-        await placemarkFromCoordinates(position.latitude, position.longitude);
+        await placemarkFromCoordinates(position!.latitude, position!.longitude);
 
     if (placemarks.isNotEmpty) {
       Placemark firstPlacemark = placemarks.first;
@@ -79,32 +81,37 @@ class _DashboardWidgetState extends State<DashboardWidget> {
 
   @override
   Widget build(BuildContext context) {
-    String url =
-        '$apiUrl/?latitude=${position.latitude}&longitude=${position.latitude}';
-    futureData = GetClient.fetchData(url);
-    print(futureData);
+    if (position != null) {
+      String url =
+          '$apiUrl/?latitude=${position!.latitude}&longitude=${position!.latitude}';
+      futureData = GetClient.fetchData(url);
+    }
     address ??= '';
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            GestureDetector(
-              onTap: () async {
-                final Uri mapUrl = Uri.parse(
-                    'https://maps.google.com/?q=${position.latitude},${position.longitude}');
-                if (await canLaunchUrl(mapUrl)) {
-                  await launchUrl(mapUrl);
-                }
-              },
-              child: showLocation(),
-            ),
-            const SizedBox(height: 25),
-            const NearbyJobsList(),
-            const SizedBox(height: 20),
-          ],
-        ),
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          GestureDetector(
+            onTap: () async {
+              final Uri mapUrl = Uri.parse(
+                  'https://maps.google.com/?q=${position!.latitude},${position!.longitude}');
+              if (await canLaunchUrl(mapUrl)) {
+                await launchUrl(mapUrl);
+              }
+            },
+            child: showLocation(),
+          ),
+          const SizedBox(height: 25),
+          GetRequestFutureBuilder<dynamic>(
+            apiUrl: apiUrl,
+            future: futureData,
+            builder: (context, data) {
+              return NearbyJobsList(data: data);
+            },
+          ),
+          const SizedBox(height: 20),
+        ],
       ),
     );
   }

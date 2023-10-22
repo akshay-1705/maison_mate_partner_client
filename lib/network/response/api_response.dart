@@ -5,10 +5,10 @@ import 'package:maison_mate/network/response/documentation/health_and_safety_res
 import 'package:maison_mate/network/response/documentation/documentation_response.dart';
 import 'package:maison_mate/network/response/documentation/self_trader_response.dart';
 import 'package:maison_mate/network/response/favourites_response.dart';
+import 'package:maison_mate/network/response/find_jobs_response.dart';
 import 'package:maison_mate/network/response/image_response.dart';
 import 'package:maison_mate/network/response/documentation/insurance_response.dart';
 import 'package:maison_mate/network/response/onboarding_status_response.dart';
-import 'package:maison_mate/network/response/payments_summary_response.dart';
 import 'package:maison_mate/network/response/profile_details_response.dart';
 import 'package:maison_mate/network/response/sign_in_response.dart';
 import 'package:maison_mate/network/response/your_details_response.dart';
@@ -65,10 +65,6 @@ class _Converter<T> implements JsonConverter<T, Object> {
     } else if (map.containsKey('proof_of_id') &&
         map.containsKey('proof_of_address')) {
       return SelfTraderResponse.fromJson(map) as T;
-    } else if (map.containsKey('payments') &&
-        map.containsKey('total') &&
-        map.containsKey('pending')) {
-      return PaymentsSummaryResponse.fromJson(map) as T;
     } else if (map.containsKey('favourites')) {
       return FavouritesResponse.fromJson(map) as T;
     } else if (map.containsKey('first_name') &&
@@ -76,6 +72,8 @@ class _Converter<T> implements JsonConverter<T, Object> {
         map.containsKey('email') &&
         map.containsKey('profile_picture')) {
       return ProfileDetailsResponse.fromJson(map) as T;
+    } else if (map.containsKey('nearby_jobs')) {
+      return FindJobsResponse.fromJson(map) as T;
     } else {
       return map as T;
     }
