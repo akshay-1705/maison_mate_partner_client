@@ -142,10 +142,10 @@ class _DocumentationState extends State<Documentation> {
                         onSubmitCallback(model);
                       },
                       () {
-                        Navigator.of(context).pop();
-                        Navigator.of(context).pushReplacement(
+                        Navigator.of(context).pushAndRemoveUntil(
                           MaterialPageRoute(
                               builder: (context) => const HomeScreen()),
+                          (route) => false,
                         );
                       },
                     )
