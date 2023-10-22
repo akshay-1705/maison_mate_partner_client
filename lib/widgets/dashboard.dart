@@ -31,7 +31,6 @@ class _DashboardWidgetState extends State<DashboardWidget> {
 
   @override
   Widget build(BuildContext context) {
-    address ??= '';
     return RefreshIndicator(
         onRefresh: () => refreshData(),
         child: Padding(
@@ -71,7 +70,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
           const Icon(Icons.location_on),
           const SizedBox(width: 5),
           Text(
-            '$address',
+            address ?? '',
             style: const TextStyle(
               fontSize: 15,
             ),
