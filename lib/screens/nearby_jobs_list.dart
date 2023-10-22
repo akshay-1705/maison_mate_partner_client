@@ -20,48 +20,53 @@ class _NearbyJobsListState extends State<NearbyJobsList> {
 
     if (nearbyJobs.isEmpty) {
       return Container(
-          height: MediaQuery.of(context).size.height * 0.50,
-          alignment: Alignment.center,
-          child: const Center(
-            child: Text(
-              'No nearby jobs found',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey,
-              ),
+        height: MediaQuery.of(context).size.height * 0.50,
+        alignment: Alignment.center,
+        child: const Center(
+          child: Text(
+            'No nearby jobs found',
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.grey,
             ),
-          ));
+          ),
+        ),
+      );
     }
 
-    return CustomScrollView(
-      slivers: <Widget>[
-        SliverList(
-          delegate: SliverChildBuilderDelegate((context, index) {
-            final job = nearbyJobs[index];
-            return Container(
-              margin: const EdgeInsets.only(bottom: 15),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                border: Border.all(
-                  color: Colors.grey,
-                  width: 1.0,
+    return SizedBox(
+      height:
+          MediaQuery.of(context).size.height * 0.50, // Specify a fixed height
+      child: CustomScrollView(
+        slivers: <Widget>[
+          SliverList(
+            delegate: SliverChildBuilderDelegate((context, index) {
+              final job = nearbyJobs[index];
+              return Container(
+                margin: const EdgeInsets.only(bottom: 15),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  border: Border.all(
+                    color: Colors.grey,
+                    width: 1.0,
+                  ),
                 ),
-              ),
-              child: Card(
-                color: const Color(secondaryColor),
-                elevation: 0,
-                child: ListTile(
-                  leading: Text(job.distance ?? ''),
-                  title: Text(job.serviceName ?? ''),
-                  subtitle:
-                      Text('Amount: ${job.amount}${format.currencySymbol}'),
-                  trailing: Text('Job date: ${job.completionDate}'),
+                child: Card(
+                  color: const Color(secondaryColor),
+                  elevation: 0,
+                  child: ListTile(
+                    leading: Text(job.distance ?? ''),
+                    title: Text(job.serviceName ?? ''),
+                    subtitle:
+                        Text('Amount: ${job.amount}${format.currencySymbol}'),
+                    trailing: Text('Job date: ${job.completionDate}'),
+                  ),
                 ),
-              ),
-            );
-          }, childCount: nearbyJobs.length),
-        ),
-      ],
+              );
+            }, childCount: nearbyJobs.length),
+          ),
+        ],
+      ),
     );
   }
 }

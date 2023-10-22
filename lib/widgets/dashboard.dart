@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:maison_mate/constants.dart';
 import 'package:maison_mate/network/client/get_client.dart';
@@ -16,8 +18,6 @@ class DashboardWidget extends StatefulWidget {
 }
 
 class _DashboardWidgetState extends State<DashboardWidget> {
-  GlobalKey<RefreshIndicatorState> refreshKey =
-      GlobalKey<RefreshIndicatorState>();
   String? address;
   Position? position;
   Future<ApiResponse>? futureData;
@@ -27,6 +27,79 @@ class _DashboardWidgetState extends State<DashboardWidget> {
   void initState() {
     super.initState();
     requestLocationPermission();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    address ??= '';
+    return RefreshIndicator(
+        onRefresh: () => refreshData(),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              GestureDetector(
+                onTap: () async {
+                  final Uri mapUrl = Uri.parse(
+                      'https://maps.google.com/?q=${position!.latitude},${position!.longitude}');
+                  if (await canLaunchUrl(mapUrl)) {
+                    await launchUrl(mapUrl);
+                  }
+                },
+                child: showLocation(),
+              ),
+              const SizedBox(height: 25),
+              GetRequestFutureBuilder<dynamic>(
+                apiUrl: apiUrl,
+                future: futureData,
+                builder: (context, data) {
+                  return NearbyJobsList(data: data);
+                },
+              ),
+              const SizedBox(height: 20),
+            ],
+          ),
+        ));
+  }
+
+  SingleChildScrollView showLocation() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          const Icon(Icons.location_on),
+          const SizedBox(width: 5),
+          Text(
+            '$address',
+            style: const TextStyle(
+              fontSize: 15,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> refreshData() async {
+    if (position != null) {
+      String url =
+          '$apiUrl/?latitude=${position!.latitude}&longitude=${position!.longitude}';
+      final response = await GetClient.fetchData(url);
+      setState(() {
+        futureData = Future.value(response);
+      });
+    }
+  }
+
+  void fetchAndUpdateJobData() {
+    if (position != null) {
+      String url =
+          '$apiUrl/?latitude=${position!.latitude}&longitude=${position!.latitude}';
+      setState(() {
+        futureData = GetClient.fetchData(url);
+      });
+    }
   }
 
   Future<void> getCurrentLocation() async {
@@ -71,66 +144,13 @@ class _DashboardWidgetState extends State<DashboardWidget> {
   Future<void> requestLocationPermission() async {
     final status = await Permission.location.request();
     if (status.isGranted) {
-      getCurrentLocation();
+      getCurrentLocation().then((value) {
+        refreshData();
+      });
     } else if (status.isDenied) {
       openSettingsWhenDenied();
     } else if (status.isPermanentlyDenied) {
       openSettingsWhenDenied();
     }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (position != null) {
-      String url =
-          '$apiUrl/?latitude=${position!.latitude}&longitude=${position!.latitude}';
-      futureData = GetClient.fetchData(url);
-    }
-    address ??= '';
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          GestureDetector(
-            onTap: () async {
-              final Uri mapUrl = Uri.parse(
-                  'https://maps.google.com/?q=${position!.latitude},${position!.longitude}');
-              if (await canLaunchUrl(mapUrl)) {
-                await launchUrl(mapUrl);
-              }
-            },
-            child: showLocation(),
-          ),
-          const SizedBox(height: 25),
-          GetRequestFutureBuilder<dynamic>(
-            apiUrl: apiUrl,
-            future: futureData,
-            builder: (context, data) {
-              return NearbyJobsList(data: data);
-            },
-          ),
-          const SizedBox(height: 20),
-        ],
-      ),
-    );
-  }
-
-  SingleChildScrollView showLocation() {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: [
-          const Icon(Icons.location_on),
-          const SizedBox(width: 5),
-          Text(
-            '$address',
-            style: const TextStyle(
-              fontSize: 15,
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }

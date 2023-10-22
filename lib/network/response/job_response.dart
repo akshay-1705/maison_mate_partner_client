@@ -20,7 +20,7 @@ class JobResponse {
   final String? distance;
 
   @JsonKey(name: 'completion_date')
-  final int? completionDate;
+  final String? completionDate;
 
   factory JobResponse.fromJson(Map<String, dynamic> json) =>
       _$JobResponseFromJson(json);
