@@ -41,7 +41,8 @@ class _DashboardWidgetState extends State<DashboardWidget> {
               GestureDetector(
                 onTap: () async {
                   final Uri mapUrl = Uri.parse(
-                      'https://maps.google.com/?q=${position!.latitude},${position!.longitude}');
+                      'https://www.google.com/maps/search/?api=1&query=${position!.latitude},${position!.longitude}');
+                  print(mapUrl);
                   if (await canLaunchUrl(mapUrl)) {
                     await launchUrl(mapUrl);
                   }
