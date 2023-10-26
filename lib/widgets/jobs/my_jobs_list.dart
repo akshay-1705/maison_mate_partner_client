@@ -1,64 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:maison_mate/constants.dart';
+import 'package:maison_mate/network/response/my_jobs_response.dart';
 
 class MyJobsList extends StatelessWidget {
-  const MyJobsList(data, {super.key});
+  final MyJobsResponse data;
+  const MyJobsList({Key? key, required this.data}) : super(key: key);
+
+  Icon getIcon(String paymentStatus) {
+    switch (paymentStatus) {
+      case 'paid':
+        return const Icon(Icons.currency_pound, color: Colors.green);
+      case 'pending':
+        return const Icon(Icons.currency_pound, color: Colors.orange);
+      case 'refunded':
+        return const Icon(Icons.currency_pound, color: Colors.blue);
+      case 'failed':
+        return const Icon(Icons.currency_pound, color: Colors.red);
+      default:
+        return const Icon(Icons.currency_pound, color: Colors.orange);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final List<Map<String, dynamic>> partnerJobs = [
-      {
-        'title': 'Plumbing',
-        'status': 'Upcoming',
-        'date': 'Oct 20, 2023',
-        'payment': Colors.green,
-      },
-      {
-        'title': 'Painting',
-        'status': 'Pending',
-        'date': 'Oct 22, 2023',
-        'payment': Colors.red
-      },
-      {
-        'title': 'Plumbing',
-        'status': 'Upcoming',
-        'date': 'Oct 20, 2023',
-        'payment': Colors.red
-      },
-      {
-        'title': 'Painting',
-        'status': 'Pending',
-        'date': 'Oct 22, 2023',
-        'payment': Colors.green
-      },
-      {
-        'title': 'Plumbing',
-        'status': 'Upcoming',
-        'date': 'Oct 20, 2023',
-        'payment': Colors.green,
-      },
-      {
-        'title': 'Painting',
-        'status': 'Pending',
-        'date': 'Oct 22, 2023',
-        'payment': Colors.red
-      },
-      {
-        'title': 'Plumbing',
-        'status': 'Upcoming',
-        'date': 'Oct 20, 2023',
-        'payment': Colors.red
-      },
-      {
-        'title': 'Painting',
-        'status': 'Pending',
-        'date': 'Oct 22, 2023',
-        'payment': Colors.green
-      },
-    ];
-
     return Column(
-      children: partnerJobs.map((job) {
+      children: data.myJobs.map((job) {
         return Container(
             margin: const EdgeInsets.only(bottom: 15),
             decoration: BoxDecoration(
@@ -72,13 +38,10 @@ class MyJobsList extends StatelessWidget {
               elevation: 0,
               color: const Color(secondaryColor),
               child: ListTile(
-                leading: Icon(
-                  Icons.currency_pound,
-                  color: job['payment'],
-                ),
-                title: Text(job['title']),
-                subtitle: Text(job['status']),
-                trailing: Text('Job date: ${job['date']}'),
+                leading: getIcon(job.paymentStatus ?? ''),
+                title: Text(job.serviceName ?? ''),
+                subtitle: Text(job.jobStatus ?? ''),
+                trailing: Text('Job date: ${job.completionDate}'),
               ),
             ));
       }).toList(),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:maison_mate/constants.dart';
 import 'package:maison_mate/network/client/get_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
+import 'package:maison_mate/network/response/my_jobs_response.dart';
 import 'package:maison_mate/widgets/jobs/filter_option.dart';
 import 'package:maison_mate/widgets/jobs/my_jobs_list.dart';
 
@@ -14,7 +15,7 @@ class MyJobsWidget extends StatefulWidget {
 
 class _MyJobsWidgetState extends State<MyJobsWidget> {
   late Future<ApiResponse> futureData;
-  static const String apiUrl = '$baseApiUrl/partners/payments_summary';
+  static const String apiUrl = '$baseApiUrl/partners/my_jobs?filter=All';
 
   @override
   void initState() {
@@ -32,7 +33,7 @@ class _MyJobsWidgetState extends State<MyJobsWidget> {
         });
   }
 
-  SingleChildScrollView renderData(data) {
+  SingleChildScrollView renderData(MyJobsResponse data) {
     return SingleChildScrollView(
         child: Padding(
             padding: const EdgeInsets.all(16.0),
@@ -41,7 +42,7 @@ class _MyJobsWidgetState extends State<MyJobsWidget> {
                 const SizedBox(height: 5),
                 const FilterOptions(),
                 const SizedBox(height: 10),
-                MyJobsList(data),
+                MyJobsList(data: data),
               ],
             )));
   }

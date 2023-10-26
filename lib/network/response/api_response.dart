@@ -8,6 +8,7 @@ import 'package:maison_mate/network/response/favourites_response.dart';
 import 'package:maison_mate/network/response/find_jobs_response.dart';
 import 'package:maison_mate/network/response/image_response.dart';
 import 'package:maison_mate/network/response/documentation/insurance_response.dart';
+import 'package:maison_mate/network/response/my_jobs_response.dart';
 import 'package:maison_mate/network/response/onboarding_status_response.dart';
 import 'package:maison_mate/network/response/profile_details_response.dart';
 import 'package:maison_mate/network/response/sign_in_response.dart';
@@ -74,6 +75,8 @@ class _Converter<T> implements JsonConverter<T, Object> {
       return ProfileDetailsResponse.fromJson(map) as T;
     } else if (map.containsKey('nearby_jobs')) {
       return FindJobsResponse.fromJson(map) as T;
+    } else if (map.containsKey('my_jobs')) {
+      return MyJobsResponse.fromJson(map) as T;
     } else {
       return map as T;
     }
