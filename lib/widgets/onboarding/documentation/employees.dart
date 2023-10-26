@@ -126,7 +126,7 @@ class _EmployeesState extends State<Employees> {
                             DateTime.fromMillisecondsSinceEpoch(
                                 int.parse(model.epochString))),
                         MyForm.formFieldHeader(
-                            'Attach a copy of your public liability insurance. Please make sure the company name, limit of insurance, and expiry date are all visible.*'),
+                            "Attach a copy of your employers' liability insurance. Please make sure the company name, limit of insurance, and expiry date are all visible.*"),
                         MyForm.uploadImageSection(model),
                       ],
                       const SizedBox(height: 20),

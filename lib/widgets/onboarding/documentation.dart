@@ -61,7 +61,7 @@ class _DocumentationState extends State<Documentation> {
           title: 'Insurance',
           page: const Insurance(),
           status: data.status.insurance,
-          hide: false),
+          hide: data.hideInsurance),
       DocumentationPart(
           title: 'Owner identification',
           page: OwnerIdentification(limited: limited),
