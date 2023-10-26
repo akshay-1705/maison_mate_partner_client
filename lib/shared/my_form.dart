@@ -32,7 +32,7 @@ class MyForm {
 
   static Opacity searchField(TextEditingController controller) {
     return Opacity(
-        opacity: 0.5,
+        opacity: 0.8,
         child: Container(
           margin: const EdgeInsets.only(left: 10, right: 10),
           padding: const EdgeInsets.all(6),
@@ -56,7 +56,7 @@ class MyForm {
     keyboardType ??= TextInputType.text;
     obscure ??= false;
     return Opacity(
-        opacity: 0.5,
+        opacity: 0.8,
         child: Container(
           padding: const EdgeInsets.all(6),
           child: TextFormField(
@@ -77,7 +77,7 @@ class MyForm {
   static Opacity requiredEmailField(
       String label, TextEditingController controller) {
     return Opacity(
-        opacity: 0.5,
+        opacity: 0.8,
         child: Container(
           padding: const EdgeInsets.all(6),
           child: TextFormField(
@@ -101,7 +101,7 @@ class MyForm {
   static Opacity disabledTextField(
       String label, TextEditingController controller) {
     return Opacity(
-        opacity: 0.5,
+        opacity: 0.8,
         child: Container(
           padding: const EdgeInsets.all(6),
           child: TextFormField(
@@ -132,7 +132,7 @@ class MyForm {
   static Opacity multilineRequiredTextField(
       String label, TextEditingController controller) {
     return Opacity(
-        opacity: 0.5,
+        opacity: 0.8,
         child: Container(
           padding: const EdgeInsets.all(10),
           child: TextFormField(
