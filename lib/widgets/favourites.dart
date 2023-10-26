@@ -81,31 +81,36 @@ class _FavouritesWidgetState extends State<FavouritesWidget> {
               ),
             ))
       else
-        ListView.builder(
-          shrinkWrap: true,
-          physics: const BouncingScrollPhysics(),
-          itemCount: model.filteredUsers.length,
-          itemBuilder: (context, index) {
-            final user = model.filteredUsers[index];
-            return Slidable(
-              endActionPane: ActionPane(
-                motion: const ScrollMotion(),
-                children: [
-                  SlidableAction(
-                    onPressed: (context) {
-                      showDeleteConfirmation(user, context, model);
-                    },
-                    backgroundColor: Colors.red,
-                    foregroundColor: Colors.white,
-                    icon: Icons.delete,
-                    label: 'Delete',
-                  ),
-                ],
-              ),
-              child: UserCard(user: user),
-            );
-          },
-        )
+        Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: ListView.builder(
+              shrinkWrap: true,
+              physics: const BouncingScrollPhysics(),
+              itemCount: model.filteredUsers.length,
+              itemBuilder: (context, index) {
+                final user = model.filteredUsers[index];
+                return Column(children: [
+                  const SizedBox(height: 15),
+                  Slidable(
+                    endActionPane: ActionPane(
+                      motion: const ScrollMotion(),
+                      children: [
+                        SlidableAction(
+                          onPressed: (context) {
+                            showDeleteConfirmation(user, context, model);
+                          },
+                          backgroundColor: Colors.red,
+                          foregroundColor: Colors.white,
+                          icon: Icons.delete,
+                          label: 'Delete',
+                        ),
+                      ],
+                    ),
+                    child: UserCard(user: user),
+                  )
+                ]);
+              },
+            ))
     ]);
   }
 
