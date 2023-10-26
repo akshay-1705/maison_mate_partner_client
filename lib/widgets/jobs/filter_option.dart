@@ -1,10 +1,57 @@
 import 'package:flutter/material.dart';
+import 'package:maison_mate/constants.dart';
+import 'package:maison_mate/network/client/get_client.dart';
+import 'package:maison_mate/provider/my_jobs_model.dart';
+
+class FilterOptions extends StatefulWidget {
+  final Map<String, dynamic> data;
+  final MyJobsModel model;
+  const FilterOptions({Key? key, required this.data, required this.model})
+      : super(key: key);
+
+  @override
+  State<FilterOptions> createState() => _FilterOptionsState();
+}
+
+class _FilterOptionsState extends State<FilterOptions> {
+  late int _selectedFilter;
+
+  void onFilterSelected(int selectedFilter, String label) {
+    widget.model.setActiveFilter(selectedFilter);
+    String dataApiUrl = '$baseApiUrl/partners/my_jobs?filter=$label';
+    widget.model.setDataFutureData(GetClient.fetchData(dataApiUrl));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    _selectedFilter = widget.model.activeFilter;
+    List<Widget> filterOptionWidgets = [];
+
+    widget.data.forEach((label, filter) {
+      filterOptionWidgets.add(
+        FilterOption(
+          label,
+          filter,
+          _selectedFilter,
+          onFilterSelected,
+        ),
+      );
+      filterOptionWidgets.add(const SizedBox(width: 10));
+    });
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: filterOptionWidgets,
+      ),
+    );
+  }
+}
 
 class FilterOption extends StatefulWidget {
   final String label;
-  final String filter;
-  final String selectedFilter;
-  final Function(String) onSelected;
+  final int filter;
+  final int selectedFilter;
+  final Function(int, String) onSelected;
 
   const FilterOption(
       this.label, this.filter, this.selectedFilter, this.onSelected,
@@ -22,47 +69,9 @@ class _FilterOptionState extends State<FilterOption> {
       selected: widget.selectedFilter == widget.filter,
       onSelected: (selected) {
         if (selected) {
-          widget.onSelected(widget.filter);
+          widget.onSelected(widget.filter, widget.label);
         }
       },
-    );
-  }
-}
-
-class FilterOptions extends StatefulWidget {
-  const FilterOptions({super.key});
-
-  @override
-  State<FilterOptions> createState() => _FilterOptionsState();
-}
-
-class _FilterOptionsState extends State<FilterOptions> {
-  String _selectedFilter = 'All';
-
-  void onFilterSelected(String selectedFilter) {
-    setState(() {
-      _selectedFilter = selectedFilter;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: [
-          FilterOption('All', 'All', _selectedFilter, onFilterSelected),
-          const SizedBox(width: 10),
-          FilterOption('Active', 'Active', _selectedFilter, onFilterSelected),
-          const SizedBox(width: 10),
-          FilterOption(
-              'Upcoming', 'Upcoming', _selectedFilter, onFilterSelected),
-          const SizedBox(width: 10),
-          FilterOption('Pending', 'Pending', _selectedFilter, onFilterSelected),
-          const SizedBox(width: 10),
-          FilterOption('Unpaid', 'Unpaid', _selectedFilter, onFilterSelected),
-        ],
-      ),
     );
   }
 }

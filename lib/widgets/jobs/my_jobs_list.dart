@@ -23,6 +23,22 @@ class MyJobsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (data.myJobs.isEmpty) {
+      return Container(
+        height: MediaQuery.of(context).size.height * 0.50,
+        alignment: Alignment.center,
+        child: const Center(
+          child: Text(
+            'No jobs found',
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.grey,
+            ),
+          ),
+        ),
+      );
+    }
+
     return Column(
       children: data.myJobs.map((job) {
         return Container(

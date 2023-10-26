@@ -11,6 +11,7 @@ import 'package:maison_mate/provider/documentation/self_trader_identification_mo
 import 'package:maison_mate/provider/documentation_model.dart';
 import 'package:maison_mate/provider/email_verification_model.dart';
 import 'package:maison_mate/provider/favourites_model.dart';
+import 'package:maison_mate/provider/my_jobs_model.dart';
 import 'package:maison_mate/screens/home_screen.dart';
 import 'package:maison_mate/widgets/auth/sign_in.dart';
 import 'package:maison_mate/provider/auth/sign_in_model.dart';
@@ -53,6 +54,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (_) => ChangePasswordModel()),
           ChangeNotifierProvider(create: (_) => AreaCoveredModel()),
           ChangeNotifierProvider(create: (_) => DeleteAccountModel()),
+          ChangeNotifierProvider(create: (_) => MyJobsModel()),
           ChangeNotifierProvider(
               create: (_) => SelfTraderIdentificationModel()),
         ],
