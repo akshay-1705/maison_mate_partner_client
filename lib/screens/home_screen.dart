@@ -3,7 +3,7 @@ import 'package:maison_mate/constants.dart';
 import 'package:maison_mate/screens/account_screen.dart';
 import 'package:maison_mate/widgets/favourites.dart';
 import 'package:maison_mate/widgets/home.dart';
-import 'package:maison_mate/widgets/my_jobs.dart';
+import 'package:maison_mate/widgets/jobs/my_jobs.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
