@@ -95,6 +95,7 @@ class _FavouritesWidgetState extends State<FavouritesWidget> {
                     endActionPane: ActionPane(
                       motion: const ScrollMotion(),
                       children: [
+                        const SizedBox(width: 5),
                         SlidableAction(
                           onPressed: (context) {
                             showDeleteConfirmation(user, context, model);
@@ -103,6 +104,7 @@ class _FavouritesWidgetState extends State<FavouritesWidget> {
                           foregroundColor: Colors.white,
                           icon: Icons.delete,
                           label: 'Delete',
+                          borderRadius: BorderRadius.circular(15),
                         ),
                       ],
                     ),

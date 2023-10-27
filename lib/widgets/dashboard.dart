@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:maison_mate/constants.dart';
 import 'package:maison_mate/network/client/get_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
-import 'package:maison_mate/screens/nearby_jobs_list.dart';
+import 'package:maison_mate/widgets/nearby_jobs/nearby_jobs_list.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
