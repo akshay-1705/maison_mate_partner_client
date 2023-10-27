@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:maison_mate/constants.dart';
 import 'package:maison_mate/network/response/my_jobs_response.dart';
+import 'package:maison_mate/widgets/jobs/my_job_details.dart';
 
 class MyJobsList extends StatelessWidget {
   final MyJobsResponse data;
@@ -50,16 +51,25 @@ class MyJobsList extends StatelessWidget {
                 width: 1.0,
               ),
             ),
-            child: Card(
-              elevation: 0,
-              color: const Color(secondaryColor),
-              child: ListTile(
-                leading: getIcon(job.paymentStatus ?? ''),
-                title: Text(job.serviceName ?? ''),
-                subtitle: Text(job.jobStatus ?? ''),
-                trailing: Text('Job date: ${job.completionDate}'),
-              ),
-            ));
+            child: GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          MyJobDetails(job: job), // Your terms page
+                    ),
+                  );
+                },
+                child: Card(
+                  elevation: 0,
+                  color: const Color(secondaryColor),
+                  child: ListTile(
+                    leading: getIcon(job.paymentStatus ?? ''),
+                    title: Text(job.serviceName ?? ''),
+                    subtitle: Text(job.jobStatus ?? ''),
+                    trailing: Text('Job date: ${job.completionDate}'),
+                  ),
+                )));
       }).toList(),
     );
   }
