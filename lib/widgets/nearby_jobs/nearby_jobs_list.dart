@@ -119,8 +119,7 @@ class _NearbyJobsListState extends State<NearbyJobsList> {
         child: ListTile(
           leading: Text(job.distance ?? ''),
           title: Text(job.serviceName ?? ''),
-          subtitle: Text('${job.amount}${format.currencySymbol}'),
-          trailing: Text('Job date: ${job.completionDate}'),
+          trailing: Text(job.kind ?? ''),
         ),
       ),
     );
