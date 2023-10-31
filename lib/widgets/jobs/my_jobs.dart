@@ -24,8 +24,11 @@ class _MyJobsWidgetState extends State<MyJobsWidget> {
   void initState() {
     super.initState();
     var stateModel = Provider.of<MyJobsModel>(context, listen: false);
-    stateModel.dataFutureData = GetClient.fetchData(dataApiUrl);
+    dataFutureData = GetClient.fetchData(dataApiUrl);
     filtersFutureData = GetClient.fetchData(filtersApiUrl);
+    dataFutureData.then((apiResponse) {
+      stateModel.setMyJobsList(apiResponse.data);
+    });
   }
 
   @override
@@ -45,16 +48,25 @@ class _MyJobsWidgetState extends State<MyJobsWidget> {
                     future: filtersFutureData,
                     apiUrl: filtersApiUrl,
                     builder: (context, data) {
-                      return FilterOptions(data: data, model: model);
+                      Map<String, dynamic> sortedData = sortData(data);
+                      return FilterOptions(data: sortedData, model: model);
                     }),
                 const SizedBox(height: 10),
                 GetRequestFutureBuilder<dynamic>(
-                    future: model.dataFutureData,
+                    future: dataFutureData,
                     apiUrl: dataApiUrl,
                     builder: (context, data) {
-                      return MyJobsList(data: data);
+                      return MyJobsList(data: model.filteredMyJobsList);
                     }),
               ],
             )));
+  }
+
+  Map<String, dynamic> sortData(data) {
+    data['All'] = -1;
+    List<MapEntry<String, dynamic>> dataList = data.entries.toList();
+    dataList.sort((a, b) => a.value.compareTo(b.value));
+    Map<String, dynamic> sortedData = Map.fromEntries(dataList);
+    return sortedData;
   }
 }

@@ -4,8 +4,8 @@ part 'job_item_response.g.dart';
 
 @JsonSerializable()
 class JobItemResponse {
-  JobItemResponse(this.id, this.serviceName, this.paymentStatus, this.jobStatus,
-      this.completionDate);
+  JobItemResponse(this.id, this.serviceName, this.kind, this.address,
+      this.statusToShow, this.statusToSearch);
 
   @JsonKey()
   final int? id;
@@ -13,14 +13,17 @@ class JobItemResponse {
   @JsonKey(name: 'service_name', defaultValue: '')
   final String? serviceName;
 
-  @JsonKey(name: 'payment_status')
-  final String? paymentStatus;
+  @JsonKey(name: 'status_to_show')
+  final String? statusToShow;
 
-  @JsonKey(name: 'job_status')
-  final String? jobStatus;
+  @JsonKey(name: 'status_to_search')
+  final int? statusToSearch;
 
-  @JsonKey(name: 'completion_date')
-  final String? completionDate;
+  @JsonKey()
+  final String? kind;
+
+  @JsonKey()
+  final String? address;
 
   factory JobItemResponse.fromJson(Map<String, dynamic> json) =>
       _$JobItemResponseFromJson(json);

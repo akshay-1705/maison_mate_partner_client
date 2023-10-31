@@ -109,7 +109,7 @@ class _NearbyJobDetailsState extends State<NearbyJobDetails> {
                     style: const TextStyle(
                         fontSize: 15, fontWeight: FontWeight.w300),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 10),
                   GestureDetector(
                       onTap: () async {
                         final Uri mapUrl = Uri.parse(

@@ -4,27 +4,36 @@ import 'package:maison_mate/network/response/my_jobs_response.dart';
 import 'package:maison_mate/widgets/jobs/my_job_details.dart';
 
 class MyJobsList extends StatelessWidget {
-  final MyJobsResponse data;
+  final MyJobsResponse? data;
   const MyJobsList({Key? key, required this.data}) : super(key: key);
 
   Icon getIcon(String paymentStatus) {
     switch (paymentStatus) {
-      case 'paid':
-        return const Icon(Icons.currency_pound, color: Colors.green);
-      case 'pending':
-        return const Icon(Icons.currency_pound, color: Colors.orange);
-      case 'refunded':
-        return const Icon(Icons.currency_pound, color: Colors.blue);
-      case 'failed':
-        return const Icon(Icons.currency_pound, color: Colors.red);
+      case 'Plumbing':
+        return const Icon(Icons.plumbing, color: Colors.green);
+      case 'Handyman':
+        return const Icon(Icons.handyman, color: Colors.green);
+      case 'Locksmith':
+        return const Icon(Icons.lock, color: Colors.green);
+      case 'Painting':
+        return const Icon(Icons.format_paint, color: Colors.green);
+      case 'Heating/Cooling repairs':
+        return const Icon(Icons.heat_pump, color: Colors.green);
+      case 'Home Security System Repair':
+        return const Icon(Icons.security, color: Colors.green);
+      case 'Pest control':
+        return const Icon(Icons.pest_control, color: Colors.green);
+      case 'Electrician':
+        return const Icon(Icons.electrical_services, color: Colors.green);
+
       default:
-        return const Icon(Icons.currency_pound, color: Colors.orange);
+        return const Icon(Icons.home_repair_service, color: Colors.green);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (data.myJobs.isEmpty) {
+    if (data!.myJobs.isEmpty) {
       return Container(
         height: MediaQuery.of(context).size.height * 0.50,
         alignment: Alignment.center,
@@ -41,7 +50,7 @@ class MyJobsList extends StatelessWidget {
     }
 
     return Column(
-      children: data.myJobs.map((job) {
+      children: data!.myJobs.map((job) {
         return Container(
             margin: const EdgeInsets.only(bottom: 15),
             decoration: BoxDecoration(
@@ -64,10 +73,10 @@ class MyJobsList extends StatelessWidget {
                   elevation: 0,
                   color: const Color(secondaryColor),
                   child: ListTile(
-                    leading: getIcon(job.paymentStatus ?? ''),
-                    title: Text(job.serviceName ?? ''),
-                    subtitle: Text(job.jobStatus ?? ''),
-                    trailing: Text('Job date: ${job.completionDate}'),
+                    leading: getIcon(job.serviceName ?? ''),
+                    title: Text(job.address ?? ''),
+                    subtitle: Text(job.statusToShow ?? ''),
+                    trailing: Text(job.kind ?? ''),
                   ),
                 )));
       }).toList(),

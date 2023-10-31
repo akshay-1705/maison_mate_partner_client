@@ -1,17 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:maison_mate/network/response/api_response.dart';
+import 'package:maison_mate/network/response/my_jobs_response.dart';
 
 class MyJobsModel extends ChangeNotifier {
-  late Future<ApiResponse> dataFutureData;
-  int activeFilter = 0;
-
-  void setDataFutureData(Future<ApiResponse> value) {
-    dataFutureData = value;
-    notifyListeners();
-  }
+  int activeFilter = -1;
+  MyJobsResponse myJobsList = MyJobsResponse([]);
+  MyJobsResponse filteredMyJobsList = MyJobsResponse([]);
 
   void setActiveFilter(int value) {
     activeFilter = value;
+    notifyListeners();
+  }
+
+  void setMyJobsList(MyJobsResponse value) {
+    filteredMyJobsList = value;
+    myJobsList = value;
+    notifyListeners();
+  }
+
+  void setFilteredMyJobsList(MyJobsResponse value) {
+    filteredMyJobsList = value;
     notifyListeners();
   }
 }

@@ -10,16 +10,18 @@ JobItemResponse _$JobItemResponseFromJson(Map<String, dynamic> json) =>
     JobItemResponse(
       json['id'] as int?,
       json['service_name'] as String? ?? '',
-      json['payment_status'] as String?,
-      json['job_status'] as String?,
-      json['completion_date'] as String?,
+      json['kind'] as String?,
+      json['address'] as String?,
+      json['status_to_show'] as String?,
+      json['status_to_search'] as int?,
     );
 
 Map<String, dynamic> _$JobItemResponseToJson(JobItemResponse instance) =>
     <String, dynamic>{
       'id': instance.id,
       'service_name': instance.serviceName,
-      'payment_status': instance.paymentStatus,
-      'job_status': instance.jobStatus,
-      'completion_date': instance.completionDate,
+      'status_to_show': instance.statusToShow,
+      'status_to_search': instance.statusToSearch,
+      'kind': instance.kind,
+      'address': instance.address,
     };

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:maison_mate/constants.dart';
-import 'package:maison_mate/network/client/get_client.dart';
+import 'package:maison_mate/network/response/job_item_response.dart';
+import 'package:maison_mate/network/response/my_jobs_response.dart';
 import 'package:maison_mate/provider/my_jobs_model.dart';
 
 class FilterOptions extends StatefulWidget {
@@ -18,8 +18,15 @@ class _FilterOptionsState extends State<FilterOptions> {
 
   void onFilterSelected(int selectedFilter, String label) {
     widget.model.setActiveFilter(selectedFilter);
-    String dataApiUrl = '$baseApiUrl/partners/my_jobs?filter=$label';
-    widget.model.setDataFutureData(GetClient.fetchData(dataApiUrl));
+    if (selectedFilter == -1) {
+      widget.model.filteredMyJobsList = widget.model.myJobsList;
+    } else {
+      List<JobItemResponse> filteredList = widget.model.myJobsList.myJobs
+          .where((job) => job.statusToSearch == selectedFilter)
+          .toList();
+
+      widget.model.setFilteredMyJobsList(MyJobsResponse(filteredList));
+    }
   }
 
   @override
