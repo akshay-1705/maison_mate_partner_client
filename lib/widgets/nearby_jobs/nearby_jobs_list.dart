@@ -119,6 +119,10 @@ class _NearbyJobsListState extends State<NearbyJobsList> {
         child: ListTile(
           leading: Text(job.distance ?? ''),
           title: Text(job.serviceName ?? ''),
+          subtitle: Text(
+            job.address ?? '',
+            style: const TextStyle(fontSize: 12),
+          ),
           trailing: Text(job.kind ?? ''),
         ),
       ),

@@ -7,24 +7,24 @@ class MyJobsList extends StatelessWidget {
   final MyJobsResponse? data;
   const MyJobsList({Key? key, required this.data}) : super(key: key);
 
-  Icon getIcon(String paymentStatus) {
-    switch (paymentStatus) {
+  Icon getIcon(String jobStatus) {
+    switch (jobStatus) {
       case 'Plumbing':
-        return const Icon(Icons.plumbing, color: Colors.green);
+        return const Icon(Icons.plumbing, color: Colors.blue);
       case 'Handyman':
-        return const Icon(Icons.handyman, color: Colors.green);
+        return const Icon(Icons.handyman, color: Colors.brown);
       case 'Locksmith':
-        return const Icon(Icons.lock, color: Colors.green);
+        return const Icon(Icons.lock, color: Colors.grey);
       case 'Painting':
         return const Icon(Icons.format_paint, color: Colors.green);
       case 'Heating/Cooling repairs':
-        return const Icon(Icons.heat_pump, color: Colors.green);
+        return const Icon(Icons.heat_pump, color: Colors.yellow);
       case 'Home Security System Repair':
-        return const Icon(Icons.security, color: Colors.green);
+        return const Icon(Icons.security, color: Color(awesomeColor));
       case 'Pest control':
-        return const Icon(Icons.pest_control, color: Colors.green);
+        return const Icon(Icons.pest_control, color: Colors.black);
       case 'Electrician':
-        return const Icon(Icons.electrical_services, color: Colors.green);
+        return const Icon(Icons.electrical_services, color: Colors.orange);
 
       default:
         return const Icon(Icons.home_repair_service, color: Colors.green);
@@ -75,7 +75,10 @@ class MyJobsList extends StatelessWidget {
                   child: ListTile(
                     leading: getIcon(job.serviceName ?? ''),
                     title: Text(job.address ?? ''),
-                    subtitle: Text(job.statusToShow ?? ''),
+                    subtitle: Text(
+                      job.statusToShow ?? '',
+                      style: const TextStyle(fontSize: 12),
+                    ),
                     trailing: Text(job.kind ?? ''),
                   ),
                 )));

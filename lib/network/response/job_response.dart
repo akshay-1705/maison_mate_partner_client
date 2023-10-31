@@ -5,11 +5,7 @@ part 'job_response.g.dart';
 @JsonSerializable()
 class JobResponse {
   JobResponse(
-    this.id,
-    this.serviceName,
-    this.kind,
-    this.distance,
-  );
+      this.id, this.serviceName, this.kind, this.distance, this.address);
 
   @JsonKey()
   final int? id;
@@ -22,6 +18,9 @@ class JobResponse {
 
   @JsonKey()
   final String? kind;
+
+  @JsonKey()
+  final String? address;
 
   factory JobResponse.fromJson(Map<String, dynamic> json) =>
       _$JobResponseFromJson(json);

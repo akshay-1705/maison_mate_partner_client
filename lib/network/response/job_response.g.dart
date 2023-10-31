@@ -11,6 +11,7 @@ JobResponse _$JobResponseFromJson(Map<String, dynamic> json) => JobResponse(
       json['service_name'] as String? ?? '',
       json['kind'] as String?,
       json['distance'] as String? ?? '',
+      json['address'] as String?,
     );
 
 Map<String, dynamic> _$JobResponseToJson(JobResponse instance) =>
@@ -19,4 +20,5 @@ Map<String, dynamic> _$JobResponseToJson(JobResponse instance) =>
       'service_name': instance.serviceName,
       'distance': instance.distance,
       'kind': instance.kind,
+      'address': instance.address,
     };
