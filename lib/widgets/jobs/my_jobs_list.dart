@@ -7,8 +7,8 @@ class MyJobsList extends StatelessWidget {
   final MyJobsResponse? data;
   const MyJobsList({Key? key, required this.data}) : super(key: key);
 
-  Icon getIcon(String jobStatus) {
-    switch (jobStatus) {
+  Icon getServiceIcon(String service) {
+    switch (service) {
       case 'Plumbing':
         return const Icon(Icons.plumbing, color: Colors.blue);
       case 'Handyman':
@@ -24,10 +24,32 @@ class MyJobsList extends StatelessWidget {
       case 'Pest control':
         return const Icon(Icons.pest_control, color: Colors.black);
       case 'Electrician':
-        return const Icon(Icons.electrical_services, color: Colors.orange);
+        return const Icon(Icons.electrical_services, color: Colors.purple);
 
       default:
         return const Icon(Icons.home_repair_service, color: Colors.green);
+    }
+  }
+
+  Icon getStatusIcon(String jobStatus) {
+    switch (jobStatus) {
+      case 'Accepted':
+        return const Icon(Icons.timer, color: Colors.orange);
+      case 'Quote sent':
+        return const Icon(Icons.send_sharp, color: Color(awesomeColor));
+      case 'On the way':
+        return const Icon(Icons.directions_car_outlined, color: Colors.blue);
+      case 'In progress':
+        return const Icon(Icons.miscellaneous_services, color: Colors.blue);
+      case 'Completed':
+        return const Icon(Icons.check, color: Colors.green);
+      case 'Cancelled':
+        return const Icon(Icons.cancel, color: Colors.red);
+      case 'Archived':
+        return const Icon(Icons.archive, color: Colors.black);
+
+      default:
+        return const Icon(Icons.question_mark, color: Colors.orange);
     }
   }
 
@@ -73,12 +95,16 @@ class MyJobsList extends StatelessWidget {
                   elevation: 0,
                   color: const Color(secondaryColor),
                   child: ListTile(
-                    leading: getIcon(job.serviceName ?? ''),
+                    leading: getServiceIcon(job.serviceName ?? ''),
                     title: Text(job.address ?? ''),
-                    subtitle: Text(
-                      job.statusToShow ?? '',
-                      style: const TextStyle(fontSize: 12),
-                    ),
+                    subtitle: Row(children: [
+                      Text(
+                        job.statusToShow ?? '',
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                      const SizedBox(width: 5),
+                      getStatusIcon(job.statusToShow ?? '')
+                    ]),
                     trailing: Text(job.kind ?? ''),
                   ),
                 )));
