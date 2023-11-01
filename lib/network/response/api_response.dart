@@ -8,6 +8,7 @@ import 'package:maison_mate/network/response/favourites_response.dart';
 import 'package:maison_mate/network/response/find_jobs_response.dart';
 import 'package:maison_mate/network/response/image_response.dart';
 import 'package:maison_mate/network/response/documentation/insurance_response.dart';
+import 'package:maison_mate/network/response/my_job_details_response.dart';
 import 'package:maison_mate/network/response/my_jobs_response.dart';
 import 'package:maison_mate/network/response/nearby_job_details_response.dart';
 import 'package:maison_mate/network/response/onboarding_status_response.dart';
@@ -43,6 +44,16 @@ class _Converter<T> implements JsonConverter<T, Object> {
     final map = json as Map<String, dynamic>;
     if (map.containsKey('partner') && map.containsKey('token')) {
       return SignInResponse.fromJson(map) as T;
+    } else if (map.containsKey('service_name') &&
+        map.containsKey('latitude') &&
+        map.containsKey('longitude') &&
+        map.containsKey('accepted_at')) {
+      return MyJobDetailsResponse.fromJson(map) as T;
+    } else if (map.containsKey('service_name') &&
+        map.containsKey('latitude') &&
+        map.containsKey('longitude') &&
+        map.containsKey('kind')) {
+      return NearbyJobDetailsResponse.fromJson(map) as T;
     } else if (map.containsKey('services_available') &&
         map.containsKey('postcodes_available')) {
       return YourDetailsResponse.fromJson(map) as T;
@@ -78,11 +89,6 @@ class _Converter<T> implements JsonConverter<T, Object> {
       return FindJobsResponse.fromJson(map) as T;
     } else if (map.containsKey('my_jobs')) {
       return MyJobsResponse.fromJson(map) as T;
-    } else if (map.containsKey('service_name') &&
-        map.containsKey('latitude') &&
-        map.containsKey('longitude') &&
-        map.containsKey('kind')) {
-      return NearbyJobDetailsResponse.fromJson(map) as T;
     } else {
       return map as T;
     }

@@ -51,7 +51,17 @@ class _NearbyJobDetailsState extends State<NearbyJobDetails> {
         color: Colors.black12,
       ),
       bottomCardContents(data),
-      const SizedBox(height: 50),
+      const SizedBox(height: 20),
+      Container(
+        height: 1,
+        color: Colors.black12,
+      ),
+      const Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Text(
+            "You will have 2 hours to send your quote to the user; otherwise, the job will be marked as 'Archived'. Timer will start immediately after accepting the job.",
+            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w300),
+          )),
       MyForm.submitButton("Accept", () async {}),
     ]));
   }

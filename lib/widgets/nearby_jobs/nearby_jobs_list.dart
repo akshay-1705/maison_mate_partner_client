@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 import 'package:maison_mate/constants.dart';
 import 'package:maison_mate/network/response/find_jobs_response.dart';
@@ -56,47 +55,7 @@ class _NearbyJobsListState extends State<NearbyJobsList> {
                           ),
                         );
                       },
-                      child: Slidable(
-                          endActionPane: ActionPane(
-                            motion: const ScrollMotion(),
-                            children: [
-                              const SizedBox(width: 5),
-                              SlidableAction(
-                                label: 'Accept',
-                                onPressed: (context) {
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        title: const Text('Confirmation'),
-                                        content: const Text(
-                                            'Are you sure you want to ACCEPT this job?'),
-                                        actions: <Widget>[
-                                          TextButton(
-                                            child: const Text('Yes'),
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                          ),
-                                          TextButton(
-                                            child: const Text('No'),
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  );
-                                },
-                                backgroundColor: Colors.green,
-                                foregroundColor: Colors.white,
-                                icon: Icons.check,
-                                borderRadius: BorderRadius.circular(15),
-                              )
-                            ],
-                          ),
-                          child: jobCard(job))));
+                      child: jobCard(job)));
             }, childCount: nearbyJobs.length),
           ),
         ],
