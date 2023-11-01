@@ -85,40 +85,45 @@ class _CustomerChatScreenState extends State<CustomerChatScreen> {
     );
   }
 
-  Container chat() {
-    return Container(
-        padding: const EdgeInsets.only(bottom: 50),
-        color: Colors.white70,
-        child: ListView.builder(
-          controller: scrollController,
-          itemCount: messages.length,
-          shrinkWrap: true,
-          padding: const EdgeInsets.only(top: 10, bottom: 10),
-          itemBuilder: (context, index) {
-            return Container(
-              padding: const EdgeInsets.only(
-                  left: 14, right: 14, top: 10, bottom: 10),
-              child: Align(
-                alignment: (messages[index].messageType == "receiver"
-                    ? Alignment.topLeft
-                    : Alignment.topRight),
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    color: (messages[index].messageType == "receiver"
-                        ? Colors.grey.shade200
-                        : Colors.blue[200]),
+  GestureDetector chat() {
+    return GestureDetector(
+        onTap: () {
+          // Dismiss the keyboard when tapped on a non-actionable item
+          FocusScope.of(context).unfocus();
+        },
+        child: Container(
+            padding: const EdgeInsets.only(bottom: 50),
+            color: Colors.white70,
+            child: ListView.builder(
+              controller: scrollController,
+              itemCount: messages.length,
+              shrinkWrap: true,
+              padding: const EdgeInsets.only(top: 10, bottom: 10),
+              itemBuilder: (context, index) {
+                return Container(
+                  padding: const EdgeInsets.only(
+                      left: 14, right: 14, top: 10, bottom: 10),
+                  child: Align(
+                    alignment: (messages[index].messageType == "receiver"
+                        ? Alignment.topLeft
+                        : Alignment.topRight),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: (messages[index].messageType == "receiver"
+                            ? Colors.grey.shade200
+                            : Colors.blue[200]),
+                      ),
+                      padding: const EdgeInsets.all(16),
+                      child: Text(
+                        messages[index].messageContent,
+                        style: const TextStyle(fontSize: 15),
+                      ),
+                    ),
                   ),
-                  padding: const EdgeInsets.all(16),
-                  child: Text(
-                    messages[index].messageContent,
-                    style: const TextStyle(fontSize: 15),
-                  ),
-                ),
-              ),
-            );
-          },
-        ));
+                );
+              },
+            )));
   }
 
   AppBar chatAppBar(BuildContext context) {
