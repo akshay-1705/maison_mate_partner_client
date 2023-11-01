@@ -135,10 +135,10 @@ class _MyJobDetailsState extends State<MyJobDetails> {
                       color: Color(awesomeColor)),
                 ),
                 const Text(
-                  'Time is running out. Chat with the customer and send quote before the job is archived',
+                  'Chat with the customer and send quote before the job is archived',
                   style: TextStyle(fontSize: 13, fontWeight: FontWeight.w300),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 15),
                 Text(
                   'Customer: ${data.userName}',
                   style: const TextStyle(
