@@ -167,10 +167,15 @@ class _CustomerChatScreenState extends State<CustomerChatScreen> {
                     Text(
                       widget.data!.userName ?? '',
                       style: const TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.w600),
+                          fontSize: 15, fontWeight: FontWeight.w600),
                     ),
                   ],
                 ),
+              ),
+              const Text('Send Quote',
+                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12)),
+              const SizedBox(
+                width: 5,
               ),
               threeDotMenu()
             ],
@@ -187,19 +192,13 @@ class _CustomerChatScreenState extends State<CustomerChatScreen> {
       itemBuilder: (BuildContext context) {
         return <PopupMenuEntry<String>>[
           const PopupMenuItem<String>(
-            value: 'sendQuote',
-            child: Text('Send Quote'),
-          ),
-          const PopupMenuItem<String>(
             value: 'customerInactive',
             child: Text('Customer Inactive'),
           ),
         ];
       },
       onSelected: (String choice) {
-        if (choice == 'sendQuote') {
-          // Perform an action for sendQuote
-        } else if (choice == 'customerInactive') {
+        if (choice == 'customerInactive') {
           // Perform an action for userInactive
         }
       },
