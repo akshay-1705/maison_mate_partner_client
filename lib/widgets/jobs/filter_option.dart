@@ -14,8 +14,6 @@ class FilterOptions extends StatefulWidget {
 }
 
 class _FilterOptionsState extends State<FilterOptions> {
-  late int _selectedFilter;
-
   void onFilterSelected(int selectedFilter, String label) {
     widget.model.setActiveFilter(selectedFilter);
     if (selectedFilter == -1) {
@@ -31,7 +29,6 @@ class _FilterOptionsState extends State<FilterOptions> {
 
   @override
   Widget build(BuildContext context) {
-    _selectedFilter = widget.model.activeFilter;
     List<Widget> filterOptionWidgets = [];
 
     widget.data.forEach((label, filter) {
@@ -39,7 +36,7 @@ class _FilterOptionsState extends State<FilterOptions> {
         FilterOption(
           label,
           filter,
-          _selectedFilter,
+          widget.model.activeFilter,
           onFilterSelected,
         ),
       );

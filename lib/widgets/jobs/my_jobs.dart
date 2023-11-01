@@ -29,6 +29,7 @@ class _MyJobsWidgetState extends State<MyJobsWidget> {
     dataFutureData.then((apiResponse) {
       stateModel.setMyJobsList(apiResponse.data);
     });
+    stateModel.activeFilter = -1;
   }
 
   @override
