@@ -40,7 +40,11 @@ class _MyJobDetailsState extends State<MyJobDetails> {
     acceptedAt = DateTime.fromMillisecondsSinceEpoch(value.data.acceptedAt);
     final currentTime = DateTime.now();
     final elapsedTime = currentTime.difference(acceptedAt!);
-    remainingTime = remainingTime - elapsedTime;
+    if (elapsedTime < remainingTime) {
+      remainingTime = remainingTime - elapsedTime;
+    } else {
+      remainingTime = const Duration();
+    }
     timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
         calculateRemainingTime();
