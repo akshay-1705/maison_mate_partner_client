@@ -6,6 +6,7 @@ import 'package:maison_mate/network/client/get_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/network/response/job_item_response.dart';
 import 'package:maison_mate/network/response/my_job_details_response.dart';
+import 'package:maison_mate/screens/customer_chat_screen.dart';
 import 'package:maison_mate/shared/my_form.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -139,18 +140,19 @@ class _MyJobDetailsState extends State<MyJobDetails> {
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  'Job Status: ${data.status}',
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.w400),
-                ),
-                Text(
                   'Customer: ${data.userName}',
                   style: const TextStyle(
                       fontSize: 16, fontWeight: FontWeight.w400),
                 ),
                 const SizedBox(height: 10),
                 Row(children: [
-                  MyForm.submitButton("Chat", () async {}),
+                  MyForm.submitButton("Chat", () async {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                CustomerChatScreen(data: data)));
+                  }),
                   const SizedBox(width: 10),
                   MyForm.submitButton("Send Quote", () async {}),
                 ]),
@@ -173,12 +175,17 @@ class _MyJobDetailsState extends State<MyJobDetails> {
                   ),
                   const SizedBox(height: 10),
                   Text(
-                    data.serviceName ?? '',
+                    'Status: ${data.status}',
                     style: const TextStyle(
                         fontSize: 16, fontWeight: FontWeight.w400),
                   ),
                   Text(
-                    data.details ?? '',
+                    'Type: ${data.serviceName}',
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.w400),
+                  ),
+                  Text(
+                    'Description: ${data.details}',
                     style: const TextStyle(
                         fontSize: 16, fontWeight: FontWeight.w400),
                   ),
