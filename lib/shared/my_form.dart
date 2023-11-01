@@ -259,7 +259,7 @@ class MyForm {
 
   static Widget submitButton(String buttonText, SubmitButtonCallback onSubmit) {
     return SizedBox(
-        width: 125,
+        width: 150,
         height: 50,
         child: ElevatedButton(
           onPressed: () {

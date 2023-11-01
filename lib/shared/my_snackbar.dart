@@ -9,7 +9,7 @@ class MySnackBar {
     return SnackBar(
       content: Text(message ?? ""),
       elevation: 2,
-      duration: const Duration(milliseconds: 1000),
+      duration: const Duration(milliseconds: 2000),
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(5))),
       backgroundColor: error ? Colors.red : Colors.green,

@@ -43,7 +43,6 @@ class _MyJobsWidgetState extends State<MyJobsWidget> {
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
-                const SizedBox(height: 5),
                 GetRequestFutureBuilder<dynamic>(
                     future: filtersFutureData,
                     apiUrl: filtersApiUrl,

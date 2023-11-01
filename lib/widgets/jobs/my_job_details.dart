@@ -134,7 +134,7 @@ class _MyJobDetailsState extends State<MyJobDetails> {
                       color: Color(awesomeColor)),
                 ),
                 const Text(
-                  'Time is running out. Chat with the user and send quote before the job expires',
+                  'Time is running out. Chat with the customer and send quote before the job is archived',
                   style: TextStyle(fontSize: 13, fontWeight: FontWeight.w300),
                 ),
                 const SizedBox(height: 10),
@@ -144,12 +144,16 @@ class _MyJobDetailsState extends State<MyJobDetails> {
                       fontSize: 16, fontWeight: FontWeight.w400),
                 ),
                 Text(
-                  data.userName ?? '',
+                  'Customer: ${data.userName}',
                   style: const TextStyle(
                       fontSize: 16, fontWeight: FontWeight.w400),
                 ),
                 const SizedBox(height: 10),
-                MyForm.submitButton("Chat", () async {}),
+                Row(children: [
+                  MyForm.submitButton("Chat", () async {}),
+                  const SizedBox(width: 10),
+                  MyForm.submitButton("Send Quote", () async {}),
+                ]),
               ]),
         ));
   }
@@ -167,7 +171,7 @@ class _MyJobDetailsState extends State<MyJobDetails> {
                     'Job Details',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 10),
                   Text(
                     data.serviceName ?? '',
                     style: const TextStyle(

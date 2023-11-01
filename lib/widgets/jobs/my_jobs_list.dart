@@ -34,7 +34,7 @@ class MyJobsList extends StatelessWidget {
   Icon getStatusIcon(String jobStatus) {
     switch (jobStatus) {
       case 'Accepted':
-        return const Icon(Icons.timer, color: Colors.orange);
+        return const Icon(Icons.access_time, color: Colors.orange);
       case 'Quote sent':
         return const Icon(Icons.send_sharp, color: Color(awesomeColor));
       case 'On the way':

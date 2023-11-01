@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:maison_mate/constants.dart';
 import 'package:maison_mate/network/client/get_client.dart';
+import 'package:maison_mate/network/client/post_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/network/response/job_response.dart';
 import 'package:maison_mate/network/response/nearby_job_details_response.dart';
+import 'package:maison_mate/provider/nearby_job_details_model.dart';
+import 'package:maison_mate/screens/home_screen.dart';
+import 'package:maison_mate/shared/custom_app_bar.dart';
 import 'package:maison_mate/shared/my_form.dart';
+import 'package:maison_mate/shared/my_snackbar.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class NearbyJobDetails extends StatefulWidget {
@@ -18,11 +24,15 @@ class NearbyJobDetails extends StatefulWidget {
 class _NearbyJobDetailsState extends State<NearbyJobDetails> {
   Future<ApiResponse>? futureData;
   late String apiUrl;
+  late String postApiUrl;
+  Future<ApiResponse>? postFutureData;
+  var snackbarShown = false;
 
   @override
   void initState() {
     super.initState();
     apiUrl = '$baseApiUrl/partners/nearby_job_details?job_id=${widget.job.id}';
+    postApiUrl = '$baseApiUrl/partners/job/accept_job?job_id=${widget.job.id}';
     futureData = GetClient.fetchData(apiUrl);
   }
 
@@ -42,28 +52,80 @@ class _NearbyJobDetailsState extends State<NearbyJobDetails> {
   }
 
   SingleChildScrollView showDetails(NearbyJobDetailsResponse data) {
+    final NearbyJobDetailsModel model =
+        Provider.of<NearbyJobDetailsModel>(context);
+
     return SingleChildScrollView(
-        child: Column(children: [
-      topCardContents(data),
-      const SizedBox(height: 20),
-      Container(
-        height: 10,
-        color: Colors.black12,
-      ),
-      bottomCardContents(data),
-      const SizedBox(height: 20),
-      Container(
-        height: 1,
-        color: Colors.black12,
-      ),
-      const Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Text(
-            "You will have 2 hours to send your quote to the user; otherwise, the job will be marked as 'Archived'. Timer will start immediately after accepting the job.",
-            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w300),
-          )),
-      MyForm.submitButton("Accept", () async {}),
-    ]));
+        child: AbsorbPointer(
+            absorbing: model.isSubmitting,
+            child: Column(children: [
+              topCardContents(data),
+              const SizedBox(height: 20),
+              Container(
+                height: 7,
+                color: Colors.black12,
+              ),
+              bottomCardContents(data),
+              const SizedBox(height: 20),
+              Container(
+                height: 1,
+                color: Colors.black12,
+              ),
+              const Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Text(
+                    "You will have 2 hours to send your quote to the user; otherwise, the job will be marked as 'Archived'. Timer will start immediately after accepting the job.",
+                    style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                        color: Color(awesomeColor)),
+                  )),
+              (postFutureData != null)
+                  ? PostClient.futureBuilder(
+                      model,
+                      postFutureData!,
+                      "Accept",
+                      () async {
+                        bool confirm =
+                            await CustomAppBar.showConfirmationDialog(context,
+                                'Are you sure you want to accept this job?');
+                        if (confirm) {
+                          onSubmitCallback(model);
+                        }
+                      },
+                      () {
+                        if (!snackbarShown) {
+                          ScaffoldMessenger.of(context).showSnackBar(MySnackBar(
+                                  message:
+                                      'Job accepted. Go to my jobs to send quote',
+                                  error: false)
+                              .getSnackbar());
+                          snackbarShown = true;
+                        }
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const HomeScreen(),
+                          ),
+                          (route) => false,
+                        );
+                      },
+                    )
+                  : MyForm.submitButton("Accept", () async {
+                      bool confirm = await CustomAppBar.showConfirmationDialog(
+                          context, 'Are you sure you want to accept this job?');
+                      if (confirm) {
+                        onSubmitCallback(model);
+                      }
+                    }),
+            ])));
+  }
+
+  void onSubmitCallback(NearbyJobDetailsModel model) {
+    model.setIsSubmitting(true);
+    snackbarShown = false;
+    postFutureData =
+        PostClient.request(postApiUrl, {}, model, (response) async {});
   }
 
   Padding bottomCardContents(NearbyJobDetailsResponse data) {
@@ -79,7 +141,7 @@ class _NearbyJobDetailsState extends State<NearbyJobDetails> {
                     'Job Details',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 10),
                   Text(
                     data.serviceName ?? '',
                     style: const TextStyle(
@@ -111,7 +173,7 @@ class _NearbyJobDetailsState extends State<NearbyJobDetails> {
                   Text(
                     data.userName ?? '',
                     style: const TextStyle(
-                        fontSize: 15, fontWeight: FontWeight.w300),
+                        fontSize: 15, fontWeight: FontWeight.w400),
                   ),
                   const SizedBox(height: 5),
                   Text(
