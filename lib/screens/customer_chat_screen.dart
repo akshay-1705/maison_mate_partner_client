@@ -1,5 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:maison_mate/constants.dart';
 import 'package:maison_mate/network/response/my_job_details_response.dart';
+import 'package:maison_mate/screens/send_quote_screen.dart';
+import 'package:web_socket_channel/io.dart';
 
 class CustomerChatScreen extends StatefulWidget {
   final MyJobDetailsResponse? data;
@@ -10,17 +15,12 @@ class CustomerChatScreen extends StatefulWidget {
 }
 
 class _CustomerChatScreenState extends State<CustomerChatScreen> {
-  List<ChatMessage> messages = [
-    ChatMessage(messageContent: "Hello, Will", messageType: "receiver"),
-    ChatMessage(messageContent: "How have you been?", messageType: "receiver"),
-    ChatMessage(
-        messageContent: "Hey Kriss, I am doing fine dude. wbu?",
-        messageType: "sender"),
-    ChatMessage(messageContent: "ehhhh, doing OK.", messageType: "receiver"),
-    ChatMessage(
-        messageContent: "Is there any thing wrong?", messageType: "sender"),
-  ];
+  // TODO: Save chat in a database.
+  List<ChatMessage> messages = [];
   ScrollController scrollController = ScrollController();
+  TextEditingController messageController = TextEditingController();
+  final channel = IOWebSocketChannel.connect('$webSocketUrl/cable');
+  bool callOnce = true;
 
   @override
   void initState() {
@@ -29,14 +29,37 @@ class _CustomerChatScreenState extends State<CustomerChatScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       scrollController.jumpTo(scrollController.position.maxScrollExtent);
     });
+    channel.sink.add(jsonEncode({
+      'command': 'subscribe',
+      'identifier': jsonEncode({'channel': 'ChatChannel'})
+    }));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: chatAppBar(context),
-      body: renderElements(),
-    );
+        appBar: chatAppBar(context),
+        body: StreamBuilder(
+            stream: channel.stream,
+            builder: (context, snapshot) {
+              listenToMessage(snapshot);
+              return renderElements();
+            }));
+  }
+
+  void listenToMessage(AsyncSnapshot<dynamic> snapshot) {
+    if (snapshot.data != null) {
+      var data = jsonDecode(snapshot.data);
+      var message = data['message'];
+
+      if (message is Map && message['chat'] != null) {
+        messages.add(ChatMessage(
+            messageContent: message['chat'], messageType: 'receiver'));
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          scrollController.jumpTo(scrollController.position.maxScrollExtent);
+        });
+      }
+    }
   }
 
   Stack renderElements() {
@@ -56,9 +79,10 @@ class _CustomerChatScreenState extends State<CustomerChatScreen> {
                 const SizedBox(
                   width: 15,
                 ),
-                const Expanded(
+                Expanded(
                   child: TextField(
-                    decoration: InputDecoration(
+                    controller: messageController,
+                    decoration: const InputDecoration(
                         hintText: "Write message...",
                         hintStyle: TextStyle(color: Colors.black54),
                         border: InputBorder.none),
@@ -68,7 +92,25 @@ class _CustomerChatScreenState extends State<CustomerChatScreen> {
                   width: 15,
                 ),
                 FloatingActionButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    if (messageController.text != '') {
+                      messages.add(ChatMessage(
+                          messageContent: messageController.text,
+                          messageType: 'sender'));
+
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        scrollController
+                            .jumpTo(scrollController.position.maxScrollExtent);
+                      });
+                      setState(() {});
+                      channel.sink.add(jsonEncode({
+                        'data': jsonEncode({'message': messageController.text}),
+                        'command': 'message',
+                        'identifier': jsonEncode({'channel': 'ChatChannel'})
+                      }));
+                      messageController.text = '';
+                    }
+                  },
                   backgroundColor: Colors.black,
                   elevation: 0,
                   child: const Icon(
@@ -172,8 +214,16 @@ class _CustomerChatScreenState extends State<CustomerChatScreen> {
                   ],
                 ),
               ),
-              const Text('Send Quote',
-                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 12)),
+              GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const SendQuoteScreen()));
+                  },
+                  child: const Text('Send Quote',
+                      style: TextStyle(
+                          fontWeight: FontWeight.w600, fontSize: 12))),
               const SizedBox(
                 width: 5,
               ),

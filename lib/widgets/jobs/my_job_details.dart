@@ -7,6 +7,7 @@ import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/network/response/job_item_response.dart';
 import 'package:maison_mate/network/response/my_job_details_response.dart';
 import 'package:maison_mate/screens/customer_chat_screen.dart';
+import 'package:maison_mate/screens/send_quote_screen.dart';
 import 'package:maison_mate/shared/my_form.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -154,7 +155,12 @@ class _MyJobDetailsState extends State<MyJobDetails> {
                                 CustomerChatScreen(data: data)));
                   }),
                   const SizedBox(width: 10),
-                  MyForm.submitButton("Send Quote", () async {}),
+                  MyForm.submitButton("Send Quote", () async {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const SendQuoteScreen()));
+                  }),
                 ]),
               ]),
         ));
