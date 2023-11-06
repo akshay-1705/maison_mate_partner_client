@@ -8,6 +8,7 @@ import 'package:maison_mate/network/client/post_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/provider/email_verification_model.dart';
 import 'package:maison_mate/screens/home_screen.dart';
+import 'package:maison_mate/services/web_socket_service.dart';
 import 'package:maison_mate/shared/custom_app_bar.dart';
 import 'package:maison_mate/shared/my_form.dart';
 import 'package:maison_mate/shared/my_snackbar.dart';
@@ -29,7 +30,8 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
   static const String apiUrl =
       '$baseApiUrl/partners/onboarding/email_verification';
   var snackbarShown = false;
-  final channel = IOWebSocketChannel.connect('$webSocketUrl/');
+  WebSocketService webSocketService = WebSocketService();
+  IOWebSocketChannel? channel;
   String? token;
   bool startPinging = false;
 
@@ -37,6 +39,13 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
   void initState() {
     super.initState();
     authToken();
+    initializeWebSocket();
+  }
+
+  Future<void> initializeWebSocket() async {
+    channel = await webSocketService.connect();
+    webSocketService.subscribe(channel, 'EmailVerificationChannel');
+    setState(() {});
   }
 
   Future<String?> authToken() async {
@@ -46,43 +55,24 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          actions: <Widget>[
-            IconButton(
-              icon: const Icon(
-                Icons.logout_outlined,
-                color: Color(themeColor),
-              ),
-              onPressed: () {
-                Future<bool> confirm = CustomAppBar.showConfirmationDialog(
-                    context, "Are you sure you want to Logout?");
-
-                confirm.then((value) {
-                  if (value) {
-                    storage.delete(key: authTokenKey);
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const SignInWidget()));
-                  }
-                });
-              },
-            ),
-          ],
-        ),
-        body: StreamBuilder(
-            stream: channel.stream,
-            builder: (context, snapshot) {
-              pingStatus();
-              checkIfVerified(snapshot, context);
-              return renderData(context);
-            }));
+    if (channel == null) {
+      return Scaffold(appBar: appBar(context, storage), body: Container());
+    } else {
+      return Scaffold(
+          appBar: appBar(context, storage),
+          body: StreamBuilder(
+              stream: channel?.stream,
+              builder: (context, snapshot) {
+                pingStatus();
+                checkIfVerified(snapshot, context);
+                return renderData(context);
+              }));
+    }
   }
 
   void pingStatus() {
     if (token != null && startPinging) {
-      channel.sink.add(jsonEncode({
+      channel?.sink.add(jsonEncode({
         'data': jsonEncode({'token': token}),
         'command': 'message',
         'identifier': jsonEncode({'channel': 'EmailVerificationChannel'})
@@ -210,10 +200,37 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
     setState(() {
       startPinging = true;
     });
-    channel.sink.add(jsonEncode({
+    channel?.sink.add(jsonEncode({
       'command': 'subscribe',
       'identifier': jsonEncode({'channel': 'EmailVerificationChannel'})
     }));
     futureData = PostClient.request(apiUrl, {}, model, (response) async {});
   }
+}
+
+AppBar appBar(BuildContext context, FlutterSecureStorage storage) {
+  return AppBar(
+    actions: <Widget>[
+      IconButton(
+        icon: const Icon(
+          Icons.logout_outlined,
+          color: Color(themeColor),
+        ),
+        onPressed: () {
+          Future<bool> confirm = CustomAppBar.showConfirmationDialog(
+              context, "Are you sure you want to Logout?");
+
+          confirm.then((value) {
+            if (value) {
+              storage.delete(key: authTokenKey);
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const SignInWidget()));
+            }
+          });
+        },
+      ),
+    ],
+  );
 }

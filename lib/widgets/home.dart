@@ -30,9 +30,7 @@ class _HomeWidgetState extends State<HomeWidget> {
       future: futureData,
       apiUrl: apiUrl,
       builder: (context, data) {
-        if (data.accountVerified) {
-          return const DashboardWidget();
-        } else if (!data.emailVerified) {
+        if (!data.emailVerified) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(
@@ -40,6 +38,8 @@ class _HomeWidgetState extends State<HomeWidget> {
             );
           });
           return Container();
+        } else if (data.accountVerified) {
+          return const DashboardWidget();
         } else {
           return Column(
             children: [
