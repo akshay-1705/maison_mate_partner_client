@@ -2,8 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:maison_mate/constants.dart';
+import 'package:maison_mate/network/client/get_client.dart';
+import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/network/response/my_job_details_response.dart';
 import 'package:maison_mate/screens/send_quote_screen.dart';
+import 'package:maison_mate/services/web_socket_service.dart';
 import 'package:web_socket_channel/io.dart';
 
 class CustomerChatScreen extends StatefulWidget {
@@ -15,36 +18,64 @@ class CustomerChatScreen extends StatefulWidget {
 }
 
 class _CustomerChatScreenState extends State<CustomerChatScreen> {
-  // TODO: Save chat in a database.
   List<ChatMessage> messages = [];
   ScrollController scrollController = ScrollController();
   TextEditingController messageController = TextEditingController();
-  final channel = IOWebSocketChannel.connect('$webSocketUrl/cable');
-  bool callOnce = true;
+  WebSocketService webSocketService = WebSocketService();
+  IOWebSocketChannel? channel;
+  late Future<ApiResponse> futureData;
+  late String apiUrl;
 
   @override
   void initState() {
     super.initState();
+    apiUrl =
+        "$baseApiUrl/partners/chat?entity_id=${widget.data?.userId}&entity_type=User";
+    futureData = GetClient.fetchData(apiUrl);
+    futureData.then((apiResponse) {
+      if (mounted) {
+        // TODO: This is incorrect. Consider time of message and then order
+        // accordingly. Backend will also change.
+        var data = apiResponse.data;
+        data.received.forEach((message) {
+          messages.add(
+              ChatMessage(messageContent: message, messageType: 'receiver'));
+        });
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      scrollController.jumpTo(scrollController.position.maxScrollExtent);
+        data.sent.forEach((message) {
+          messages
+              .add(ChatMessage(messageContent: message, messageType: 'sender'));
+        });
+      }
     });
-    channel.sink.add(jsonEncode({
-      'command': 'subscribe',
-      'identifier': jsonEncode({'channel': 'ChatChannel'})
-    }));
+    initializeWebSocket();
+  }
+
+  Future<void> initializeWebSocket() async {
+    channel = await webSocketService.connect();
+    webSocketService.subscribe(channel, 'ChatChannel');
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: chatAppBar(context),
-        body: StreamBuilder(
-            stream: channel.stream,
-            builder: (context, snapshot) {
-              listenToMessage(snapshot);
-              return renderElements();
-            }));
+    if (channel == null) {
+      return Scaffold(appBar: chatAppBar(context), body: Container());
+    } else {
+      return Scaffold(
+          appBar: chatAppBar(context),
+          body: StreamBuilder(
+              stream: channel?.stream,
+              builder: (context, snapshot) {
+                listenToMessage(snapshot);
+                return GetRequestFutureBuilder<dynamic>(
+                    future: futureData,
+                    apiUrl: apiUrl,
+                    builder: (context, data) {
+                      return renderElements();
+                    });
+              }));
+    }
   }
 
   void listenToMessage(AsyncSnapshot<dynamic> snapshot) {
@@ -103,8 +134,12 @@ class _CustomerChatScreenState extends State<CustomerChatScreen> {
                             .jumpTo(scrollController.position.maxScrollExtent);
                       });
                       setState(() {});
-                      channel.sink.add(jsonEncode({
-                        'data': jsonEncode({'message': messageController.text}),
+                      channel?.sink.add(jsonEncode({
+                        'data': jsonEncode({
+                          'text': messageController.text,
+                          'receiver_type': 'User',
+                          'receiver_id': widget.data?.userId
+                        }),
                         'command': 'message',
                         'identifier': jsonEncode({'channel': 'ChatChannel'})
                       }));
@@ -128,6 +163,9 @@ class _CustomerChatScreenState extends State<CustomerChatScreen> {
   }
 
   GestureDetector chat() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      scrollController.jumpTo(scrollController.position.maxScrollExtent);
+    });
     return GestureDetector(
         onTap: () {
           // Dismiss the keyboard when tapped on a non-actionable item

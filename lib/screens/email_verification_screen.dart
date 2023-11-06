@@ -29,7 +29,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
   static const String apiUrl =
       '$baseApiUrl/partners/onboarding/email_verification';
   var snackbarShown = false;
-  final channel = IOWebSocketChannel.connect('$webSocketUrl/cable');
+  final channel = IOWebSocketChannel.connect('$webSocketUrl/');
   String? token;
   bool startPinging = false;
 

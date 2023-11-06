@@ -17,6 +17,7 @@ MyJobDetailsResponse _$MyJobDetailsResponseFromJson(
       json['address'] as String? ?? '',
       json['details'] as String? ?? '',
       json['user_name'] as String? ?? '',
+      json['user_id'] as int?,
       json['status'] as String?,
       json['accepted_at'] as int?,
     );
@@ -27,6 +28,7 @@ Map<String, dynamic> _$MyJobDetailsResponseToJson(
       'id': instance.id,
       'service_name': instance.serviceName,
       'user_name': instance.userName,
+      'user_id': instance.userId,
       'kind': instance.kind,
       'latitude': instance.latitude,
       'longitude': instance.longitude,

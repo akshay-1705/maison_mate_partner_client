@@ -13,6 +13,7 @@ class MyJobDetailsResponse {
       this.address,
       this.details,
       this.userName,
+      this.userId,
       this.status,
       this.acceptedAt);
 
@@ -24,6 +25,9 @@ class MyJobDetailsResponse {
 
   @JsonKey(name: 'user_name', defaultValue: '')
   final String? userName;
+
+  @JsonKey(name: 'user_id')
+  final int? userId;
 
   @JsonKey(defaultValue: '')
   final String? kind;
