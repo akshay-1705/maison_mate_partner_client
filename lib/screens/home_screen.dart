@@ -6,7 +6,8 @@ import 'package:maison_mate/widgets/home.dart';
 import 'package:maison_mate/widgets/jobs/my_jobs.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final int? index;
+  const HomeScreen({super.key, this.index});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -19,6 +20,13 @@ class _HomeScreenState extends State<HomeScreen> {
     const MyJobsWidget(),
     const FavouritesWidget(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    currentIndex = widget.index ?? 0;
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(

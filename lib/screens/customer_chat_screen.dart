@@ -5,8 +5,10 @@ import 'package:maison_mate/constants.dart';
 import 'package:maison_mate/network/client/get_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/network/response/my_job_details_response.dart';
+import 'package:maison_mate/provider/send_quote_model.dart';
 import 'package:maison_mate/screens/send_quote_screen.dart';
 import 'package:maison_mate/services/web_socket_service.dart';
+import 'package:provider/provider.dart';
 import 'package:web_socket_channel/io.dart';
 
 class CustomerChatScreen extends StatefulWidget {
@@ -252,16 +254,21 @@ class _CustomerChatScreenState extends State<CustomerChatScreen> {
                   ],
                 ),
               ),
-              GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const SendQuoteScreen()));
-                  },
-                  child: const Text('Send Quote',
-                      style: TextStyle(
-                          fontWeight: FontWeight.w600, fontSize: 12))),
+              if (widget.data?.status == 'Accepted') ...[
+                GestureDetector(
+                    onTap: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                        return ChangeNotifierProvider(
+                          create: (context) => SendQuoteModel(),
+                          child: SendQuoteScreen(jobId: widget.data?.id),
+                        );
+                      }));
+                    },
+                    child: const Text('Send Quote',
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600, fontSize: 12))),
+              ],
               const SizedBox(
                 width: 5,
               ),

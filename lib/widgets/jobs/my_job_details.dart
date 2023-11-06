@@ -6,9 +6,11 @@ import 'package:maison_mate/network/client/get_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/network/response/job_item_response.dart';
 import 'package:maison_mate/network/response/my_job_details_response.dart';
+import 'package:maison_mate/provider/send_quote_model.dart';
 import 'package:maison_mate/screens/customer_chat_screen.dart';
 import 'package:maison_mate/screens/send_quote_screen.dart';
 import 'package:maison_mate/shared/my_form.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MyJobDetails extends StatefulWidget {
@@ -110,10 +112,6 @@ class _MyJobDetailsState extends State<MyJobDetails> {
   }
 
   Padding jobDetails(MyJobDetailsResponse data) {
-    final hours = remainingTime.inHours;
-    final minutes = (remainingTime.inMinutes - (hours * 60));
-    final seconds = remainingTime.inSeconds - (hours * 3600) - (minutes * 60);
-
     return Padding(
         padding: const EdgeInsets.all(16.0),
         child: Align(
@@ -128,18 +126,16 @@ class _MyJobDetailsState extends State<MyJobDetails> {
                       fontSize: 20, fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(height: 5),
-                Text(
-                  '$hours hours $minutes minutes $seconds seconds',
-                  style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
-                      color: Color(awesomeColor)),
-                ),
-                const Text(
-                  'Chat with the customer and send quote before the job is archived',
-                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.w300),
-                ),
-                const SizedBox(height: 15),
+                if (widget.job.statusToSearch == 0) ...[
+                  showTimer(),
+                ],
+                if (widget.job.statusToSearch == 1) ...[
+                  const Text(
+                    'Customer received your quote. The job will be cancelled if the customer does not accept quote timely.',
+                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w300),
+                  ),
+                  const SizedBox(height: 15),
+                ],
                 Text(
                   'Customer: ${data.userName}',
                   style: const TextStyle(
@@ -155,15 +151,44 @@ class _MyJobDetailsState extends State<MyJobDetails> {
                                 CustomerChatScreen(data: data)));
                   }),
                   const SizedBox(width: 10),
-                  MyForm.submitButton("Send Quote", () async {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const SendQuoteScreen()));
-                  }),
+                  if (widget.job.statusToSearch == 0) ...[
+                    MyForm.submitButton("Send Quote", () async {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                        return ChangeNotifierProvider(
+                          create: (context) => SendQuoteModel(),
+                          child: SendQuoteScreen(jobId: data.id),
+                        );
+                      }));
+                    }),
+                  ],
                 ]),
               ]),
         ));
+  }
+
+  Column showTimer() {
+    final hours = remainingTime.inHours;
+    final minutes = (remainingTime.inMinutes - (hours * 60));
+    final seconds = remainingTime.inSeconds - (hours * 3600) - (minutes * 60);
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '$hours hours $minutes minutes $seconds seconds',
+          style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w600,
+              color: Color(awesomeColor)),
+        ),
+        const Text(
+          'Chat with the customer and send quote before the job is archived',
+          style: TextStyle(fontSize: 13, fontWeight: FontWeight.w300),
+        ),
+        const SizedBox(height: 15),
+      ],
+    );
   }
 
   Padding description(MyJobDetailsResponse data) {
