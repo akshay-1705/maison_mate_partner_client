@@ -3,8 +3,8 @@ import 'package:maison_mate/constants.dart';
 import 'package:maison_mate/network/client/get_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/provider/my_jobs_model.dart';
-import 'package:maison_mate/widgets/jobs/filter_option.dart';
-import 'package:maison_mate/widgets/jobs/my_jobs_list.dart';
+import 'package:maison_mate/widgets/my_jobs/filter_option.dart';
+import 'package:maison_mate/widgets/my_jobs/my_jobs_list.dart';
 import 'package:provider/provider.dart';
 
 class MyJobsWidget extends StatefulWidget {

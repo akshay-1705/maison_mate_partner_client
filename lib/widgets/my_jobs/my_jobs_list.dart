@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:maison_mate/constants.dart';
 import 'package:maison_mate/network/response/my_jobs_response.dart';
-import 'package:maison_mate/widgets/jobs/my_job_details.dart';
+import 'package:maison_mate/provider/my_job_details_model.dart';
+import 'package:maison_mate/widgets/my_jobs/my_job_details.dart';
+import 'package:provider/provider.dart';
 
 class MyJobsList extends StatelessWidget {
   final MyJobsResponse? data;
@@ -33,11 +35,13 @@ class MyJobsList extends StatelessWidget {
 
   Icon getStatusIcon(String jobStatus) {
     switch (jobStatus) {
-      case 'Accepted':
+      case 'Pending':
         return const Icon(Icons.access_time, color: Colors.orange);
       case 'Quote sent':
         return const Icon(Icons.send_sharp, color: Color(awesomeColor));
-      case 'On the way':
+      case 'Quote accepted':
+        return const Icon(Icons.send_sharp, color: Colors.green);
+      case 'En route':
         return const Icon(Icons.directions_car_outlined, color: Colors.blue);
       case 'In progress':
         return const Icon(Icons.miscellaneous_services, color: Colors.blue);
@@ -84,12 +88,12 @@ class MyJobsList extends StatelessWidget {
             ),
             child: GestureDetector(
                 onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          MyJobDetails(job: job), // Your terms page
-                    ),
-                  );
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return ChangeNotifierProvider(
+                      create: (context) => MyJobDetailsModel(),
+                      child: MyJobDetails(job: job),
+                    );
+                  }));
                 },
                 child: Card(
                   elevation: 0,

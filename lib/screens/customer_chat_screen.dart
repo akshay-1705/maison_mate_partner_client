@@ -27,6 +27,7 @@ class _CustomerChatScreenState extends State<CustomerChatScreen> {
   IOWebSocketChannel? channel;
   late Future<ApiResponse> futureData;
   late String apiUrl;
+  bool scrollOnce = false;
 
   @override
   void initState() {
@@ -166,7 +167,10 @@ class _CustomerChatScreenState extends State<CustomerChatScreen> {
 
   GestureDetector chat() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      scrollController.jumpTo(scrollController.position.maxScrollExtent);
+      if (!scrollOnce) {
+        scrollController.jumpTo(scrollController.position.maxScrollExtent);
+        scrollOnce = true;
+      }
     });
     return GestureDetector(
         onTap: () {
@@ -254,7 +258,7 @@ class _CustomerChatScreenState extends State<CustomerChatScreen> {
                   ],
                 ),
               ),
-              if (widget.data?.status == 'Accepted') ...[
+              if (widget.data?.status == 'Pending') ...[
                 GestureDetector(
                     onTap: () {
                       Navigator.push(context,
