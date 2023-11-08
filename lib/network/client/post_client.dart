@@ -32,7 +32,6 @@ class PostClient {
         },
         body: jsonEncode(bodyData),
       );
-      print(response.body);
       final Map<String, dynamic> data = json.decode(response.body);
 
       ApiResponse<T> apiResponse = ApiResponse.fromJson(data);

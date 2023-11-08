@@ -4,14 +4,18 @@ import 'package:maison_mate/network/client/post_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/network/response/job_item_response.dart';
 import 'package:maison_mate/network/response/my_job_details_response.dart';
+import 'package:maison_mate/provider/end_job_model.dart';
 import 'package:maison_mate/provider/my_job_details_model.dart';
 import 'package:maison_mate/provider/send_quote_model.dart';
+import 'package:maison_mate/provider/start_job_model.dart';
 import 'package:maison_mate/screens/customer_chat_screen.dart';
 import 'package:maison_mate/screens/home_screen.dart';
 import 'package:maison_mate/screens/send_quote_screen.dart';
 import 'package:maison_mate/shared/custom_app_bar.dart';
 import 'package:maison_mate/shared/my_form.dart';
 import 'package:maison_mate/shared/my_snackbar.dart';
+import 'package:maison_mate/widgets/my_jobs/end_job.dart';
+import 'package:maison_mate/widgets/my_jobs/start_job.dart';
 import 'package:provider/provider.dart';
 
 class DynamicButtons extends StatefulWidget {
@@ -55,16 +59,6 @@ class _DynamicButtonsState extends State<DynamicButtons> {
           ),
           const SizedBox(height: 10),
           Row(children: [
-            if (![5, 6].contains(widget.job.statusToSearch)) ...[
-              MyForm.submitButton("Chat", () async {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            CustomerChatScreen(data: widget.data)));
-              }),
-              const SizedBox(width: 10),
-            ],
             if (widget.job.statusToSearch == 2) ...[
               (enRouteButtonFutureData != null)
                   ? PostClient.futureBuilder(
@@ -104,6 +98,7 @@ class _DynamicButtonsState extends State<DynamicButtons> {
                         enRouteOnSubmitCallback(widget.model);
                       }
                     }),
+              const SizedBox(width: 10),
             ],
             if (widget.job.statusToSearch == 0) ...[
               MyForm.submitButton("Send Quote", () async {
@@ -114,9 +109,56 @@ class _DynamicButtonsState extends State<DynamicButtons> {
                   );
                 }));
               }),
+              const SizedBox(width: 10),
+            ],
+            if (widget.job.statusToSearch == 3) ...[
+              MyForm.submitButton("Start job", () async {
+                await showOtpModal(context);
+              }),
+              const SizedBox(width: 10),
+            ],
+            if (widget.job.statusToSearch == 4) ...[
+              MyForm.submitButton("End job", () async {
+                await showOtpModalToEndJob(context);
+              }),
+              const SizedBox(width: 10),
+            ],
+            if (![5, 6].contains(widget.job.statusToSearch)) ...[
+              MyForm.submitButton("Chat", () async {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            CustomerChatScreen(data: widget.data)));
+              }),
+              const SizedBox(width: 10),
             ],
           ])
         ]);
+  }
+
+  Future<void> showOtpModalToEndJob(BuildContext context) async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ChangeNotifierProvider(
+            create: (context) => EndJobModel(),
+            child: EndJob(
+                jobId: widget.job.id)); // Use the custom OTP modal widget here
+      },
+    );
+  }
+
+  Future<void> showOtpModal(BuildContext context) async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ChangeNotifierProvider(
+            create: (context) => StartJobModel(),
+            child: StartJob(
+                jobId: widget.job.id)); // Use the custom OTP modal widget here
+      },
+    );
   }
 
   enRouteOnSubmitCallback(MyJobDetailsModel model) {
