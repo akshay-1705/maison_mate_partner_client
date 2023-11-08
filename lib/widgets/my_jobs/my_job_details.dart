@@ -102,7 +102,8 @@ class _MyJobDetailsState extends State<MyJobDetails> {
                 ),
                 const SizedBox(height: 5),
                 if (widget.job.statusToSearch == 0) ...[
-                  TimerWidget(remainingTime: remainingTime),
+                  TimerWidget(
+                      remainingTime: remainingTime, jobId: widget.job.id),
                 ],
                 DynamicButtons(
                     context: context, job: widget.job, data: data, model: model)

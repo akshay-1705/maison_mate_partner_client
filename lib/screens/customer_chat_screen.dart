@@ -33,7 +33,7 @@ class _CustomerChatScreenState extends State<CustomerChatScreen> {
   void initState() {
     super.initState();
     apiUrl =
-        "$baseApiUrl/partners/chat?entity_id=${widget.data?.userId}&entity_type=User";
+        "$baseApiUrl/partners/chat?entity_id=${widget.data?.userId}&entity_type=User&identifier_type=JobAssignment&identifier_id=${widget.data?.id}";
     futureData = GetClient.fetchData(apiUrl);
     futureData.then((apiResponse) {
       if (mounted) {
@@ -141,7 +141,9 @@ class _CustomerChatScreenState extends State<CustomerChatScreen> {
                         'data': jsonEncode({
                           'text': messageController.text,
                           'receiver_type': 'User',
-                          'receiver_id': widget.data?.userId
+                          'receiver_id': widget.data?.userId,
+                          'identifier_id': widget.data?.id,
+                          'identifier_type': 'JobAssignment'
                         }),
                         'command': 'message',
                         'identifier': jsonEncode({'channel': 'ChatChannel'})
