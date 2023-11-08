@@ -22,6 +22,7 @@ class EndJobState extends State<EndJob> {
       List.generate(4, (index) => TextEditingController());
   String otp = '';
   Future<ApiResponse>? futureData;
+  var snackbarShown = false;
 
   @override
   void dispose() {
@@ -86,9 +87,13 @@ class EndJobState extends State<EndJob> {
                           }
                         },
                         () {
-                          ScaffoldMessenger.of(context).showSnackBar(MySnackBar(
-                                  message: "Job completed.", error: false)
-                              .getSnackbar());
+                          if (!snackbarShown) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                MySnackBar(
+                                        message: "Job completed.", error: false)
+                                    .getSnackbar());
+                            snackbarShown = true;
+                          }
                           Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
@@ -111,6 +116,7 @@ class EndJobState extends State<EndJob> {
   void onSubmitCallback(EndJobModel model) {
     if (!model.isSubmitting) {
       model.setIsSubmitting(true);
+      snackbarShown = false;
 
       const String apiUrl = '$baseApiUrl/partners/job/end_job';
       var formData = {'job_assignment_id': widget.jobId, 'otp': int.parse(otp)};

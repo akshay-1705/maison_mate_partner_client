@@ -6,7 +6,9 @@ import 'package:maison_mate/network/client/get_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/network/response/job_item_response.dart';
 import 'package:maison_mate/network/response/my_job_details_response.dart';
+import 'package:maison_mate/provider/cancel_job_model.dart';
 import 'package:maison_mate/provider/my_job_details_model.dart';
+import 'package:maison_mate/widgets/my_jobs/cancel_job.dart';
 import 'package:maison_mate/widgets/my_jobs/dynamic_buttons.dart';
 import 'package:maison_mate/widgets/my_jobs/address_details.dart';
 import 'package:maison_mate/widgets/my_jobs/description.dart';
@@ -52,6 +54,15 @@ class _MyJobDetailsState extends State<MyJobDetails> {
     return Scaffold(
         appBar: AppBar(
           title: const Text(''),
+          flexibleSpace: SafeArea(
+              child: Container(
+                  alignment: Alignment.topRight,
+                  padding: const EdgeInsets.only(right: 16),
+                  child: Column(children: [
+                    if (![5, 6].contains(widget.job.statusToSearch)) ...[
+                      threeDotMenu()
+                    ],
+                  ]))),
         ),
         body: GetRequestFutureBuilder<dynamic>(
           apiUrl: apiUrl,
@@ -60,6 +71,40 @@ class _MyJobDetailsState extends State<MyJobDetails> {
             return showDetails(data, model);
           },
         ));
+  }
+
+  PopupMenuButton<String> threeDotMenu() {
+    return PopupMenuButton<String>(
+      shadowColor: Colors.white,
+      surfaceTintColor: Colors.white,
+      itemBuilder: (BuildContext context) {
+        return <PopupMenuEntry<String>>[
+          const PopupMenuItem<String>(
+            value: 'cancel',
+            child: Text('Cancel'),
+          ),
+        ];
+      },
+      onSelected: (String choice) async {
+        if (choice == 'cancel') {
+          await showCancelModal(context);
+          // Perform an action for userInactive
+        }
+      },
+      icon: const Icon(Icons.more_vert), // The 3-dot icon
+    );
+  }
+
+  Future<void> showCancelModal(BuildContext context) async {
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ChangeNotifierProvider(
+            create: (context) => CancelJobModel(),
+            child: CancelJob(
+                jobId: widget.job.id)); // Use the custom OTP modal widget here
+      },
+    );
   }
 
   AbsorbPointer showDetails(

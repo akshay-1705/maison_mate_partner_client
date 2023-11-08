@@ -278,32 +278,10 @@ class _CustomerChatScreenState extends State<CustomerChatScreen> {
               const SizedBox(
                 width: 5,
               ),
-              threeDotMenu()
             ],
           ),
         ),
       ),
-    );
-  }
-
-  PopupMenuButton<String> threeDotMenu() {
-    return PopupMenuButton<String>(
-      shadowColor: Colors.white,
-      surfaceTintColor: Colors.white,
-      itemBuilder: (BuildContext context) {
-        return <PopupMenuEntry<String>>[
-          const PopupMenuItem<String>(
-            value: 'customerInactive',
-            child: Text('Customer Inactive'),
-          ),
-        ];
-      },
-      onSelected: (String choice) {
-        if (choice == 'customerInactive') {
-          // Perform an action for userInactive
-        }
-      },
-      icon: const Icon(Icons.more_vert), // The 3-dot icon
     );
   }
 }
