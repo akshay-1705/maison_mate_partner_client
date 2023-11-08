@@ -26,7 +26,7 @@ class TimerWidget extends StatelessWidget {
               color: Color(awesomeColor)),
         ),
         const Text(
-          'Chat with the customer and send quote before the job is archived',
+          'Chat with the customer and send quote before the job is cancelled',
           style: TextStyle(fontSize: 13, fontWeight: FontWeight.w300),
         ),
         const SizedBox(height: 15),

@@ -49,8 +49,6 @@ class MyJobsList extends StatelessWidget {
         return const Icon(Icons.check, color: Colors.green);
       case 'Cancelled':
         return const Icon(Icons.cancel, color: Colors.red);
-      case 'Archived':
-        return const Icon(Icons.archive, color: Colors.black);
 
       default:
         return const Icon(Icons.question_mark, color: Colors.orange);
@@ -100,7 +98,10 @@ class MyJobsList extends StatelessWidget {
                   color: const Color(secondaryColor),
                   child: ListTile(
                     leading: getServiceIcon(job.serviceName ?? ''),
-                    title: Text(job.address ?? ''),
+                    title: Text(
+                      job.address ?? '',
+                      style: const TextStyle(fontSize: 14),
+                    ),
                     subtitle: Row(children: [
                       Text(
                         job.statusToShow ?? '',

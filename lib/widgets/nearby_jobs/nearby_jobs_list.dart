@@ -20,44 +20,49 @@ class _NearbyJobsListState extends State<NearbyJobsList> {
   Widget build(BuildContext context) {
     final nearbyJobs = widget.data.nearbyJobs;
 
-    if (nearbyJobs.isEmpty) {
-      return Container(
-        height: MediaQuery.of(context).size.height * 0.50,
-        alignment: Alignment.center,
-        child: const Center(
-          child: Text(
-            'No nearby jobs found',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey,
-            ),
-          ),
-        ),
-      );
-    }
-
     return SizedBox(
       height:
           MediaQuery.of(context).size.height * 0.50, // Specify a fixed height
       child: CustomScrollView(
         slivers: <Widget>[
-          SliverList(
-            delegate: SliverChildBuilderDelegate((context, index) {
-              final job = nearbyJobs[index];
-              return Container(
-                  margin: const EdgeInsets.only(bottom: 15),
-                  child: GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                NearbyJobDetails(job: job), // Your terms page
-                          ),
-                        );
-                      },
-                      child: jobCard(job)));
-            }, childCount: nearbyJobs.length),
-          ),
+          if (widget.data.nearbyJobs.isEmpty) ...[
+            SliverList(
+              delegate: SliverChildBuilderDelegate((context, index) {
+                return Container(
+                  height: MediaQuery.of(context).size.height * 0.50,
+                  alignment: Alignment.center,
+                  child: const Center(
+                    child: Text(
+                      'No nearby jobs found',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ),
+                );
+              }, childCount: 1),
+            ),
+          ],
+          if (widget.data.nearbyJobs.isNotEmpty) ...[
+            SliverList(
+              delegate: SliverChildBuilderDelegate((context, index) {
+                final job = nearbyJobs[index];
+                return Container(
+                    margin: const EdgeInsets.only(bottom: 15),
+                    child: GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  NearbyJobDetails(job: job), // Your terms page
+                            ),
+                          );
+                        },
+                        child: jobCard(job)));
+              }, childCount: nearbyJobs.length),
+            ),
+          ]
         ],
       ),
     );

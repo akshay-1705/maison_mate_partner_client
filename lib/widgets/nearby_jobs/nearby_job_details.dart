@@ -74,7 +74,7 @@ class _NearbyJobDetailsState extends State<NearbyJobDetails> {
               const Padding(
                   padding: EdgeInsets.all(16.0),
                   child: Text(
-                    "You will have 2 hours to send your quote to the user; otherwise, the job will be marked as 'Archived'. Timer will start immediately after accepting the job.",
+                    "You will have 2 hours to send your quote to the user; otherwise, the job will be marked as 'Cancelled'. Timer will start immediately after accepting the job.",
                     style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w500,
