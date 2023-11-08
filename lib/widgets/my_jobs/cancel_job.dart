@@ -83,7 +83,7 @@ class _CancelJobState extends State<CancelJob> {
                               const Padding(
                                 padding: EdgeInsets.only(top: 16.0),
                                 child: Text(
-                                  'Cancellation may impact the your rating and number of jobs you get',
+                                  'Cancellation may impact your rating and number of jobs you get',
                                   style: TextStyle(
                                     color: Colors.red,
                                   ),
