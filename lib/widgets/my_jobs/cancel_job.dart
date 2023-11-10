@@ -103,11 +103,15 @@ class _CancelJobState extends State<CancelJob> {
                                           onSubmitCallback(model);
                                         },
                                         () {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(MySnackBar(
-                                                      message: "Job cancelled.",
-                                                      error: false)
-                                                  .getSnackbar());
+                                          if (!snackbarShown) {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(MySnackBar(
+                                                        message:
+                                                            "Job cancelled.",
+                                                        error: false)
+                                                    .getSnackbar());
+                                            snackbarShown = true;
+                                          }
                                           Navigator.pushAndRemoveUntil(
                                             context,
                                             MaterialPageRoute(
@@ -136,9 +140,9 @@ class _CancelJobState extends State<CancelJob> {
 
       const String apiUrl = '$baseApiUrl/partners/job/cancel_job';
       var formData = {'job_assignment_id': widget.jobId, 'reason': reason};
+      Navigator.of(context).pop();
       futureData =
           PostClient.request(apiUrl, formData, model, (response) async {});
-      Navigator.of(context).pop();
     }
   }
 

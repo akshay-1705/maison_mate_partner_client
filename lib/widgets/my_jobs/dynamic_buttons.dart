@@ -119,7 +119,46 @@ class _DynamicButtonsState extends State<DynamicButtons> {
             ],
             if (widget.job.statusToSearch == 4) ...[
               MyForm.submitButton("End job", () async {
-                await showOtpModalToEndJob(context);
+                await showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: const Text("Confirmation"),
+                      content: const Text(
+                          'Do you want to edit the quote before ending the job? You cannot do this after ending the job.'),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop(false);
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
+                              return ChangeNotifierProvider(
+                                create: (context) => SendQuoteModel(),
+                                child: SendQuoteScreen(jobId: widget.data.id),
+                              );
+                            }));
+                          },
+                          child: const Text("Edit"),
+                        ),
+                        TextButton(
+                          onPressed: () async {
+                            Navigator.of(context).pop(false);
+                            if (widget.data.quoteFinal) {
+                              await showOtpModalToEndJob(context);
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(MySnackBar(
+                                      message:
+                                          "Customer has not accepted the updated quote",
+                                      error: true)
+                                  .getSnackbar());
+                            }
+                          },
+                          child: const Text("Enter OTP"),
+                        )
+                      ],
+                    );
+                  },
+                );
               }),
               const SizedBox(width: 10),
             ],

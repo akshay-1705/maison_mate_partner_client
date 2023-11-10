@@ -7,6 +7,7 @@ import 'package:maison_mate/network/response/documentation/documentation_respons
 import 'package:maison_mate/network/response/documentation/self_trader_response.dart';
 import 'package:maison_mate/network/response/favourites_response.dart';
 import 'package:maison_mate/network/response/find_jobs_response.dart';
+import 'package:maison_mate/network/response/get_quote_response.dart';
 import 'package:maison_mate/network/response/image_response.dart';
 import 'package:maison_mate/network/response/documentation/insurance_response.dart';
 import 'package:maison_mate/network/response/my_job_details_response.dart';
@@ -47,6 +48,8 @@ class _Converter<T> implements JsonConverter<T, Object> {
       return SignInResponse.fromJson(map) as T;
     } else if (map.containsKey('sent') && map.containsKey('received')) {
       return ChatResponse.fromJson(map) as T;
+    } else if (map.containsKey('quote')) {
+      return GetQuoteResponse.fromJson(map) as T;
     } else if (map.containsKey('service_name') &&
         map.containsKey('latitude') &&
         map.containsKey('longitude') &&

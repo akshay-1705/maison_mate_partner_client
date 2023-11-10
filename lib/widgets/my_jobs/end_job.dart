@@ -120,9 +120,9 @@ class EndJobState extends State<EndJob> {
 
       const String apiUrl = '$baseApiUrl/partners/job/end_job';
       var formData = {'job_assignment_id': widget.jobId, 'otp': int.parse(otp)};
+      Navigator.of(context).pop();
       futureData =
           PostClient.request(apiUrl, formData, model, (response) async {});
-      Navigator.of(context).pop();
     }
   }
 
