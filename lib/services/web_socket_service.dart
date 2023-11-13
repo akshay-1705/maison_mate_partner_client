@@ -24,4 +24,12 @@ class WebSocketService {
       'identifier': jsonEncode({'channel': channelName})
     }));
   }
+
+  sendMessage(channel, channelName, message) {
+    channel.sink.add(jsonEncode({
+      'data': jsonEncode(message),
+      'command': 'message',
+      'identifier': jsonEncode({'channel': channelName})
+    }));
+  }
 }

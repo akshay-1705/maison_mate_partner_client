@@ -32,8 +32,8 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
   var snackbarShown = false;
   WebSocketService webSocketService = WebSocketService();
   IOWebSocketChannel? channel;
+  final String channelName = 'EmailVerificationChannel';
   String? token;
-  bool startPinging = false;
 
   @override
   void initState() {
@@ -44,7 +44,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
 
   Future<void> initializeWebSocket() async {
     channel = await webSocketService.connect();
-    webSocketService.subscribe(channel, 'EmailVerificationChannel');
+    webSocketService.subscribe(channel, channelName);
     setState(() {});
   }
 
@@ -60,6 +60,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
     } else {
       return Scaffold(
           appBar: appBar(context, storage),
+          //  This is very risky. DO NOT CHANGE ANYTHING WITHOUT APPROVAL
           body: StreamBuilder(
               stream: channel?.stream,
               builder: (context, snapshot) {
@@ -71,12 +72,8 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
   }
 
   void pingStatus() {
-    if (token != null && startPinging) {
-      channel?.sink.add(jsonEncode({
-        'data': jsonEncode({'token': token}),
-        'command': 'message',
-        'identifier': jsonEncode({'channel': 'EmailVerificationChannel'})
-      }));
+    if (token != null) {
+      webSocketService.sendMessage(channel, channelName, {});
     }
   }
 
@@ -85,9 +82,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
       var data = jsonDecode(snapshot.data);
       var decodedMessage = data['message'];
 
-      if (decodedMessage is Map &&
-          decodedMessage['token'] == token &&
-          decodedMessage['status'] == 'verified') {
+      if (decodedMessage is Map && decodedMessage['email_verified']) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           Navigator.of(context).pushReplacement(MaterialPageRoute(
             builder: (context) => const HomeScreen(),
@@ -197,13 +192,6 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
   void onSubmitCallback(EmailVerificationModel model) {
     model.setIsSubmitting(true);
     snackbarShown = false;
-    setState(() {
-      startPinging = true;
-    });
-    channel?.sink.add(jsonEncode({
-      'command': 'subscribe',
-      'identifier': jsonEncode({'channel': 'EmailVerificationChannel'})
-    }));
     futureData = PostClient.request(apiUrl, {}, model, (response) async {});
   }
 }
