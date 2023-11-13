@@ -76,33 +76,28 @@ class _StartJobState extends State<StartJob> {
             Align(
                 alignment: Alignment.center,
                 child: (futureData != null)
-                    ? PostClient.futureBuilder(
-                        model,
-                        futureData!,
-                        "Start",
+                    ? PostClient.futureBuilder(model, futureData!, "Start",
                         () async {
-                          if (otp.length == 4) {
-                            FocusScope.of(context).unfocus();
-                            onSubmitCallback(model);
-                          }
-                        },
-                        () {
-                          if (!snackbarShown) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                MySnackBar(
-                                        message: "Job started.", error: false)
-                                    .getSnackbar());
-                            snackbarShown = true;
-                          }
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    const HomeScreen(index: 1)),
-                            (route) => false,
-                          );
-                        },
-                      )
+                        if (otp.length == 4) {
+                          FocusScope.of(context).unfocus();
+                          onSubmitCallback(model);
+                        }
+                      }, () {
+                        if (!snackbarShown) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              MySnackBar(message: "Job started.", error: false)
+                                  .getSnackbar());
+                          snackbarShown = true;
+                        }
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const HomeScreen(index: 1)),
+                          (route) => false,
+                        );
+                      }, afterFailure: () {
+                        Navigator.of(context).pop();
+                      })
                     : MyForm.submitButton("Start", () async {
                         if (otp.length == 4) {
                           FocusScope.of(context).unfocus();
@@ -120,9 +115,9 @@ class _StartJobState extends State<StartJob> {
 
       const String apiUrl = '$baseApiUrl/partners/job/start_job';
       var formData = {'job_assignment_id': widget.jobId, 'otp': int.parse(otp)};
-      Navigator.of(context).pop();
       futureData =
           PostClient.request(apiUrl, formData, model, (response) async {});
+      WidgetsBinding.instance.addPostFrameCallback((_) {});
     }
   }
 

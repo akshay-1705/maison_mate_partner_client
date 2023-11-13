@@ -48,12 +48,13 @@ class PostClient {
   }
 
   static FutureBuilder<ApiResponse> futureBuilder(
-    dynamic model,
-    Future<ApiResponse> postFutureData,
-    String buttonText,
-    VoidCallback buttonAction,
-    VoidCallback onNavigation, // Generic navigation function
-  ) {
+      dynamic model,
+      Future<ApiResponse> postFutureData,
+      String buttonText,
+      VoidCallback buttonAction,
+      VoidCallback onNavigation,
+      {VoidCallback? afterFailure} // Generic navigation function
+      ) {
     return FutureBuilder<ApiResponse>(
       future: postFutureData,
       builder: (context, snapshot) {
@@ -70,6 +71,9 @@ class PostClient {
             WidgetsBinding.instance.addPostFrameCallback((_) {
               ScaffoldMessenger.of(context).showSnackBar(
                   MySnackBar(message: errorMessage, error: true).getSnackbar());
+              if (afterFailure != null) {
+                afterFailure();
+              }
             });
           }
           return MyForm.submitButton(buttonText, buttonAction);

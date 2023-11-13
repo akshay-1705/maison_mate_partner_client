@@ -6,25 +6,25 @@ import 'package:maison_mate/constants.dart';
 import 'package:maison_mate/network/response/api_response.dart';
 import 'package:http/http.dart' as http;
 import 'package:maison_mate/shared/my_form.dart';
+import 'package:maison_mate/shared/my_snackbar.dart';
+import 'package:maison_mate/widgets/auth/sign_in.dart';
 
 class GetClient {
   static Future<ApiResponse<T>> fetchData<T>(String apiUrl) async {
-    try {
-      const storage = FlutterSecureStorage();
-      var authToken = await storage.read(key: authTokenKey);
-      authToken ??= '';
-      final response = await http.get(
-        Uri.parse(apiUrl),
-        headers: <String, String>{'Partner-Authorization': authToken},
-      );
+    const storage = FlutterSecureStorage();
+    var authToken = await storage.read(key: authTokenKey);
+    authToken ??= '';
+    final response = await http.get(
+      Uri.parse(apiUrl),
+      headers: <String, String>{'Partner-Authorization': authToken},
+    );
 
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> data = json.decode(response.body);
-        return ApiResponse.fromJson(data);
-      } else {
-        throw Exception('Failed to load data from the API');
-      }
-    } catch (e) {
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      return ApiResponse.fromJson(data);
+    } else if (response.statusCode == 401) {
+      throw Exception('Unauthorized');
+    } else {
       throw Exception('Failed to load data from the API');
     }
   }
@@ -60,10 +60,31 @@ class _GetRequestFutureBuilderState<T>
         } else if (snapshot.hasData) {
           return widget.builder(context, snapshot.data!.data);
         } else if (snapshot.hasError) {
-          return refreshButton(context);
+          if (snapshot.error.toString() == 'Exception: Unauthorized') {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              logoutCallback(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                  MySnackBar(message: 'Please login again', error: true)
+                      .getSnackbar());
+            });
+          } else {
+            return refreshButton(context);
+          }
         }
         return Container();
       },
+    );
+  }
+
+  void logoutCallback(BuildContext context) {
+    const storage = FlutterSecureStorage();
+    storage.delete(key: authTokenKey);
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const SignInWidget(),
+      ),
+      (route) => false,
     );
   }
 

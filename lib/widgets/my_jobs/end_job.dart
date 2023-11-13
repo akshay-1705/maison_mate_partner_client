@@ -76,33 +76,28 @@ class EndJobState extends State<EndJob> {
             Align(
                 alignment: Alignment.center,
                 child: (futureData != null)
-                    ? PostClient.futureBuilder(
-                        model,
-                        futureData!,
-                        "End",
+                    ? PostClient.futureBuilder(model, futureData!, "End",
                         () async {
-                          if (otp.length == 4) {
-                            FocusScope.of(context).unfocus();
-                            onSubmitCallback(model);
-                          }
-                        },
-                        () {
-                          if (!snackbarShown) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                MySnackBar(
-                                        message: "Job completed.", error: false)
-                                    .getSnackbar());
-                            snackbarShown = true;
-                          }
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    const HomeScreen(index: 1)),
-                            (route) => false,
-                          );
-                        },
-                      )
+                        if (otp.length == 4) {
+                          FocusScope.of(context).unfocus();
+                          onSubmitCallback(model);
+                        }
+                      }, () {
+                        if (!snackbarShown) {
+                          ScaffoldMessenger.of(context).showSnackBar(MySnackBar(
+                                  message: "Job completed.", error: false)
+                              .getSnackbar());
+                          snackbarShown = true;
+                        }
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const HomeScreen(index: 1)),
+                          (route) => false,
+                        );
+                      }, afterFailure: () {
+                        Navigator.of(context).pop();
+                      })
                     : MyForm.submitButton("End", () async {
                         if (otp.length == 4) {
                           FocusScope.of(context).unfocus();
@@ -120,7 +115,6 @@ class EndJobState extends State<EndJob> {
 
       const String apiUrl = '$baseApiUrl/partners/job/end_job';
       var formData = {'job_assignment_id': widget.jobId, 'otp': int.parse(otp)};
-      Navigator.of(context).pop();
       futureData =
           PostClient.request(apiUrl, formData, model, (response) async {});
     }
