@@ -13,6 +13,7 @@ import 'package:maison_mate/widgets/my_jobs/dynamic_buttons.dart';
 import 'package:maison_mate/widgets/my_jobs/description.dart';
 import 'package:maison_mate/widgets/my_jobs/timer_widget.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MyJobDetails extends StatefulWidget {
   final int? jobId;
@@ -171,14 +172,23 @@ class _MyJobDetailsState extends State<MyJobDetails> {
               const SizedBox(height: 10),
               if (data.status != 'Completed') ...[
                 Row(children: [
-                  Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey.shade300),
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      padding: const EdgeInsets.all(5.0),
-                      child: Icon(Icons.call,
-                          size: 20, color: Colors.blue.shade700)),
+                  GestureDetector(
+                      onTap: () async {
+                        String url = 'tel:${data.userPhoneNumber}';
+                        if (await canLaunch(url)) {
+                          await launch(url);
+                        } else {
+                          print('Could not launch $url');
+                        }
+                      },
+                      child: Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey.shade300),
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          padding: const EdgeInsets.all(5.0),
+                          child: Icon(Icons.call,
+                              size: 20, color: Colors.blue.shade700))),
                   const SizedBox(width: 10),
                   GestureDetector(
                       onTap: () async {

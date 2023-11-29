@@ -17,7 +17,8 @@ class MyJobDetailsResponse {
       this.status,
       this.acceptedAt,
       this.quoteFinal,
-      this.statusToSearch);
+      this.statusToSearch,
+      this.userPhoneNumber);
 
   @JsonKey()
   final int? id;
@@ -57,6 +58,9 @@ class MyJobDetailsResponse {
 
   @JsonKey(name: 'quote_final', defaultValue: false)
   final bool quoteFinal;
+
+  @JsonKey(name: 'user_phone_number')
+  final String? userPhoneNumber;
 
   factory MyJobDetailsResponse.fromJson(Map<String, dynamic> json) =>
       _$MyJobDetailsResponseFromJson(json);
