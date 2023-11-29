@@ -14,6 +14,7 @@ import 'package:maison_mate/shared/my_form.dart';
 import 'package:maison_mate/shared/my_snackbar.dart';
 import 'package:maison_mate/widgets/my_jobs/end_job.dart';
 import 'package:maison_mate/widgets/my_jobs/start_job.dart';
+import 'package:maison_mate/widgets/receipt_widget.dart';
 import 'package:provider/provider.dart';
 
 class DynamicButtons extends StatefulWidget {
@@ -153,6 +154,29 @@ class _DynamicButtonsState extends State<DynamicButtons> {
               }),
               const SizedBox(height: 10)
             ],
+            if (widget.data.statusToSearch == 5) ...[
+              GestureDetector(
+                  onTap: () {
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      builder: (BuildContext context) {
+                        return const ReceiptWidget();
+                      },
+                    );
+                  },
+                  child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey.shade300),
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      padding: const EdgeInsets.all(12.0),
+                      child: Text('View Receipt',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: Colors.green.shade800)))),
+              const SizedBox(height: 10)
+            ]
           ]),
         ]);
   }

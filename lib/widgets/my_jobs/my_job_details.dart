@@ -40,8 +40,10 @@ class _MyJobDetailsState extends State<MyJobDetails> {
         '$baseApiUrl/partners/my_job_details?job_assignment_id=${widget.jobId}';
     futureData = GetClient.fetchData(apiUrl);
     futureData.then((value) {
+      setState(() {
+        header = value.data.serviceName;
+      });
       showCancel = ![5, 6].contains(value.data.statusToSearch);
-      header = value.data.serviceName;
       initializeTimer(value);
     });
   }
@@ -138,14 +140,14 @@ class _MyJobDetailsState extends State<MyJobDetails> {
             height: 4,
             color: Colors.black12,
           ),
-          if (![5, 6].contains(data.statusToSearch)) ...[partnerWidget(data)],
+          if (![5, 6].contains(data.statusToSearch)) ...[userWidget(data)],
           const SizedBox(height: 10),
           Description(data: data),
           const SizedBox(height: 10),
         ])));
   }
 
-  Column partnerWidget(MyJobDetailsResponse data) {
+  Column userWidget(MyJobDetailsResponse data) {
     return Column(children: [
       const SizedBox(height: 20),
       Row(children: [
@@ -175,9 +177,11 @@ class _MyJobDetailsState extends State<MyJobDetails> {
                   GestureDetector(
                       onTap: () async {
                         String url = 'tel:${data.userPhoneNumber}';
-                        if (await canLaunch(url)) {
-                          await launch(url);
+                        var parsedUrl = Uri.parse(url);
+                        if (await canLaunchUrl(parsedUrl)) {
+                          await launchUrl(parsedUrl);
                         } else {
+                          // ignore: avoid_print
                           print('Could not launch $url');
                         }
                       },
