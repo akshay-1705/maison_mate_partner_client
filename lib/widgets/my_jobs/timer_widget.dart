@@ -72,7 +72,7 @@ class _TimerWidgetState extends State<TimerWidget> {
                     'Chat with the customer and send quote before the job is cancelled',
                     style: TextStyle(fontSize: 13, fontWeight: FontWeight.w300),
                   ),
-                  const SizedBox(height: 15),
+                  const SizedBox(height: 10),
                 ]);
           });
     }

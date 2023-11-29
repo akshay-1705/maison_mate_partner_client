@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:maison_mate/constants.dart';
 import 'package:maison_mate/network/client/post_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
-import 'package:maison_mate/network/response/job_item_response.dart';
 import 'package:maison_mate/network/response/my_job_details_response.dart';
 import 'package:maison_mate/provider/end_job_model.dart';
 import 'package:maison_mate/provider/my_job_details_model.dart';
 import 'package:maison_mate/provider/send_quote_model.dart';
 import 'package:maison_mate/provider/start_job_model.dart';
-import 'package:maison_mate/screens/customer_chat_screen.dart';
 import 'package:maison_mate/screens/home_screen.dart';
 import 'package:maison_mate/screens/send_quote_screen.dart';
 import 'package:maison_mate/shared/custom_app_bar.dart';
@@ -20,14 +18,12 @@ import 'package:provider/provider.dart';
 
 class DynamicButtons extends StatefulWidget {
   final BuildContext context;
-  final JobItemResponse job;
   final MyJobDetailsResponse data;
   final MyJobDetailsModel model;
 
   const DynamicButtons({
     super.key,
     required this.context,
-    required this.job,
     required this.data,
     required this.model,
   });
@@ -46,20 +42,15 @@ class _DynamicButtonsState extends State<DynamicButtons> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          if (widget.job.statusToSearch == 1) ...[
+          if (widget.data.statusToSearch == 1) ...[
             const Text(
-              'Customer received your quote. The job will be cancelled if the customer does not accept quote timely.',
+              'Customer received your quote.',
               style: TextStyle(fontSize: 13, fontWeight: FontWeight.w300),
             ),
-            const SizedBox(height: 15),
           ],
-          Text(
-            'Customer: ${widget.data.userName}',
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-          ),
           const SizedBox(height: 10),
-          Row(children: [
-            if (widget.job.statusToSearch == 2) ...[
+          Column(children: [
+            if (widget.data.statusToSearch == 2) ...[
               (enRouteButtonFutureData != null)
                   ? PostClient.futureBuilder(
                       widget.model,
@@ -98,9 +89,9 @@ class _DynamicButtonsState extends State<DynamicButtons> {
                         enRouteOnSubmitCallback(widget.model);
                       }
                     }),
-              const SizedBox(width: 10),
+              const SizedBox(height: 10)
             ],
-            if (widget.job.statusToSearch == 0) ...[
+            if (widget.data.statusToSearch == 0) ...[
               MyForm.submitButton("Send Quote", () async {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
                   return ChangeNotifierProvider(
@@ -109,15 +100,15 @@ class _DynamicButtonsState extends State<DynamicButtons> {
                   );
                 }));
               }),
-              const SizedBox(width: 10),
+              const SizedBox(height: 10)
             ],
-            if (widget.job.statusToSearch == 3) ...[
+            if (widget.data.statusToSearch == 3) ...[
               MyForm.submitButton("Start job", () async {
                 await showOtpModal(context);
               }),
-              const SizedBox(width: 10),
+              const SizedBox(height: 10)
             ],
-            if (widget.job.statusToSearch == 4) ...[
+            if (widget.data.statusToSearch == 4) ...[
               MyForm.submitButton("End job", () async {
                 await showDialog(
                   context: context,
@@ -160,19 +151,9 @@ class _DynamicButtonsState extends State<DynamicButtons> {
                   },
                 );
               }),
-              const SizedBox(width: 10),
+              const SizedBox(height: 10)
             ],
-            if (![5, 6].contains(widget.job.statusToSearch)) ...[
-              MyForm.submitButton("Chat", () async {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            CustomerChatScreen(data: widget.data)));
-              }),
-              const SizedBox(width: 10),
-            ],
-          ])
+          ]),
         ]);
   }
 
@@ -183,7 +164,7 @@ class _DynamicButtonsState extends State<DynamicButtons> {
         return ChangeNotifierProvider(
             create: (context) => EndJobModel(),
             child: EndJob(
-                jobId: widget.job.id)); // Use the custom OTP modal widget here
+                jobId: widget.data.id)); // Use the custom OTP modal widget here
       },
     );
   }
@@ -195,7 +176,7 @@ class _DynamicButtonsState extends State<DynamicButtons> {
         return ChangeNotifierProvider(
             create: (context) => StartJobModel(),
             child: StartJob(
-                jobId: widget.job.id)); // Use the custom OTP modal widget here
+                jobId: widget.data.id)); // Use the custom OTP modal widget here
       },
     );
   }
@@ -206,7 +187,7 @@ class _DynamicButtonsState extends State<DynamicButtons> {
       snackbarShown = false;
 
       const String apiUrl = '$baseApiUrl/partners/job/en_route';
-      var formData = {'job_assignment_id': widget.job.id};
+      var formData = {'job_assignment_id': widget.data.id};
       enRouteButtonFutureData =
           PostClient.request(apiUrl, formData, model, (response) async {});
     }

@@ -21,6 +21,7 @@ MyJobDetailsResponse _$MyJobDetailsResponseFromJson(
       json['status'] as String?,
       json['accepted_at'] as int?,
       json['quote_final'] as bool? ?? false,
+      json['status_to_search'] as int?,
     );
 
 Map<String, dynamic> _$MyJobDetailsResponseToJson(
@@ -36,6 +37,7 @@ Map<String, dynamic> _$MyJobDetailsResponseToJson(
       'address': instance.address,
       'details': instance.details,
       'status': instance.status,
+      'status_to_search': instance.statusToSearch,
       'accepted_at': instance.acceptedAt,
       'quote_final': instance.quoteFinal,
     };

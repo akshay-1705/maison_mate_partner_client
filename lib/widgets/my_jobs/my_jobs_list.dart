@@ -91,7 +91,7 @@ class MyJobsList extends StatelessWidget {
                         MaterialPageRoute(builder: (context) {
                       return ChangeNotifierProvider(
                         create: (context) => MyJobDetailsModel(),
-                        child: MyJobDetails(job: job),
+                        child: MyJobDetails(jobId: job.id),
                       );
                     }));
                   },

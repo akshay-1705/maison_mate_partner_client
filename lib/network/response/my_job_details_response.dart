@@ -16,7 +16,8 @@ class MyJobDetailsResponse {
       this.userId,
       this.status,
       this.acceptedAt,
-      this.quoteFinal);
+      this.quoteFinal,
+      this.statusToSearch);
 
   @JsonKey()
   final int? id;
@@ -47,6 +48,9 @@ class MyJobDetailsResponse {
 
   @JsonKey()
   final String? status;
+
+  @JsonKey(name: 'status_to_search')
+  final int? statusToSearch;
 
   @JsonKey(name: 'accepted_at')
   final int? acceptedAt;
