@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:maison_mate/constants.dart';
 import 'package:maison_mate/network/client/get_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
+import 'package:maison_mate/network/response/message_response.dart';
 import 'package:maison_mate/network/response/my_job_details_response.dart';
 import 'package:maison_mate/provider/send_quote_model.dart';
 import 'package:maison_mate/screens/send_quote_screen.dart';
@@ -37,18 +38,12 @@ class _CustomerChatScreenState extends State<CustomerChatScreen> {
     futureData = GetClient.fetchData(apiUrl);
     futureData.then((apiResponse) {
       if (mounted) {
-        // TODO: This is incorrect. Consider time of message and then order
-        // accordingly. Backend will also change.
-        var data = apiResponse.data;
-        data.received.forEach((message) {
-          messages.add(
-              ChatMessage(messageContent: message, messageType: 'receiver'));
-        });
-
-        data.sent.forEach((message) {
-          messages
-              .add(ChatMessage(messageContent: message, messageType: 'sender'));
-        });
+        List<MessageResponse> chat = apiResponse.data.messages;
+        for (var message in chat) {
+          String messageType = message.isSender ? 'sender' : 'receiver';
+          messages.add(ChatMessage(
+              messageContent: message.text, messageType: messageType));
+        }
       }
     });
     initializeWebSocket();

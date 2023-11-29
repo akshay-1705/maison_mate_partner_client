@@ -95,6 +95,8 @@ class _Converter<T> implements JsonConverter<T, Object> {
       return FindJobsResponse.fromJson(map) as T;
     } else if (map.containsKey('my_jobs')) {
       return MyJobsResponse.fromJson(map) as T;
+    } else if (map.containsKey('messages')) {
+      return ChatResponse.fromJson(map) as T;
     } else {
       return map as T;
     }

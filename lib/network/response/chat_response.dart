@@ -1,16 +1,14 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:maison_mate/network/response/message_response.dart';
 
 part 'chat_response.g.dart';
 
 @JsonSerializable()
 class ChatResponse {
-  ChatResponse(this.sent, this.received);
+  ChatResponse(this.messages);
 
   @JsonKey()
-  final List<String?> sent;
-
-  @JsonKey()
-  final List<String?> received;
+  final List<MessageResponse> messages;
 
   factory ChatResponse.fromJson(Map<String, dynamic> json) =>
       _$ChatResponseFromJson(json);

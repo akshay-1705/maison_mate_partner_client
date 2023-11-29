@@ -7,12 +7,12 @@ part of 'chat_response.dart';
 // **************************************************************************
 
 ChatResponse _$ChatResponseFromJson(Map<String, dynamic> json) => ChatResponse(
-      (json['sent'] as List<dynamic>).map((e) => e as String?).toList(),
-      (json['received'] as List<dynamic>).map((e) => e as String?).toList(),
+      (json['messages'] as List<dynamic>)
+          .map((e) => MessageResponse.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$ChatResponseToJson(ChatResponse instance) =>
     <String, dynamic>{
-      'sent': instance.sent,
-      'received': instance.received,
+      'messages': instance.messages,
     };
