@@ -146,7 +146,7 @@ class _CustomerChatScreenState extends State<CustomerChatScreen> {
                       messageController.text = '';
                     }
                   },
-                  backgroundColor: Colors.black,
+                  backgroundColor: Colors.green.shade400,
                   elevation: 0,
                   child: const Icon(
                     Icons.send,
@@ -235,7 +235,7 @@ class _CustomerChatScreenState extends State<CustomerChatScreen> {
                 backgroundColor: Colors.white,
                 child: Icon(
                   Icons.account_circle,
-                  color: Colors.black,
+                  color: Colors.orange,
                   size: 40,
                 ),
               ),
