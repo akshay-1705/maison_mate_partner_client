@@ -11,14 +11,14 @@ import 'package:maison_mate/screens/onboarding_screen.dart';
 import 'package:maison_mate/shared/custom_app_bar.dart';
 import 'package:maison_mate/widgets/auth/sign_in.dart';
 
-class AccountScreen extends StatefulWidget {
-  const AccountScreen({super.key});
+class AccountWidget extends StatefulWidget {
+  const AccountWidget({super.key});
 
   @override
-  State<AccountScreen> createState() => _AccountScreenState();
+  State<AccountWidget> createState() => _AccountWidgetState();
 }
 
-class _AccountScreenState extends State<AccountScreen> {
+class _AccountWidgetState extends State<AccountWidget> {
   late Future<ApiResponse> futureData;
   static const storage = FlutterSecureStorage();
   static const String apiUrl = '$baseApiUrl/partners/profile_details';
@@ -31,16 +31,12 @@ class _AccountScreenState extends State<AccountScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: const Text('My Account'),
-        ),
-        body: GetRequestFutureBuilder<dynamic>(
-            future: futureData,
-            apiUrl: apiUrl,
-            builder: (context, data) {
-              return renderData(context, data);
-            }));
+    return GetRequestFutureBuilder<dynamic>(
+        future: futureData,
+        apiUrl: apiUrl,
+        builder: (context, data) {
+          return renderData(context, data);
+        });
   }
 
   SingleChildScrollView renderData(
@@ -48,7 +44,6 @@ class _AccountScreenState extends State<AccountScreen> {
     var firstName = data.firstName;
     var lastName = data.lastName;
     String fullName = '$firstName $lastName';
-    var imageUrl = data.profilePicture.imageUrl;
 
     return SingleChildScrollView(
         child: Padding(
@@ -56,29 +51,9 @@ class _AccountScreenState extends State<AccountScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          const SizedBox(height: 10),
           Row(
             children: [
-              Container(
-                width: 120,
-                height: 120,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.grey,
-                ),
-                child: (imageUrl != null && imageUrl != '')
-                    ? ClipOval(
-                        child: Image.network(
-                        imageUrl,
-                        width: 120,
-                        height: 120,
-                        fit: BoxFit.cover,
-                      ))
-                    : const Icon(
-                        Icons.person,
-                        color: Colors.white,
-                        size: 80,
-                      ),
-              ),
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),

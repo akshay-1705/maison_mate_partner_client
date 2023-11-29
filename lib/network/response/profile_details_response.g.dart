@@ -12,7 +12,6 @@ ProfileDetailsResponse _$ProfileDetailsResponseFromJson(
       json['email'] as String? ?? '',
       json['first_name'] as String? ?? '',
       json['last_name'] as String? ?? '',
-      ImageResponse.fromJson(json['profile_picture'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$ProfileDetailsResponseToJson(
@@ -21,5 +20,4 @@ Map<String, dynamic> _$ProfileDetailsResponseToJson(
       'email': instance.email,
       'first_name': instance.firstName,
       'last_name': instance.lastName,
-      'profile_picture': instance.profilePicture,
     };

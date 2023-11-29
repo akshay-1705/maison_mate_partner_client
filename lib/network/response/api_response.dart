@@ -88,8 +88,7 @@ class _Converter<T> implements JsonConverter<T, Object> {
       return FavouritesResponse.fromJson(map) as T;
     } else if (map.containsKey('first_name') &&
         map.containsKey('last_name') &&
-        map.containsKey('email') &&
-        map.containsKey('profile_picture')) {
+        map.containsKey('email')) {
       return ProfileDetailsResponse.fromJson(map) as T;
     } else if (map.containsKey('nearby_jobs')) {
       return FindJobsResponse.fromJson(map) as T;

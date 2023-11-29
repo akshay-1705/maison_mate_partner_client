@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:maison_mate/constants.dart';
-import 'package:maison_mate/screens/account_screen.dart';
+import 'package:maison_mate/widgets/account_widget.dart';
 import 'package:maison_mate/widgets/favourites.dart';
 import 'package:maison_mate/widgets/home.dart';
 import 'package:maison_mate/widgets/my_jobs/my_jobs.dart';
@@ -19,6 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
     const HomeWidget(),
     const MyJobsWidget(),
     const FavouritesWidget(),
+    const AccountWidget(),
   ];
 
   @override
@@ -66,6 +67,10 @@ class _HomeScreenState extends State<HomeScreen> {
           icon: Icon(Icons.favorite),
           label: 'Favorites',
         ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.account_circle),
+          label: 'Account',
+        ),
       ],
       selectedItemColor: const Color(themeColor),
       unselectedItemColor: Colors.grey,
@@ -85,20 +90,6 @@ class _HomeScreenState extends State<HomeScreen> {
           fontWeight: FontWeight.bold,
         ),
       ),
-      actions: [accountButton(context)],
-    );
-  }
-
-  Widget accountButton(BuildContext context) {
-    return IconButton(
-      icon: const Icon(
-        Icons.account_circle,
-        color: Color(secondaryColor),
-      ),
-      onPressed: () {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => const AccountScreen()));
-      },
     );
   }
 }
