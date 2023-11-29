@@ -52,14 +52,32 @@ class _MyJobsWidgetState extends State<MyJobsWidget> {
                       return FilterOptions(data: sortedData, model: model);
                     }),
                 const SizedBox(height: 10),
-                GetRequestFutureBuilder<dynamic>(
-                    future: dataFutureData,
-                    apiUrl: dataApiUrl,
-                    builder: (context, data) {
-                      return MyJobsList(data: model.filteredMyJobsList);
-                    }),
+                RefreshIndicator(
+                    onRefresh: () => refreshData(),
+                    child: GetRequestFutureBuilder<dynamic>(
+                        future: dataFutureData,
+                        apiUrl: dataApiUrl,
+                        builder: (context, data) {
+                          return SizedBox(
+                              height: MediaQuery.of(context).size.height,
+                              child: CustomScrollView(slivers: <Widget>[
+                                SliverList(
+                                    delegate: SliverChildBuilderDelegate(
+                                        (context, index) {
+                                  return MyJobsList(
+                                      data: model.filteredMyJobsList);
+                                }, childCount: 1))
+                              ]));
+                        })),
               ],
             )));
+  }
+
+  Future<void> refreshData() async {
+    final response = await GetClient.fetchData(dataApiUrl);
+    setState(() {
+      dataFutureData = Future.value(response);
+    });
   }
 
   Map<String, dynamic> sortData(data) {

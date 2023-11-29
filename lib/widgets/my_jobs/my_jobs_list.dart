@@ -73,47 +73,53 @@ class MyJobsList extends StatelessWidget {
       );
     }
 
-    return Column(
-      children: data!.myJobs.map((job) {
-        return Container(
-            margin: const EdgeInsets.only(bottom: 15),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              border: Border.all(
-                color: Colors.grey,
-                width: 1.0,
+    return Column(children: [
+      Column(
+        children: data!.myJobs.map((job) {
+          return Container(
+              margin: const EdgeInsets.only(bottom: 15),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                border: Border.all(
+                  color: Colors.grey,
+                  width: 1.0,
+                ),
               ),
-            ),
-            child: GestureDetector(
-                onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    return ChangeNotifierProvider(
-                      create: (context) => MyJobDetailsModel(),
-                      child: MyJobDetails(job: job),
-                    );
-                  }));
-                },
-                child: Card(
-                  elevation: 0,
-                  color: const Color(secondaryColor),
-                  child: ListTile(
-                    leading: getServiceIcon(job.serviceName ?? ''),
-                    title: Text(
-                      job.address ?? '',
-                      style: const TextStyle(fontSize: 14),
-                    ),
-                    subtitle: Row(children: [
-                      Text(
-                        job.statusToShow ?? '',
-                        style: const TextStyle(fontSize: 12),
+              child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) {
+                      return ChangeNotifierProvider(
+                        create: (context) => MyJobDetailsModel(),
+                        child: MyJobDetails(job: job),
+                      );
+                    }));
+                  },
+                  child: Card(
+                    elevation: 0,
+                    color: const Color(secondaryColor),
+                    child: ListTile(
+                      leading: getServiceIcon(job.serviceName ?? ''),
+                      title: Text(
+                        job.address ?? '',
+                        style: const TextStyle(fontSize: 14),
                       ),
-                      const SizedBox(width: 5),
-                      getStatusIcon(job.statusToShow ?? '')
-                    ]),
-                    trailing: Text(job.kind ?? ''),
-                  ),
-                )));
-      }).toList(),
-    );
+                      subtitle: Row(children: [
+                        Text(
+                          job.statusToShow ?? '',
+                          style: const TextStyle(fontSize: 12),
+                        ),
+                        const SizedBox(width: 5),
+                        getStatusIcon(job.statusToShow ?? '')
+                      ]),
+                      trailing: Text(job.kind ?? ''),
+                    ),
+                  )));
+        }).toList(),
+      ),
+      const SizedBox(
+        height: 280,
+      )
+    ]);
   }
 }

@@ -10,7 +10,6 @@ import 'package:maison_mate/provider/cancel_job_model.dart';
 import 'package:maison_mate/provider/my_job_details_model.dart';
 import 'package:maison_mate/widgets/my_jobs/cancel_job.dart';
 import 'package:maison_mate/widgets/my_jobs/dynamic_buttons.dart';
-import 'package:maison_mate/widgets/my_jobs/address_details.dart';
 import 'package:maison_mate/widgets/my_jobs/description.dart';
 import 'package:maison_mate/widgets/my_jobs/timer_widget.dart';
 import 'package:provider/provider.dart';
@@ -30,6 +29,7 @@ class _MyJobDetailsState extends State<MyJobDetails> {
   bool showInfo = false;
   late Timer timer;
   late Duration remainingTime = const Duration(hours: 2);
+  String? header = '';
 
   @override
   void initState() {
@@ -50,10 +50,11 @@ class _MyJobDetailsState extends State<MyJobDetails> {
 
   @override
   Widget build(BuildContext context) {
+    header = widget.job.serviceName;
     final model = Provider.of<MyJobDetailsModel>(context);
     return Scaffold(
         appBar: AppBar(
-          title: const Text(''),
+          title: Text(header ?? ''),
           flexibleSpace: SafeArea(
               child: Container(
                   alignment: Alignment.topRight,
@@ -64,13 +65,32 @@ class _MyJobDetailsState extends State<MyJobDetails> {
                     ],
                   ]))),
         ),
-        body: GetRequestFutureBuilder<dynamic>(
-          apiUrl: apiUrl,
-          future: futureData,
-          builder: (context, data) {
-            return showDetails(data, model);
-          },
-        ));
+        body: RefreshIndicator(
+            onRefresh: () => refreshData(),
+            child: GetRequestFutureBuilder<dynamic>(
+              apiUrl: apiUrl,
+              future: futureData,
+              builder: (context, data) {
+                return SizedBox(
+                    height: MediaQuery.of(context).size.height,
+                    child: CustomScrollView(slivers: <Widget>[
+                      SliverList(
+                          delegate:
+                              SliverChildBuilderDelegate((context, index) {
+                        return showDetails(data, model);
+                      }, childCount: 1))
+                    ]));
+              },
+            )));
+  }
+
+  Future<void> refreshData() async {
+    apiUrl =
+        '$baseApiUrl/partners/my_job_details?job_assignment_id=${widget.job.id}';
+    final response = await GetClient.fetchData(apiUrl);
+    setState(() {
+      futureData = Future.value(response);
+    });
   }
 
   PopupMenuButton<String> threeDotMenu() {
@@ -88,10 +108,9 @@ class _MyJobDetailsState extends State<MyJobDetails> {
       onSelected: (String choice) async {
         if (choice == 'cancel') {
           await showCancelModal(context);
-          // Perform an action for userInactive
         }
       },
-      icon: const Icon(Icons.more_vert), // The 3-dot icon
+      icon: const Icon(Icons.more_vert),
     );
   }
 
@@ -101,8 +120,7 @@ class _MyJobDetailsState extends State<MyJobDetails> {
       builder: (BuildContext context) {
         return ChangeNotifierProvider(
             create: (context) => CancelJobModel(),
-            child: CancelJob(
-                jobId: widget.job.id)); // Use the custom OTP modal widget here
+            child: CancelJob(jobId: widget.job.id));
       },
     );
   }
@@ -127,7 +145,6 @@ class _MyJobDetailsState extends State<MyJobDetails> {
             color: Colors.black12,
           ),
           const SizedBox(height: 10),
-          AddressDetails(data: data),
         ])));
   }
 
@@ -141,7 +158,7 @@ class _MyJobDetailsState extends State<MyJobDetails> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Text(
-                  '${data.kind} Job',
+                  'Status: ${data.status}',
                   style: const TextStyle(
                       fontSize: 20, fontWeight: FontWeight.w600),
                 ),

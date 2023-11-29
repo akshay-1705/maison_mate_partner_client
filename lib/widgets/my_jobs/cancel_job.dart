@@ -55,7 +55,8 @@ class _CancelJobState extends State<CancelJob> {
                                         'Customer unresponsive',
                                         reasonController),
                                     customCheckboxListTile(
-                                        "Booked by mistake", reasonController),
+                                        "Accepted by mistake",
+                                        reasonController),
                                     customCheckboxListTile(
                                         'Customer behavior not appropriate',
                                         reasonController),
