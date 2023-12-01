@@ -161,7 +161,7 @@ class _DynamicButtonsState extends State<DynamicButtons> {
                       context: context,
                       isScrollControlled: true,
                       builder: (BuildContext context) {
-                        return const ReceiptWidget();
+                        return ReceiptWidget(jobId: widget.data.id);
                       },
                     );
                   },

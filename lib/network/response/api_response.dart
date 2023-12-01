@@ -15,6 +15,7 @@ import 'package:maison_mate/network/response/my_jobs_response.dart';
 import 'package:maison_mate/network/response/nearby_job_details_response.dart';
 import 'package:maison_mate/network/response/onboarding_status_response.dart';
 import 'package:maison_mate/network/response/profile_details_response.dart';
+import 'package:maison_mate/network/response/receipt_response.dart';
 import 'package:maison_mate/network/response/sign_in_response.dart';
 import 'package:maison_mate/network/response/your_details_response.dart';
 
@@ -96,6 +97,8 @@ class _Converter<T> implements JsonConverter<T, Object> {
       return MyJobsResponse.fromJson(map) as T;
     } else if (map.containsKey('messages')) {
       return ChatResponse.fromJson(map) as T;
+    } else if (map.containsKey('receipt')) {
+      return ReceiptResponse.fromJson(map) as T;
     } else {
       return map as T;
     }

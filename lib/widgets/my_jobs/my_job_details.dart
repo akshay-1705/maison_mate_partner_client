@@ -12,6 +12,7 @@ import 'package:maison_mate/widgets/my_jobs/cancel_job.dart';
 import 'package:maison_mate/widgets/my_jobs/dynamic_buttons.dart';
 import 'package:maison_mate/widgets/my_jobs/description.dart';
 import 'package:maison_mate/widgets/my_jobs/timer_widget.dart';
+import 'package:maison_mate/widgets/service_charge_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -134,6 +135,7 @@ class _MyJobDetailsState extends State<MyJobDetails> {
         absorbing: model.isSubmitting,
         child: SingleChildScrollView(
             child: Column(children: [
+          const ServiceChargeWidget(),
           jobDetails(data, model),
           // const SizedBox(height: 20),
           Container(

@@ -10,6 +10,7 @@ import 'package:maison_mate/screens/home_screen.dart';
 import 'package:maison_mate/shared/custom_app_bar.dart';
 import 'package:maison_mate/shared/my_form.dart';
 import 'package:maison_mate/shared/my_snackbar.dart';
+import 'package:maison_mate/widgets/service_charge_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -59,6 +60,8 @@ class _NearbyJobDetailsState extends State<NearbyJobDetails> {
         child: AbsorbPointer(
             absorbing: model.isSubmitting,
             child: Column(children: [
+              const ServiceChargeWidget(),
+              const SizedBox(height: 15),
               topCardContents(data),
               const SizedBox(height: 20),
               Container(
