@@ -1,8 +1,9 @@
-const String baseDomain = "192.168.0.158:3000";
-const String secretHeader = 'keyi';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
+String secretHeader = dotenv.env['SECRET_HEADER'] ?? '';
 const String authTokenKey = "authToken";
-const String baseApiUrl = "http://$baseDomain/api/v1";
-const String webSocketUrl = "ws://$baseDomain/cable";
+String baseApiUrl = dotenv.env['BASE_API_URL'] ?? '';
+String webSocketUrl = dotenv.env['WEB_SOCKET_URL'] ?? '';
 const String networkError = "Network Error";
 const String somethingWentWrong =
     "Something Went Wrong. Try again after sometime";

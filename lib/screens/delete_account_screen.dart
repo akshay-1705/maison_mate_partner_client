@@ -92,7 +92,7 @@ class _DeleteAccountScreenState extends State<DeleteAccountScreen> {
     if (!model.isSubmitting) {
       snackbarShown = false;
       model.setIsSubmitting(true);
-      const String apiUrl = '$baseApiUrl/partners/delete_account';
+      String apiUrl = '$baseApiUrl/partners/delete_account';
       futureData = PostClient.request(apiUrl, {}, model, (response) async {});
     }
   }

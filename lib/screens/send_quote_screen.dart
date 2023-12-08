@@ -275,7 +275,7 @@ class _SendQuoteScreenState extends State<SendQuoteScreen> {
     } else if (!model.isSubmitting) {
       model.setIsSubmitting(true);
       snackbarShown = false;
-      const String apiUrl = '$baseApiUrl/partners/job/send_quote';
+      String apiUrl = '$baseApiUrl/partners/job/send_quote';
       List<Map<dynamic, dynamic>> data = [];
       for (var e in categoriesAndPrices) {
         var dataHash = {};

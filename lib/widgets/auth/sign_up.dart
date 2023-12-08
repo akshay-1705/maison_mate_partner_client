@@ -90,7 +90,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
     if (!model.isSubmitting && _formKey.currentState!.validate()) {
       if (model.acceptedTerms) {
         model.setIsSubmitting(true);
-        const String signUpUrl = '$baseApiUrl/partner/signup';
+        String signUpUrl = '$baseApiUrl/partner/signup';
 
         var formData = {
           'first_name': firstNameController.text,

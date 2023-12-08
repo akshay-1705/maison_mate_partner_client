@@ -21,7 +21,7 @@ class AccountWidget extends StatefulWidget {
 class _AccountWidgetState extends State<AccountWidget> {
   late Future<ApiResponse> futureData;
   static const storage = FlutterSecureStorage();
-  static const String apiUrl = '$baseApiUrl/partners/profile_details';
+  static String apiUrl = '$baseApiUrl/partners/profile_details';
 
   @override
   void initState() {

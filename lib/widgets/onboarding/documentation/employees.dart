@@ -26,7 +26,7 @@ class _EmployeesState extends State<Employees> {
   final TextEditingController insuranceExpiryDateController =
       TextEditingController();
   late Future<ApiResponse> getFutureData;
-  static const String apiUrl = '$baseApiUrl/partners/onboarding/employee';
+  static String apiUrl = '$baseApiUrl/partners/onboarding/employee';
 
   @override
   void initState() {

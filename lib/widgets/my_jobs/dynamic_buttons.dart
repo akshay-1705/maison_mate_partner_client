@@ -210,7 +210,7 @@ class _DynamicButtonsState extends State<DynamicButtons> {
       model.setIsSubmitting(true);
       snackbarShown = false;
 
-      const String apiUrl = '$baseApiUrl/partners/job/en_route';
+      String apiUrl = '$baseApiUrl/partners/job/en_route';
       var formData = {'job_assignment_id': widget.data.id};
       enRouteButtonFutureData =
           PostClient.request(apiUrl, formData, model, (response) async {});

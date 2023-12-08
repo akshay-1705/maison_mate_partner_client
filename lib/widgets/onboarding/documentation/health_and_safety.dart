@@ -30,7 +30,7 @@ class _HealthAndSafetyState extends State<HealthAndSafety> {
 
   Future<ApiResponse>? futureData;
   late Future<ApiResponse> getFutureData;
-  static const String apiUrl = '$baseApiUrl/partners/onboarding/health';
+  static String apiUrl = '$baseApiUrl/partners/onboarding/health';
 
   @override
   void initState() {

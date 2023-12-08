@@ -80,7 +80,7 @@ class _SignInWidgetState extends State<SignInWidget> {
   void onSubmitCallback(SignInModel model) {
     if (!model.isSubmitting && _formKey.currentState!.validate()) {
       model.setIsSubmitting(true);
-      const String loginUrl = '$baseApiUrl/partner/login';
+      String loginUrl = '$baseApiUrl/partner/login';
       var formData = {
         'email': emailController.text,
         'password': passwordController.text

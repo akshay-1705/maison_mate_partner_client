@@ -17,7 +17,7 @@ class AreaCoveredScreen extends StatefulWidget {
 class _AreaCoveredScreenState extends State<AreaCoveredScreen> {
   late Future<ApiResponse> futureData;
   Future<ApiResponse>? postFutureData;
-  static const String apiUrl = '$baseApiUrl/partners/service_radius';
+  static String apiUrl = '$baseApiUrl/partners/service_radius';
 
   @override
   void initState() {

@@ -14,7 +14,7 @@ class ReceiptWidget extends StatefulWidget {
 
 class _ReceiptWidgetState extends State<ReceiptWidget> {
   late Future<ApiResponse> futureData;
-  static const String apiUrl = '$baseApiUrl/partners/receipt';
+  static String apiUrl = '$baseApiUrl/partners/receipt';
 
   @override
   void initState() {

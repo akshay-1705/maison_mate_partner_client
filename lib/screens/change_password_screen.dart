@@ -83,7 +83,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
             .getSnackbar());
       } else {
         model.setIsSubmitting(true);
-        const String apiUrl = '$baseApiUrl/partners/password';
+        String apiUrl = '$baseApiUrl/partners/password';
 
         var formData = {
           'current_password': currentPasswordController.text,

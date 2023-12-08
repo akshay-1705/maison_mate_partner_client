@@ -38,7 +38,7 @@ class _YourDetailsSectionState extends State<YourDetailsSection> {
   late Future<ApiResponse<YourDetailsResponse>> futureData;
   Future<ApiResponse>? postFutureData;
   var authToken = "";
-  static const String apiUrl = '$baseApiUrl/partners/onboarding/your_details';
+  static String apiUrl = '$baseApiUrl/partners/onboarding/your_details';
   List<MultiSelectItem> postcodes = [];
   List<String> availableServices = [];
   List<String> formSelectedPostcodes = [];

@@ -27,8 +27,7 @@ class EmailVerificationScreen extends StatefulWidget {
 class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
   Future<ApiResponse>? futureData;
   FlutterSecureStorage storage = const FlutterSecureStorage();
-  static const String apiUrl =
-      '$baseApiUrl/partners/onboarding/email_verification';
+  static String apiUrl = '$baseApiUrl/partners/onboarding/email_verification';
   var snackbarShown = false;
   WebSocketService webSocketService = WebSocketService();
   IOWebSocketChannel? channel;

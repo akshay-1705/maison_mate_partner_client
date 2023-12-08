@@ -84,7 +84,7 @@ class _ResetPasswordWidgetState extends State<ResetPasswordWidget> {
     if (!model.isSubmitting && _formKey.currentState!.validate()) {
       snackbarShown = false;
       model.setIsSubmitting(true);
-      const String forgotPasswordUrl = '$baseApiUrl/partner/forgot_password';
+      String forgotPasswordUrl = '$baseApiUrl/partner/forgot_password';
       var formData = {
         'email': emailController.text,
       };

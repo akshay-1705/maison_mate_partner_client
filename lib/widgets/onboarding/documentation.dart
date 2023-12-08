@@ -25,7 +25,7 @@ class Documentation extends StatefulWidget {
 class _DocumentationState extends State<Documentation> {
   late Future<ApiResponse> getFutureData;
   Future<ApiResponse>? futureData;
-  static const String apiUrl = '$baseApiUrl/partners/onboarding/documentation';
+  static String apiUrl = '$baseApiUrl/partners/onboarding/documentation';
 
   @override
   void initState() {

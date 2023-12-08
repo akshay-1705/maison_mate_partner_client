@@ -21,7 +21,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
   String? address;
   Position? position;
   Future<ApiResponse>? futureData;
-  static const String apiUrl = '$baseApiUrl/partners/find_jobs';
+  static String apiUrl = '$baseApiUrl/partners/find_jobs';
 
   @override
   void initState() {

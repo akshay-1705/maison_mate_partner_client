@@ -27,7 +27,7 @@ class _BankingState extends State<Banking> {
   final TextEditingController sortCodeController = TextEditingController();
   final TextEditingController accountNumberController = TextEditingController();
   late Future<ApiResponse> getFutureData;
-  static const String apiUrl = '$baseApiUrl/partners/onboarding/banking';
+  static String apiUrl = '$baseApiUrl/partners/onboarding/banking';
 
   @override
   void initState() {

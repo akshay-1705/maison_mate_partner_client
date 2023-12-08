@@ -1,7 +1,7 @@
 name: maison_mate
 description: A new Flutter project.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-version: 1.0.3+1
+version: 1.0.4+1
 
 environment:
   sdk: '>=3.1.0 <4.0.0'
@@ -27,6 +27,7 @@ dependencies:
   geolocator: ^10.1.0
   geocoding: ^2.1.1
   url_launcher: ^6.1.14
+  flutter_dotenv: ^5.1.0
 
 dev_dependencies:
   flutter_test:
@@ -42,3 +43,5 @@ flutter:
     - assets/terms.html
     - assets/privacy.html
     - assets/analysing_documents.jpg
+    - .env/development.env
+    - .env/production.env

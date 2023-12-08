@@ -28,7 +28,7 @@ class _SelfTraderIdentificationState extends State<SelfTraderIdentification> {
   final TextEditingController vatNumberController = TextEditingController();
   late Future<ApiResponse> getFutureData;
   Future<ApiResponse>? futureData;
-  static const String apiUrl = '$baseApiUrl/partners/onboarding/self_trader';
+  static String apiUrl = '$baseApiUrl/partners/onboarding/self_trader';
 
   @override
   void initState() {

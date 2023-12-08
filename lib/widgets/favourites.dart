@@ -22,7 +22,7 @@ class FavouritesWidget extends StatefulWidget {
 class _FavouritesWidgetState extends State<FavouritesWidget> {
   final TextEditingController searchController = TextEditingController();
   late Future<ApiResponse> futureData;
-  static const String apiUrl = '$baseApiUrl/partners/favourites';
+  static String apiUrl = '$baseApiUrl/partners/favourites';
 
   @override
   void initState() {

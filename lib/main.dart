@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:maison_mate/provider/area_covered_model.dart';
 import 'package:maison_mate/provider/change_password_model.dart';
 import 'package:maison_mate/provider/delete_account_model.dart';
@@ -27,6 +28,7 @@ Future<void> main() async {
 
   const storage = FlutterSecureStorage();
   final authToken = await storage.read(key: authTokenKey);
+  await dotenv.load(fileName: ".env/production.env");
   runApp(MyApp(authToken: authToken));
 }
 

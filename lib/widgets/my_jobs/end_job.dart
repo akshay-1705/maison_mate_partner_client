@@ -113,7 +113,7 @@ class EndJobState extends State<EndJob> {
       model.setIsSubmitting(true);
       snackbarShown = false;
 
-      const String apiUrl = '$baseApiUrl/partners/job/end_job';
+      String apiUrl = '$baseApiUrl/partners/job/end_job';
       var formData = {'job_assignment_id': widget.jobId, 'otp': int.parse(otp)};
       futureData =
           PostClient.request(apiUrl, formData, model, (response) async {});

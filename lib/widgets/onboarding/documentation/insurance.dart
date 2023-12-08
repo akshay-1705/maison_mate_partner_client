@@ -26,7 +26,7 @@ class _InsuranceState extends State<Insurance> {
   final TextEditingController insuranceExpiryDateController =
       TextEditingController();
   late Future<ApiResponse> getFutureData;
-  static const String apiUrl = '$baseApiUrl/partners/onboarding/insurance';
+  static String apiUrl = '$baseApiUrl/partners/onboarding/insurance';
 
   @override
   void initState() {

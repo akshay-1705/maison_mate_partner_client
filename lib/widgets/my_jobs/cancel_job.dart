@@ -136,7 +136,7 @@ class _CancelJobState extends State<CancelJob> {
           ? otherReasonController.text
           : reasonController.text;
 
-      const String apiUrl = '$baseApiUrl/partners/job/cancel_job';
+      String apiUrl = '$baseApiUrl/partners/job/cancel_job';
       var formData = {'job_assignment_id': widget.jobId, 'reason': reason};
       futureData =
           PostClient.request(apiUrl, formData, model, (response) async {});

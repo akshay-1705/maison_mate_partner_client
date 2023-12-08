@@ -24,8 +24,7 @@ class _ProfilePictureState extends State<ProfilePicture> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   Future<ApiResponse>? futureData;
   late Future<ApiResponse> getFutureData;
-  static const String apiUrl =
-      '$baseApiUrl/partners/onboarding/profile_picture';
+  static String apiUrl = '$baseApiUrl/partners/onboarding/profile_picture';
 
   @override
   void initState() {

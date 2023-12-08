@@ -17,8 +17,8 @@ class MyJobsWidget extends StatefulWidget {
 class _MyJobsWidgetState extends State<MyJobsWidget> {
   late Future<ApiResponse> dataFutureData;
   late Future<ApiResponse> filtersFutureData;
-  static const String filtersApiUrl = '$baseApiUrl/partners/job_filters';
-  static const String dataApiUrl = '$baseApiUrl/partners/my_jobs?filter=All';
+  static String filtersApiUrl = '$baseApiUrl/partners/job_filters';
+  static String dataApiUrl = '$baseApiUrl/partners/my_jobs?filter=All';
 
   @override
   void initState() {
