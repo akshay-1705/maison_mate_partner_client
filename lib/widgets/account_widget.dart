@@ -147,7 +147,6 @@ class _AccountWidgetState extends State<AccountWidget> {
     confirm.then((value) {
       if (value) {
         storage.delete(key: authTokenKey);
-        Navigator.of(context).pop();
         Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (context) => const SignInWidget()));
       }
