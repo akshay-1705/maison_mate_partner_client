@@ -28,7 +28,7 @@ Future<void> main() async {
 
   const storage = FlutterSecureStorage();
   final authToken = await storage.read(key: authTokenKey);
-  await dotenv.load(fileName: ".env/production.env");
+  await dotenv.load(fileName: ".env/development.env");
   runApp(MyApp(authToken: authToken));
 }
 
