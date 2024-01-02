@@ -21,6 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
     const FavouritesWidget(),
     const AccountWidget(),
   ];
+  bool val = false;
 
   @override
   void initState() {
@@ -80,6 +81,61 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   AppBar header(BuildContext context) {
+    if (currentIndex == 0) {
+      return onOffDuty();
+    } else {
+      return logo();
+    }
+  }
+
+  AppBar onOffDuty() {
+    return AppBar(
+      backgroundColor: const Color(themeColor),
+      actions: [
+        Expanded(
+          child: Center(
+            child: Container(
+              margin:
+                  const EdgeInsets.only(right: 16.0, left: 16.0, bottom: 10.0),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              decoration: BoxDecoration(
+                color: Colors.grey[800],
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  const Icon(
+                    Icons.beach_access,
+                    color: Colors.white,
+                  ),
+                  const SizedBox(width: 8.0),
+                  Switch(
+                    value: val,
+                    onChanged: (value) {
+                      setState(() {
+                        val = value;
+                      });
+                    },
+                    activeColor: Colors.green,
+                    inactiveThumbColor: Colors.red,
+                  ),
+                  const SizedBox(width: 8.0),
+                  const Icon(
+                    Icons.work,
+                    color: Colors.white,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  AppBar logo() {
     return AppBar(
       backgroundColor: const Color(themeColor), // Header background color
       title: const Text(
