@@ -17,6 +17,7 @@ import 'package:maison_mate/provider/favourites_model.dart';
 import 'package:maison_mate/provider/my_jobs_model.dart';
 import 'package:maison_mate/provider/nearby_job_details_model.dart';
 import 'package:maison_mate/screens/home_screen.dart';
+import 'package:maison_mate/services/firebase_service.dart';
 import 'package:maison_mate/widgets/auth/sign_in.dart';
 import 'package:maison_mate/provider/auth/sign_in_model.dart';
 import 'package:maison_mate/provider/auth/sign_up_model.dart';
@@ -33,6 +34,9 @@ Future<void> main() async {
 
   const storage = FlutterSecureStorage();
   final authToken = await storage.read(key: authTokenKey);
+  if (authToken != null) {
+    FirebaseService.enable();
+  }
   await dotenv.load(fileName: ".env/development.env");
   runApp(MyApp(authToken: authToken));
 }
