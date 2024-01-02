@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "564333701649",
+    "project_id": "maison-mate-partner",
+    "storage_bucket": "maison-mate-partner.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:564333701649:android:5104f1537d1dad6c811fb0",
+        "android_client_info": {
+          "package_name": "com.maison_mate.partner"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDyLwlMUVA1z8pjM93SeeZTBsFiiWNNBi8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

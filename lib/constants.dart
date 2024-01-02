@@ -7,6 +7,7 @@ String webSocketUrl = dotenv.env['WEB_SOCKET_URL'] ?? '';
 
 // Constants
 const String authTokenKey = "authToken";
+const String fcmTokenKey = "fcmToken";
 const String networkError = "Network Error";
 const String somethingWentWrong =
     "Something Went Wrong. Try again after sometime";

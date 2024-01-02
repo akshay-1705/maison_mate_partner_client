@@ -1,5 +1,7 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:maison_mate/firebase_options.dart';
 import 'package:maison_mate/provider/area_covered_model.dart';
 import 'package:maison_mate/provider/change_password_model.dart';
 import 'package:maison_mate/provider/delete_account_model.dart';
@@ -25,6 +27,9 @@ import 'package:maison_mate/constants.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   const storage = FlutterSecureStorage();
   final authToken = await storage.read(key: authTokenKey);

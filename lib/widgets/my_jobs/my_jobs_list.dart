@@ -17,11 +17,13 @@ class MyJobsList extends StatelessWidget {
         return const Icon(Icons.handyman, color: Colors.brown);
       case 'Locksmith':
         return const Icon(Icons.lock, color: Colors.grey);
-      case 'Painting':
+      case 'Painter':
         return const Icon(Icons.format_paint, color: Colors.green);
-      case 'Heating/Cooling repairs':
+      case 'Heating repairs':
         return const Icon(Icons.heat_pump, color: Colors.yellow);
-      case 'Home Security System Repair':
+      case 'Cooling repairs':
+        return const Icon(Icons.heat_pump, color: Colors.blue);
+      case 'Security System':
         return const Icon(Icons.security, color: Color(awesomeColor));
       case 'Pest control':
         return const Icon(Icons.pest_control, color: Colors.black);
