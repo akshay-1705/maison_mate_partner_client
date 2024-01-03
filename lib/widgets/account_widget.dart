@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:maison_mate/constants.dart';
 import 'package:maison_mate/network/client/get_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
@@ -8,8 +7,7 @@ import 'package:maison_mate/screens/area_covered_screen.dart';
 import 'package:maison_mate/screens/change_password_screen.dart';
 import 'package:maison_mate/screens/delete_account_screen.dart';
 import 'package:maison_mate/screens/onboarding_screen.dart';
-import 'package:maison_mate/shared/custom_app_bar.dart';
-import 'package:maison_mate/widgets/auth/sign_in.dart';
+import 'package:maison_mate/services/logout_service.dart';
 
 class AccountWidget extends StatefulWidget {
   const AccountWidget({super.key});
@@ -20,7 +18,6 @@ class AccountWidget extends StatefulWidget {
 
 class _AccountWidgetState extends State<AccountWidget> {
   late Future<ApiResponse> futureData;
-  static const storage = FlutterSecureStorage();
   static String apiUrl = '$baseApiUrl/partners/profile_details';
 
   @override
@@ -132,25 +129,12 @@ class _AccountWidgetState extends State<AccountWidget> {
             icon: Icons.logout,
             title: 'Logout',
             onTap: () {
-              logoutCallback(context);
+              LogoutService.logout(context);
             },
           ),
         ],
       ),
     ));
-  }
-
-  void logoutCallback(BuildContext context) {
-    Future<bool> confirm = CustomAppBar.showConfirmationDialog(
-        context, "Are you sure you want to Logout?");
-
-    confirm.then((value) {
-      if (value) {
-        storage.delete(key: authTokenKey);
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => const SignInWidget()));
-      }
-    });
   }
 
   Widget customListTile(

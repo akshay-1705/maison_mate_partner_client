@@ -5,9 +5,9 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:maison_mate/constants.dart';
 import 'package:maison_mate/network/response/api_response.dart';
 import 'package:http/http.dart' as http;
+import 'package:maison_mate/services/logout_service.dart';
 import 'package:maison_mate/shared/my_form.dart';
 import 'package:maison_mate/shared/my_snackbar.dart';
-import 'package:maison_mate/widgets/auth/sign_in.dart';
 
 class GetClient {
   static Future<ApiResponse<T>> fetchData<T>(String apiUrl) async {
@@ -62,7 +62,7 @@ class _GetRequestFutureBuilderState<T>
         } else if (snapshot.hasError) {
           if (snapshot.error.toString() == 'Exception: Unauthorized') {
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              logoutCallback(context);
+              LogoutService.logout(context);
               ScaffoldMessenger.of(context).showSnackBar(
                   MySnackBar(message: 'Please login again', error: true)
                       .getSnackbar());
@@ -73,18 +73,6 @@ class _GetRequestFutureBuilderState<T>
         }
         return Container();
       },
-    );
-  }
-
-  void logoutCallback(BuildContext context) {
-    const storage = FlutterSecureStorage();
-    storage.delete(key: authTokenKey);
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const SignInWidget(),
-      ),
-      (route) => false,
     );
   }
 

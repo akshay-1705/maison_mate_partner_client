@@ -1,5 +1,7 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:maison_mate/firebase_options.dart';
 import 'package:maison_mate/provider/area_covered_model.dart';
 import 'package:maison_mate/provider/change_password_model.dart';
 import 'package:maison_mate/provider/delete_account_model.dart';
@@ -14,7 +16,9 @@ import 'package:maison_mate/provider/email_verification_model.dart';
 import 'package:maison_mate/provider/favourites_model.dart';
 import 'package:maison_mate/provider/my_jobs_model.dart';
 import 'package:maison_mate/provider/nearby_job_details_model.dart';
+import 'package:maison_mate/provider/on_duty_model.dart';
 import 'package:maison_mate/screens/home_screen.dart';
+import 'package:maison_mate/services/firebase_service.dart';
 import 'package:maison_mate/widgets/auth/sign_in.dart';
 import 'package:maison_mate/provider/auth/sign_in_model.dart';
 import 'package:maison_mate/provider/auth/sign_up_model.dart';
@@ -25,9 +29,15 @@ import 'package:maison_mate/constants.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   const storage = FlutterSecureStorage();
   final authToken = await storage.read(key: authTokenKey);
+  if (authToken != null) {
+    FirebaseService.enable();
+  }
   await dotenv.load(fileName: ".env/development.env");
   runApp(MyApp(authToken: authToken));
 }
@@ -58,6 +68,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (_) => AreaCoveredModel()),
           ChangeNotifierProvider(create: (_) => DeleteAccountModel()),
           ChangeNotifierProvider(create: (_) => MyJobsModel()),
+          ChangeNotifierProvider(create: (_) => OnDutyModel()),
           ChangeNotifierProvider(create: (_) => NearbyJobDetailsModel()),
           ChangeNotifierProvider(
               create: (_) => SelfTraderIdentificationModel()),

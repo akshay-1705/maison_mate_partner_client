@@ -8,11 +8,10 @@ import 'package:maison_mate/network/client/post_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/provider/email_verification_model.dart';
 import 'package:maison_mate/screens/home_screen.dart';
+import 'package:maison_mate/services/logout_service.dart';
 import 'package:maison_mate/services/web_socket_service.dart';
-import 'package:maison_mate/shared/custom_app_bar.dart';
 import 'package:maison_mate/shared/my_form.dart';
 import 'package:maison_mate/shared/my_snackbar.dart';
-import 'package:maison_mate/widgets/auth/sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:web_socket_channel/io.dart';
 
@@ -204,18 +203,7 @@ AppBar appBar(BuildContext context, FlutterSecureStorage storage) {
           color: Color(themeColor),
         ),
         onPressed: () {
-          Future<bool> confirm = CustomAppBar.showConfirmationDialog(
-              context, "Are you sure you want to Logout?");
-
-          confirm.then((value) {
-            if (value) {
-              storage.delete(key: authTokenKey);
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const SignInWidget()));
-            }
-          });
+          LogoutService.logout(context);
         },
       ),
     ],
