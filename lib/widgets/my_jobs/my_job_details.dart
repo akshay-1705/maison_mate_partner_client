@@ -150,79 +150,83 @@ class _MyJobDetailsState extends State<MyJobDetails> {
   }
 
   Column userWidget(MyJobDetailsResponse data) {
-    return Column(children: [
-      const SizedBox(height: 20),
-      Row(children: [
-        const SizedBox(width: 15),
-        Icon(
-          Icons.account_circle,
-          size: 80,
-          color: Colors.orange.shade300,
-        ),
-        const SizedBox(width: 15),
-        Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
+    return Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 20),
+          const Row(children: [
+            SizedBox(width: 15),
+            Text('Customer Details',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500))
+          ]),
+          const SizedBox(height: 10),
+          Row(children: [
+            const SizedBox(width: 15),
+            Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    data.userName ?? '',
-                    style: const TextStyle(
-                        fontSize: 20, fontWeight: FontWeight.w500),
+                  Row(
+                    children: [
+                      Text(
+                        data.userName ?? '',
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w400),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              if (data.status != 'Completed') ...[
-                Row(children: [
-                  GestureDetector(
-                      onTap: () async {
-                        String url = 'tel:${data.userPhoneNumber}';
-                        var parsedUrl = Uri.parse(url);
-                        if (await canLaunchUrl(parsedUrl)) {
-                          await launchUrl(parsedUrl);
-                        } else {
-                          // ignore: avoid_print
-                          print('Could not launch $url');
-                        }
-                      },
-                      child: Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey.shade300),
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          padding: const EdgeInsets.all(5.0),
-                          child: Icon(Icons.call,
-                              size: 20, color: Colors.blue.shade700))),
-                  const SizedBox(width: 10),
-                  GestureDetector(
-                      onTap: () async {
-                        await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    CustomerChatScreen(data: data)));
-                        refreshData();
-                      },
-                      child: Container(
-                          decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey.shade300),
-                              borderRadius: BorderRadius.circular(8.0),
-                              color: Colors.white),
-                          padding: const EdgeInsets.all(5.0),
-                          child: Icon(Icons.chat,
-                              size: 20, color: Colors.blue.shade700)))
-                ])
-              ]
-            ]),
-      ]),
-      const SizedBox(height: 20),
-      Container(
-        height: 4,
-        color: Colors.black12,
-      ),
-    ]);
+                  const SizedBox(height: 10),
+                  if (data.status != 'Completed') ...[
+                    Row(children: [
+                      GestureDetector(
+                          onTap: () async {
+                            String url = 'tel:${data.userPhoneNumber}';
+                            var parsedUrl = Uri.parse(url);
+                            if (await canLaunchUrl(parsedUrl)) {
+                              await launchUrl(parsedUrl);
+                            } else {
+                              // ignore: avoid_print
+                              print('Could not launch $url');
+                            }
+                          },
+                          child: Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.grey.shade300),
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              padding: const EdgeInsets.all(10.0),
+                              child: Icon(Icons.call,
+                                  size: 20, color: Colors.blue.shade700))),
+                      const SizedBox(width: 10),
+                      GestureDetector(
+                          onTap: () async {
+                            await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        CustomerChatScreen(data: data)));
+                            refreshData();
+                          },
+                          child: Container(
+                              decoration: BoxDecoration(
+                                  border:
+                                      Border.all(color: Colors.grey.shade300),
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  color: Colors.white),
+                              padding: const EdgeInsets.all(10.0),
+                              child: Icon(Icons.chat,
+                                  size: 20, color: Colors.blue.shade700)))
+                    ])
+                  ]
+                ]),
+          ]),
+          const SizedBox(height: 20),
+          Container(
+            height: 4,
+            color: Colors.black12,
+          ),
+        ]);
   }
 
   Padding jobDetails(MyJobDetailsResponse data, MyJobDetailsModel model) {
