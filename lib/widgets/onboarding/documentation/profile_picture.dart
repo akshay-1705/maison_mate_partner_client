@@ -6,6 +6,7 @@ import 'package:maison_mate/network/client/get_client.dart';
 import 'package:maison_mate/network/client/put_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/provider/documentation/profile_picture_model.dart';
+import 'package:maison_mate/services/file_upload_service.dart';
 import 'package:maison_mate/shared/custom_app_bar.dart';
 import 'package:maison_mate/shared/image_helper.dart';
 import 'package:maison_mate/shared/my_form.dart';
@@ -82,7 +83,10 @@ class _ProfilePictureState extends State<ProfilePicture> {
                       const SizedBox(height: 10),
                       MyForm.formFieldHeader(
                           'Attach a professional picture of yourself. No selfies or group photos; this is the photo customers will see when you book a job.*'),
-                      MyForm.uploadImageSection(model),
+                      FileUploadService.showWidget(context, model.selectedFile,
+                          (File file) {
+                        model.setSelectedFile(file);
+                      }),
                       const SizedBox(height: 20),
                       (futureData != null)
                           ? PutClient.futureBuilder(

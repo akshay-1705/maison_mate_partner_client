@@ -6,6 +6,7 @@ import 'package:maison_mate/network/client/get_client.dart';
 import 'package:maison_mate/network/client/put_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/provider/documentation/banking_model.dart';
+import 'package:maison_mate/services/file_upload_service.dart';
 import 'package:maison_mate/shared/custom_app_bar.dart';
 import 'package:maison_mate/shared/image_helper.dart';
 import 'package:maison_mate/shared/my_form.dart';
@@ -117,7 +118,10 @@ class _BankingState extends State<Banking> {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      MyForm.uploadImageSection(model),
+                      FileUploadService.showWidget(context, model.selectedFile,
+                          (File file) {
+                        model.setSelectedFile(file);
+                      }),
                       const SizedBox(height: 20),
                       (futureData != null)
                           ? PutClient.futureBuilder(

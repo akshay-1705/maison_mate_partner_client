@@ -1,12 +1,12 @@
 import 'dart:io';
 
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:maison_mate/constants.dart';
 import 'package:maison_mate/network/client/get_client.dart';
 import 'package:maison_mate/network/client/put_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/provider/documentation/self_trader_identification_model.dart';
+import 'package:maison_mate/services/file_upload_service.dart';
 import 'package:maison_mate/shared/custom_app_bar.dart';
 import 'package:maison_mate/shared/image_helper.dart';
 import 'package:maison_mate/shared/my_form.dart';
@@ -129,32 +129,18 @@ class _SelfTraderIdentificationState extends State<SelfTraderIdentification> {
                   MyForm.formFieldHeader(
                       'Attach proof of ID, a photo or scan of your DRIVING LICENCE or PASSPORT (only jpeg and png file types are supported)'),
                   Column(children: [
-                    MyForm.uploadImageButton(() async {
-                      FilePickerResult? result =
-                          await FilePicker.platform.pickFiles(
-                        type: FileType.image,
-                      );
-                      if (result != null) {
-                        model.setSelectedFile1(File(result.files.single.path!));
-                      }
+                    FileUploadService.showWidget(context, model.selectedFile1,
+                        (File file) {
+                      model.setSelectedFile1(file);
                     }),
-                    if (model.selectedFile1 != null)
-                      MyForm.showSelectedImage(model.selectedFile1!)
                   ]),
                   MyForm.formFieldHeader(
                       'Attach proof of address, a photo or scan of your UTILITY BILL or PERSONAL BANK STATEMENT (only jpeg and png file types are supported).'),
                   Column(children: [
-                    MyForm.uploadImageButton(() async {
-                      FilePickerResult? result =
-                          await FilePicker.platform.pickFiles(
-                        type: FileType.image,
-                      );
-                      if (result != null) {
-                        model.setSelectedFile2(File(result.files.single.path!));
-                      }
+                    FileUploadService.showWidget(context, model.selectedFile2,
+                        (File file) {
+                      model.setSelectedFile2(file);
                     }),
-                    if (model.selectedFile2 != null)
-                      MyForm.showSelectedImage(model.selectedFile2!)
                   ]),
                   const SizedBox(height: 40),
                   (futureData != null)
