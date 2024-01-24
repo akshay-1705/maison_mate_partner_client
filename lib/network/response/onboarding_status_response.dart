@@ -4,20 +4,13 @@ part 'onboarding_status_response.g.dart';
 
 @JsonSerializable()
 class OnboardingStatusResponse {
-  @JsonKey(name: "your_details_section", required: true, defaultValue: false)
-  final bool? yourDetailsSection;
-
-  @JsonKey(required: true, defaultValue: false)
-  final bool? documentation;
-
   @JsonKey(name: 'email_verified', required: true, defaultValue: false)
   final bool? emailVerified;
 
-  @JsonKey(name: 'account_verified', required: true, defaultValue: false)
-  final bool? accountVerified;
+  @JsonKey(required: true)
+  final String? status;
 
-  OnboardingStatusResponse(this.yourDetailsSection, this.documentation,
-      this.emailVerified, this.accountVerified);
+  OnboardingStatusResponse(this.emailVerified, this.status);
 
   factory OnboardingStatusResponse.fromJson(Map<String, dynamic> json) =>
       _$OnboardingStatusResponseFromJson(json);

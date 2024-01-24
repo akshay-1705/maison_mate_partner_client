@@ -24,7 +24,9 @@ YourDetailsResponse _$YourDetailsResponseFromJson(Map<String, dynamic> json) {
       'city',
       'country',
       'services_offered',
-      'services_available'
+      'services_available',
+      'status',
+      'reason_for_rejection'
     ],
   );
   return YourDetailsResponse(
@@ -55,6 +57,8 @@ YourDetailsResponse _$YourDetailsResponseFromJson(Map<String, dynamic> json) {
             ?.map((e) => e as String)
             .toList() ??
         [],
+    json['status'] as String?,
+    json['reason_for_rejection'] as String?,
   );
 }
 
@@ -76,4 +80,6 @@ Map<String, dynamic> _$YourDetailsResponseToJson(
       'country': instance.country,
       'services_offered': instance.servicesOffered,
       'services_available': instance.servicesAvailable,
+      'status': instance.status,
+      'reason_for_rejection': instance.reasonForRejection,
     };

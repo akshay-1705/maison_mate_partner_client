@@ -1,27 +1,23 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'banking_response.dart';
+part of 'profile_picture_response.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-BankingResponse _$BankingResponseFromJson(Map<String, dynamic> json) =>
-    BankingResponse(
-      json['bank_name'] as String? ?? '',
-      json['account_number'] as int?,
-      json['sort_code'] as int?,
+ProfilePictureResponse _$ProfilePictureResponseFromJson(
+        Map<String, dynamic> json) =>
+    ProfilePictureResponse(
       ImageResponse.fromJson(json['image'] as Map<String, dynamic>),
       json['status'] as String?,
       json['reason_for_rejection'] as String?,
     );
 
-Map<String, dynamic> _$BankingResponseToJson(BankingResponse instance) =>
+Map<String, dynamic> _$ProfilePictureResponseToJson(
+        ProfilePictureResponse instance) =>
     <String, dynamic>{
-      'bank_name': instance.bankName,
-      'account_number': instance.accountNumber,
-      'sort_code': instance.sortCode,
+      'image': instance.image.toJson(),
       'status': instance.status,
       'reason_for_rejection': instance.reasonForRejection,
-      'image': instance.image,
     };

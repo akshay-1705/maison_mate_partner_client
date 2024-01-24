@@ -5,6 +5,7 @@ import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/network/response/your_details_response.dart';
 import 'package:maison_mate/provider/onboarding_model.dart';
 import 'package:maison_mate/provider/your_details_model.dart';
+import 'package:maison_mate/services/verification_status_service.dart';
 import 'package:maison_mate/shared/custom_app_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:maison_mate/constants.dart';
@@ -107,117 +108,120 @@ class _YourDetailsSectionState extends State<YourDetailsSection> {
         child: SingleChildScrollView(
             padding: const EdgeInsets.all(5.0),
             child: GestureDetector(
-              onTap: () {
-                FocusScope.of(context).unfocus();
-              },
-              child: Form(
-                key: _formKey,
-                child: AbsorbPointer(
-                  absorbing: model.isSubmitting,
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        MyForm.formFieldHeader('Select Tradesmen Type*'),
-                        MyForm.buildRadioButtons(
-                          ['Self Trader', 'Limited'],
-                          model.selectedValue,
-                          (value) {
-                            if (value == 'Limited') {
-                              registeredNameController.text = '';
-                            }
-                            model.selectedValue = value;
-                          },
-                        ),
-                        MyForm.requiredTextField(
-                            "Company Name", companyNameController),
-                        if (model.selectedValue == 'Limited') ...[
-                          MyForm.requiredTextField(
-                            "Company Registered Name (if different)",
-                            registeredNameController,
-                          ),
-                        ],
-                        const SizedBox(height: 12.0),
-                        MyForm.formFieldHeader('Address*'),
-                        MyForm.multilineRequiredTextField(
-                            "Address", addressController),
-                        MyForm.inlineRequiredDisabledTextFields(
-                          "Town/City",
-                          "Country",
-                          cityController,
-                          countryController,
-                        ),
-                        MyForm.requiredTextField(
-                            "Postcode (e.g. W3, SE20, GU12)",
-                            postcodeController),
-                        const SizedBox(height: 12.0),
-                        MyForm.formFieldHeader('Personal Details*'),
-                        MyForm.inlineRequiredTextFields(
-                          "First Name",
-                          "Last Name",
-                          firstNameController,
-                          lastNameController,
-                        ),
-                        MyForm.requiredTextField(
-                            "Phone Number", phoneNumberController),
-                        MyForm.requiredTextField("Email", emailController),
-                        const SizedBox(height: 12.0),
-                        MyForm.formFieldHeader(
-                            'Which postcodes or towns do you cover?*'),
-                        MyForm.multiSelectField(
-                            postcodes,
-                            const Text("Postcodes"),
-                            "Enter postcodes like (W3, SE20, GU12)", (results) {
-                          model.selectedPostcodes = results;
-                        }, Icons.location_city, formSelectedPostcodes),
-                        const SizedBox(height: 12.0),
-                        MyForm.formFieldHeader(
-                            'Which services can you offer?*'),
-                        if (model.formSubmitted &&
-                            model.selectedServices.isEmpty) ...[
-                          const Text(
-                            'Select at least one service', // Validation message
-                            style: TextStyle(
-                              color: Colors.red,
-                              fontSize: 14.0,
-                            ),
-                          ),
-                        ],
-                        Column(
-                          children: serviceRows,
-                        ),
-                        const SizedBox(height: 16.0),
-                        (postFutureData != null)
-                            ? PostClient.futureBuilder(
-                                model,
-                                postFutureData!,
-                                "Submit",
-                                () async {
-                                  bool confirm =
-                                      await CustomAppBar.showConfirmationDialog(
-                                          context,
-                                          'Are you sure you want to submit this form?');
-                                  if (confirm) {
-                                    onSubmitCallback(model);
-                                  }
-                                },
-                                () {
-                                  widget.onboardingModel.setCurrentIndex(1);
-                                },
-                              )
-                            : MyForm.submitButton("Submit", () async {
-                                bool confirm =
-                                    await CustomAppBar.showConfirmationDialog(
-                                        context,
-                                        'Are you sure you want to submit this form?');
-                                if (confirm) {
-                                  onSubmitCallback(model);
-                                }
-                              }),
-                        const SizedBox(height: 30.0)
-                      ]),
-                ),
+                onTap: () {
+                  FocusScope.of(context).unfocus();
+                },
+                child: Column(children: [
+                  const SizedBox(height: 10),
+                  renderInfo(data),
+                  form(model, context, data),
+                ]))));
+  }
+
+  Widget renderInfo(YourDetailsResponse data) {
+    return VerificationStatusService.showInfoContainer(
+        data.status ?? '', data.reasonForRejection ?? '', 'details');
+  }
+
+  Form form(
+      YourDetailsModel model, BuildContext context, YourDetailsResponse data) {
+    return Form(
+      key: _formKey,
+      child: AbsorbPointer(
+        absorbing: model.isSubmitting,
+        child:
+            Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          MyForm.formFieldHeader('Select Tradesmen Type*'),
+          MyForm.buildRadioButtons(
+            ['Self Trader', 'Limited'],
+            model.selectedValue,
+            (value) {
+              if (value == 'Limited') {
+                registeredNameController.text = '';
+              }
+              model.selectedValue = value;
+            },
+          ),
+          MyForm.requiredTextField("Company Name", companyNameController),
+          if (model.selectedValue == 'Limited') ...[
+            MyForm.requiredTextField(
+              "Company Registered Name (if different)",
+              registeredNameController,
+            ),
+          ],
+          const SizedBox(height: 12.0),
+          MyForm.formFieldHeader('Address*'),
+          MyForm.multilineRequiredTextField("Address", addressController),
+          MyForm.inlineRequiredDisabledTextFields(
+            "Town/City",
+            "Country",
+            cityController,
+            countryController,
+          ),
+          MyForm.requiredTextField(
+              "Postcode (e.g. W3, SE20, GU12)", postcodeController),
+          const SizedBox(height: 12.0),
+          MyForm.formFieldHeader('Personal Details*'),
+          MyForm.inlineRequiredTextFields(
+            "First Name",
+            "Last Name",
+            firstNameController,
+            lastNameController,
+          ),
+          MyForm.requiredTextField("Phone Number", phoneNumberController),
+          MyForm.disabledTextField("Email", emailController),
+          const SizedBox(height: 12.0),
+          MyForm.formFieldHeader('Which postcodes or towns do you cover?*'),
+          MyForm.multiSelectField(postcodes, const Text("Postcodes"),
+              "Enter postcodes like (W3, SE20, GU12)", (results) {
+            model.selectedPostcodes = results;
+          }, Icons.location_city, formSelectedPostcodes),
+          const SizedBox(height: 12.0),
+          MyForm.formFieldHeader('Which services can you offer?*'),
+          if (model.formSubmitted && model.selectedServices.isEmpty) ...[
+            const Text(
+              'Select at least one service', // Validation message
+              style: TextStyle(
+                color: Colors.red,
+                fontSize: 14.0,
               ),
-            )));
+            ),
+          ],
+          Column(
+            children: serviceRows,
+          ),
+          const SizedBox(height: 16.0),
+          (postFutureData != null)
+              ? PostClient.futureBuilder(
+                  model,
+                  postFutureData!,
+                  "Submit",
+                  () async {
+                    String message = VerificationStatusService.getPromptMessage(
+                        data.status ?? '', 'details');
+                    bool confirm = await CustomAppBar.showConfirmationDialog(
+                        context, message);
+                    if (confirm) {
+                      onSubmitCallback(model);
+                    }
+                  },
+                  () {
+                    widget.onboardingModel.setCurrentIndex(1);
+                  },
+                )
+              : MyForm.submitButton("Submit", () async {
+                  String message = VerificationStatusService.getPromptMessage(
+                      data.status ?? '', 'details');
+                  bool confirm = await CustomAppBar.showConfirmationDialog(
+                      context, message);
+                  if (confirm) {
+                    onSubmitCallback(model);
+                  }
+                }),
+          const SizedBox(height: 30.0)
+        ]),
+      ),
+    );
   }
 
   void onSubmitCallback(YourDetailsModel model) {

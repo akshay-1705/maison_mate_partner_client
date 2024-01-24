@@ -69,17 +69,17 @@ class _AccountWidgetState extends State<AccountWidget> {
                   ),
                 ),
               ),
-              IconButton(
-                icon: const Icon(Icons.edit),
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const OnboardingScreen(
-                                yourDetailsSection: false,
-                              )));
-                },
-              ),
+              if (data.onboardingStatus != 'submitted') ...[
+                IconButton(
+                  icon: const Icon(Icons.edit),
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const OnboardingScreen()));
+                  },
+                ),
+              ]
             ],
           ),
           const SizedBox(height: 30),

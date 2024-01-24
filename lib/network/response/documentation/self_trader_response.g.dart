@@ -17,6 +17,8 @@ SelfTraderResponse _$SelfTraderResponseFromJson(Map<String, dynamic> json) =>
           ? null
           : ImageResponse.fromJson(
               json['proof_of_address'] as Map<String, dynamic>),
+      json['status'] as String?,
+      json['reason_for_rejection'] as String?,
     );
 
 Map<String, dynamic> _$SelfTraderResponseToJson(SelfTraderResponse instance) =>
@@ -25,4 +27,6 @@ Map<String, dynamic> _$SelfTraderResponseToJson(SelfTraderResponse instance) =>
       'date_of_birth': instance.dateOfBirth,
       'proof_of_id': instance.proofOfId,
       'proof_of_address': instance.proofOfAddress,
+      'status': instance.status,
+      'reason_for_rejection': instance.reasonForRejection,
     };

@@ -14,7 +14,9 @@ class HealthAndSafetyResponse {
       this.damageByCompanyEmployee,
       this.damageByCompanyEmployeeDetails,
       this.everBankrupt,
-      this.everBankruptDetails);
+      this.everBankruptDetails,
+      this.status,
+      this.reasonForRejection);
 
   @JsonKey(name: "accidents_in_five_years")
   final bool? accidentsInFiveYears;
@@ -45,6 +47,14 @@ class HealthAndSafetyResponse {
 
   @JsonKey(name: "ever_bankrupt_details")
   final String? everBankruptDetails;
+
+  @JsonKey()
+  final String? status;
+
+  @JsonKey(
+    name: "reason_for_rejection",
+  )
+  final String? reasonForRejection;
 
   factory HealthAndSafetyResponse.fromJson(Map<String, dynamic> json) =>
       _$HealthAndSafetyResponseFromJson(json);

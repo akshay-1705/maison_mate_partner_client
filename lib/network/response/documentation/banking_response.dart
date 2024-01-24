@@ -5,7 +5,8 @@ part 'banking_response.g.dart';
 
 @JsonSerializable()
 class BankingResponse {
-  BankingResponse(this.bankName, this.accountNumber, this.sortCode, this.image);
+  BankingResponse(this.bankName, this.accountNumber, this.sortCode, this.image,
+      this.status, this.reasonForRejection);
 
   @JsonKey(name: "bank_name", defaultValue: '')
   final String? bankName;
@@ -15,6 +16,14 @@ class BankingResponse {
 
   @JsonKey(name: "sort_code", defaultValue: null)
   final int? sortCode;
+
+  @JsonKey()
+  final String? status;
+
+  @JsonKey(
+    name: "reason_for_rejection",
+  )
+  final String? reasonForRejection;
 
   ImageResponse image;
 
