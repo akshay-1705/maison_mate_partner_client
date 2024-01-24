@@ -200,6 +200,11 @@ class _EmployeesState extends State<Employees> {
       } else {
         if (_formKey.currentState!.validate()) {
           model.setIsSubmitting(true);
+
+          if (model.employeesPresent == 'No') {
+            model.minimum5MillionInsurancePresent = 'No';
+            model.epochString = '';
+          }
           var formData = {
             'employees_present': (model.employeesPresent == 'Yes').toString(),
             'liability_insurance':
