@@ -56,8 +56,11 @@ class FirebaseService {
     print("FCM Token: $fcmToken");
     const storage = FlutterSecureStorage();
     String? storedFcmToken = await storage.read(key: fcmTokenKey);
+    if (storedFcmToken != fcmToken) {
+      storage.delete(key: fcmTokenKey);
+    }
 
-    if (storedFcmToken != fcmToken && fcmToken != '' && fcmToken != null) {
+    if (fcmToken != '' && fcmToken != null) {
       Future stored = storage.write(key: fcmTokenKey, value: fcmToken);
       stored.then((value) {
         sendDeviceDetailsToServer(fcmToken);
