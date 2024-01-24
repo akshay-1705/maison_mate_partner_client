@@ -4,7 +4,8 @@ part 'profile_details_response.g.dart';
 
 @JsonSerializable()
 class ProfileDetailsResponse {
-  ProfileDetailsResponse(this.email, this.firstName, this.lastName);
+  ProfileDetailsResponse(
+      this.email, this.firstName, this.lastName, this.onboardingStatus);
 
   @JsonKey(defaultValue: '')
   final String? email;
@@ -14,6 +15,9 @@ class ProfileDetailsResponse {
 
   @JsonKey(name: "last_name", defaultValue: '')
   final String? lastName;
+
+  @JsonKey(name: "onboarding_status", defaultValue: '')
+  final String? onboardingStatus;
 
   factory ProfileDetailsResponse.fromJson(Map<String, dynamic> json) =>
       _$ProfileDetailsResponseFromJson(json);

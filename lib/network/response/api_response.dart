@@ -4,6 +4,7 @@ import 'package:maison_mate/network/response/documentation/banking_response.dart
 import 'package:maison_mate/network/response/documentation/employees_response.dart';
 import 'package:maison_mate/network/response/documentation/health_and_safety_response.dart';
 import 'package:maison_mate/network/response/documentation/documentation_response.dart';
+import 'package:maison_mate/network/response/documentation/profile_picture_response.dart';
 import 'package:maison_mate/network/response/documentation/self_trader_response.dart';
 import 'package:maison_mate/network/response/favourites_response.dart';
 import 'package:maison_mate/network/response/find_jobs_response.dart';
@@ -64,7 +65,7 @@ class _Converter<T> implements JsonConverter<T, Object> {
     } else if (map.containsKey('services_available') &&
         map.containsKey('postcodes_available')) {
       return YourDetailsResponse.fromJson(map) as T;
-    } else if (map.containsKey('your_details_section')) {
+    } else if (map.containsKey('email_verified') && map.containsKey('status')) {
       return OnboardingStatusResponse.fromJson(map) as T;
     } else if (map.containsKey('account_number') &&
         map.containsKey('sort_code')) {
@@ -78,9 +79,12 @@ class _Converter<T> implements JsonConverter<T, Object> {
     } else if (map.containsKey('accidents_in_five_years') &&
         map.containsKey('notice_in_five_years')) {
       return HealthAndSafetyResponse.fromJson(map) as T;
+    } else if (map.containsKey('image') && map.containsKey('status')) {
+      return ProfilePictureResponse.fromJson(map) as T;
     } else if (map.containsKey('image_url') && map.containsKey('image_name')) {
       return ImageResponse.fromJson(map) as T;
-    } else if (map.containsKey('status')) {
+    } else if (map.containsKey('section_wise_status') &&
+        map.containsKey('hide_insurance')) {
       return DocumentationResponse.fromJson(map) as T;
     } else if (map.containsKey('proof_of_id') &&
         map.containsKey('proof_of_address')) {

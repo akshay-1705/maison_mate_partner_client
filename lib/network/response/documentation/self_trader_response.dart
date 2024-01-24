@@ -5,8 +5,8 @@ part 'self_trader_response.g.dart';
 
 @JsonSerializable()
 class SelfTraderResponse {
-  SelfTraderResponse(
-      this.vatNumber, this.dateOfBirth, this.proofOfId, this.proofOfAddress);
+  SelfTraderResponse(this.vatNumber, this.dateOfBirth, this.proofOfId,
+      this.proofOfAddress, this.status, this.reasonForRejection);
 
   @JsonKey(name: "vat_number", defaultValue: '')
   final String? vatNumber;
@@ -19,6 +19,14 @@ class SelfTraderResponse {
 
   @JsonKey(name: "proof_of_address")
   final ImageResponse? proofOfAddress;
+
+  @JsonKey()
+  final String? status;
+
+  @JsonKey(
+    name: "reason_for_rejection",
+  )
+  final String? reasonForRejection;
 
   factory SelfTraderResponse.fromJson(Map<String, dynamic> json) =>
       _$SelfTraderResponseFromJson(json);

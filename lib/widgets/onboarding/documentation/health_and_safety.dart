@@ -3,10 +3,11 @@ import 'package:maison_mate/constants.dart';
 import 'package:maison_mate/network/client/get_client.dart';
 import 'package:maison_mate/network/client/put_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
+import 'package:maison_mate/network/response/documentation/health_and_safety_response.dart';
 import 'package:maison_mate/provider/documentation/health_and_safety_model.dart';
+import 'package:maison_mate/services/verification_status_service.dart';
 import 'package:maison_mate/shared/custom_app_bar.dart';
 import 'package:maison_mate/shared/my_form.dart';
-import 'package:maison_mate/screens/onboarding_screen.dart';
 import 'package:provider/provider.dart';
 
 class HealthAndSafety extends StatefulWidget {
@@ -75,12 +76,13 @@ class _HealthAndSafetyState extends State<HealthAndSafety> {
           apiUrl: apiUrl,
           future: getFutureData,
           builder: (context, data) {
-            return renderForm(context, model);
+            return renderForm(context, model, data);
           },
         ));
   }
 
-  Widget renderForm(BuildContext context, HealthAndSafetyModel model) {
+  Widget renderForm(BuildContext context, HealthAndSafetyModel model,
+      HealthAndSafetyResponse data) {
     return WillPopScope(
       onWillPop: () async {
         bool confirm = await CustomAppBar.showConfirmationDialog(
@@ -98,102 +100,119 @@ class _HealthAndSafetyState extends State<HealthAndSafety> {
         },
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(5.0),
-          child: Form(
-              key: _formKey,
-              child: AbsorbPointer(
-                  absorbing: model.isSubmitting,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      const SizedBox(height: 10),
-                      MyForm.header('Health & Safety'),
-                      MyForm.formFieldHeader(
-                          'Has your company had any Health & Safety related accidents in the past 5 years?'),
-                      MyForm.buildRadioButtons(
-                          ['Yes', 'No'], model.accidentsInFiveYears, (value) {
-                        model.setAccidentsInFiveYears(value);
-                        accidentsInFiveYearsController.text = '';
-                      }),
-                      if (model.accidentsInFiveYears == 'Yes') ...[
-                        MyForm.multilineRequiredTextField(
-                            "Please provide details*",
-                            accidentsInFiveYearsController),
+          child: Column(children: [
+            const SizedBox(height: 10),
+            VerificationStatusService.showInfoContainer(data.status ?? '',
+                data.reasonForRejection ?? '', 'Health & Safety Details'),
+            Form(
+                key: _formKey,
+                child: AbsorbPointer(
+                    absorbing: model.isSubmitting,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        const SizedBox(height: 10),
+                        MyForm.header('Health & Safety'),
+                        MyForm.formFieldHeader(
+                            'Has your company had any Health & Safety related accidents in the past 5 years?'),
+                        MyForm.buildRadioButtons(
+                            ['Yes', 'No'], model.accidentsInFiveYears, (value) {
+                          model.setAccidentsInFiveYears(value);
+                          accidentsInFiveYearsController.text = '';
+                        }),
+                        if (model.accidentsInFiveYears == 'Yes') ...[
+                          MyForm.multilineRequiredTextField(
+                              "Please provide details*",
+                              accidentsInFiveYearsController),
+                        ],
+                        MyForm.formFieldHeader(
+                            'Has your company had any HSE (Health and Safety Executive) related prosecutions or enforcement notices in the past 5 years?'),
+                        MyForm.buildRadioButtons(
+                            ['Yes', 'No'], model.noticeInFiveYears, (value) {
+                          model.setNoticeInFiveYears(value);
+                          noticeInFiveYearsController.text = '';
+                        }),
+                        if (model.noticeInFiveYears == 'Yes') ...[
+                          MyForm.multilineRequiredTextField(
+                              "Please provide details*",
+                              noticeInFiveYearsController),
+                        ],
+                        const SizedBox(height: 20),
+                        MyForm.header('Accident History in the past 3 years'),
+                        MyForm.formFieldHeader(
+                            'Has your company had any fatalities, major injuries or +7 day injuries?'),
+                        MyForm.buildRadioButtons(
+                            ['Yes', 'No'], model.injuryInThreeYears, (value) {
+                          model.setInjuryInThreeYears(value);
+                          injuryInThreeYearsController.text = '';
+                        }),
+                        if (model.injuryInThreeYears == 'Yes') ...[
+                          MyForm.multilineRequiredTextField(
+                              "Please provide details*",
+                              injuryInThreeYearsController),
+                        ],
+                        MyForm.formFieldHeader(
+                            'Have you, or any of the company’s employees, ever injured any customers or members of the public?'),
+                        MyForm.buildRadioButtons(
+                            ['Yes', 'No'], model.damageByCompanyEmployee,
+                            (value) {
+                          model.setDamageByCompanyEmployee(value);
+                          damageByCompanyEmployeeController.text = '';
+                        }),
+                        if (model.damageByCompanyEmployee == 'Yes') ...[
+                          MyForm.multilineRequiredTextField(
+                              "Please provide details*",
+                              damageByCompanyEmployeeController),
+                        ],
+                        MyForm.formFieldHeader(
+                            'Have you ever been declared bankrupt?'),
+                        MyForm.buildRadioButtons(
+                            ['Yes', 'No'], model.everBankrupt, (value) {
+                          model.setEverBankrupt(value);
+                          everBankruptController.text = '';
+                        }),
+                        if (model.everBankrupt == 'Yes') ...[
+                          MyForm.multilineRequiredTextField(
+                              "Please provide details*",
+                              everBankruptController),
+                        ],
+                        const SizedBox(height: 20),
+                        (futureData != null)
+                            ? PutClient.futureBuilder(
+                                model,
+                                futureData!,
+                                "Submit",
+                                () async {
+                                  String message = VerificationStatusService
+                                      .getPromptMessage(data.status ?? '',
+                                          'Health & Safety Details');
+                                  bool confirm =
+                                      await CustomAppBar.showConfirmationDialog(
+                                          context, message);
+                                  if (confirm) {
+                                    onSubmitCallback(model);
+                                  }
+                                },
+                                () {
+                                  Navigator.of(context).pop();
+                                },
+                              )
+                            : MyForm.submitButton("Submit", () async {
+                                String message =
+                                    VerificationStatusService.getPromptMessage(
+                                        data.status ?? '',
+                                        'Health & Safety Details');
+                                bool confirm =
+                                    await CustomAppBar.showConfirmationDialog(
+                                        context, message);
+                                if (confirm) {
+                                  onSubmitCallback(model);
+                                }
+                              }),
+                        const SizedBox(height: 40),
                       ],
-                      MyForm.formFieldHeader(
-                          'Has your company had any HSE (Health and Safety Executive) related prosecutions or enforcement notices in the past 5 years?'),
-                      MyForm.buildRadioButtons(
-                          ['Yes', 'No'], model.noticeInFiveYears, (value) {
-                        model.setNoticeInFiveYears(value);
-                        noticeInFiveYearsController.text = '';
-                      }),
-                      if (model.noticeInFiveYears == 'Yes') ...[
-                        MyForm.multilineRequiredTextField(
-                            "Please provide details*",
-                            noticeInFiveYearsController),
-                      ],
-                      const SizedBox(height: 20),
-                      MyForm.header('Accident History in the past 3 years'),
-                      MyForm.formFieldHeader(
-                          'Has your company had any fatalities, major injuries or +7 day injuries?'),
-                      MyForm.buildRadioButtons(
-                          ['Yes', 'No'], model.injuryInThreeYears, (value) {
-                        model.setInjuryInThreeYears(value);
-                        injuryInThreeYearsController.text = '';
-                      }),
-                      if (model.injuryInThreeYears == 'Yes') ...[
-                        MyForm.multilineRequiredTextField(
-                            "Please provide details*",
-                            injuryInThreeYearsController),
-                      ],
-                      MyForm.formFieldHeader(
-                          'Have you, or any of the company’s employees, ever injured any customers or members of the public?'),
-                      MyForm.buildRadioButtons(
-                          ['Yes', 'No'], model.damageByCompanyEmployee,
-                          (value) {
-                        model.setDamageByCompanyEmployee(value);
-                        damageByCompanyEmployeeController.text = '';
-                      }),
-                      if (model.damageByCompanyEmployee == 'Yes') ...[
-                        MyForm.multilineRequiredTextField(
-                            "Please provide details*",
-                            damageByCompanyEmployeeController),
-                      ],
-                      MyForm.formFieldHeader(
-                          'Have you ever been declared bankrupt?'),
-                      MyForm.buildRadioButtons(
-                          ['Yes', 'No'], model.everBankrupt, (value) {
-                        model.setEverBankrupt(value);
-                        everBankruptController.text = '';
-                      }),
-                      if (model.everBankrupt == 'Yes') ...[
-                        MyForm.multilineRequiredTextField(
-                            "Please provide details*", everBankruptController),
-                      ],
-                      const SizedBox(height: 20),
-                      (futureData != null)
-                          ? PutClient.futureBuilder(
-                              model,
-                              futureData!,
-                              "Submit",
-                              () async {
-                                onSubmitCallback(model);
-                              },
-                              () {
-                                Navigator.of(context).pop();
-                                Navigator.of(context).pushReplacement(
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const OnboardingScreen(
-                                              yourDetailsSection: true)),
-                                );
-                              },
-                            )
-                          : MyForm.submitButton("Submit", () async {
-                              onSubmitCallback(model);
-                            }),
-                      const SizedBox(height: 40),
-                    ],
-                  ))),
+                    )))
+          ]),
         ),
       ),
     );

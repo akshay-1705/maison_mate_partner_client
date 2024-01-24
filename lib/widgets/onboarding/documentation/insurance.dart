@@ -5,12 +5,14 @@ import 'package:maison_mate/constants.dart';
 import 'package:maison_mate/network/client/get_client.dart';
 import 'package:maison_mate/network/client/put_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
+import 'package:maison_mate/network/response/documentation/insurance_response.dart';
 import 'package:maison_mate/provider/documentation/insurance_model.dart';
+import 'package:maison_mate/services/file_upload_service.dart';
+import 'package:maison_mate/services/verification_status_service.dart';
 import 'package:maison_mate/shared/custom_app_bar.dart';
 import 'package:maison_mate/shared/image_helper.dart';
 import 'package:maison_mate/shared/my_form.dart';
 import 'package:maison_mate/shared/my_snackbar.dart';
-import 'package:maison_mate/screens/onboarding_screen.dart';
 import 'package:provider/provider.dart';
 
 class Insurance extends StatefulWidget {
@@ -65,12 +67,13 @@ class _InsuranceState extends State<Insurance> {
           apiUrl: apiUrl,
           future: getFutureData,
           builder: (context, data) {
-            return renderForm(context, model);
+            return renderForm(context, model, data);
           },
         ));
   }
 
-  SingleChildScrollView renderForm(BuildContext context, InsuranceModel model) {
+  SingleChildScrollView renderForm(
+      BuildContext context, InsuranceModel model, InsuranceResponse data) {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(5.0),
       child: WillPopScope(
@@ -88,74 +91,92 @@ class _InsuranceState extends State<Insurance> {
           onTap: () {
             FocusScope.of(context).unfocus();
           },
-          child: Form(
-              key: _formKey,
-              child: AbsorbPointer(
-                absorbing: model.isSubmitting,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const SizedBox(height: 10),
-                    MyForm.formFieldHeader(
-                        'Do you have the minimum of a £2 million Public Liability insurance?*',
-                        model.minimum2MillionInsurancePresentColor),
-                    MyForm.buildRadioButtons(
-                        ['Yes', 'No'], model.minimum2MillionInsurancePresent,
-                        (value) {
-                      model.setMinimum2MillionInsurancePresentColor(
-                          Colors.black);
-                      model.setMinimum2MillionInsurancePresent(value);
-                    }),
-                    if (model.minimum2MillionInsurancePresent == 'No') ...[
+          child: Column(children: [
+            const SizedBox(height: 10),
+            VerificationStatusService.showInfoContainer(data.status ?? '',
+                data.reasonForRejection ?? '', 'Insurance Details'),
+            Form(
+                key: _formKey,
+                child: AbsorbPointer(
+                  absorbing: model.isSubmitting,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const SizedBox(height: 10),
                       MyForm.formFieldHeader(
-                          'Do you have the minimum of a £1 million Public Liability insurance?*',
-                          model.minimum1MillionInsurancePresentColor),
+                          'Do you have the minimum of a £2 million Public Liability insurance?*',
+                          model.minimum2MillionInsurancePresentColor),
                       MyForm.buildRadioButtons(
-                          ['Yes'], model.minimum1MillionInsurancePresent,
+                          ['Yes', 'No'], model.minimum2MillionInsurancePresent,
                           (value) {
-                        model.setMinimum1MillionInsurancePresentColor(
+                        model.setMinimum2MillionInsurancePresentColor(
                             Colors.black);
-                        model.setMinimum1MillionInsurancePresent(value);
+                        model.setMinimum2MillionInsurancePresent(value);
                       }),
+                      if (model.minimum2MillionInsurancePresent == 'No') ...[
+                        MyForm.formFieldHeader(
+                            'Do you have the minimum of a £1 million Public Liability insurance?*',
+                            model.minimum1MillionInsurancePresentColor),
+                        MyForm.buildRadioButtons(
+                            ['Yes'], model.minimum1MillionInsurancePresent,
+                            (value) {
+                          model.setMinimum1MillionInsurancePresentColor(
+                              Colors.black);
+                          model.setMinimum1MillionInsurancePresent(value);
+                        }),
+                      ],
+                      MyForm.formFieldHeader(
+                          'When does Public Liability insurance expire?*'),
+                      MyForm.datePickerFormField(
+                          'DD/MM/YYYY',
+                          insuranceExpiryDateController,
+                          context,
+                          model,
+                          DateTime.fromMillisecondsSinceEpoch(
+                              int.parse(model.epochString))),
+                      MyForm.formFieldHeader(
+                          'Attach a copy of your public liability insurance. Please make sure the company name, limit of insurance, and expiry date are all visible.*'),
+                      FileUploadService.showWidget(context, model.selectedFile,
+                          (File file) {
+                        model.setSelectedFile(file);
+                      }),
+                      const SizedBox(height: 20),
+                      (futureData != null)
+                          ? PutClient.futureBuilder(
+                              model,
+                              futureData!,
+                              "Submit",
+                              () async {
+                                String message =
+                                    VerificationStatusService.getPromptMessage(
+                                        data.status ?? '', 'Insurance Details');
+                                bool confirm =
+                                    await CustomAppBar.showConfirmationDialog(
+                                        context, message);
+                                if (confirm) {
+                                  onSubmitCallback(model);
+                                }
+                              },
+                              () {
+                                Navigator.of(context).pop();
+                              },
+                            )
+                          : MyForm.submitButton("Submit", () async {
+                              String message =
+                                  VerificationStatusService.getPromptMessage(
+                                      data.status ?? '', 'Insurance Details');
+                              bool confirm =
+                                  await CustomAppBar.showConfirmationDialog(
+                                      context, message);
+                              if (confirm) {
+                                onSubmitCallback(model);
+                              }
+                            }),
+                      const SizedBox(height: 40),
                     ],
-                    MyForm.formFieldHeader(
-                        'When does Public Liability insurance expire?*'),
-                    MyForm.datePickerFormField(
-                        'DD/MM/YYYY',
-                        insuranceExpiryDateController,
-                        context,
-                        model,
-                        DateTime.fromMillisecondsSinceEpoch(
-                            int.parse(model.epochString))),
-                    MyForm.formFieldHeader(
-                        'Attach a copy of your public liability insurance. Please make sure the company name, limit of insurance, and expiry date are all visible.*'),
-                    MyForm.uploadImageSection(model),
-                    const SizedBox(height: 20),
-                    (futureData != null)
-                        ? PutClient.futureBuilder(
-                            model,
-                            futureData!,
-                            "Submit",
-                            () async {
-                              onSubmitCallback(model);
-                            },
-                            () {
-                              Navigator.of(context).pop();
-                              Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const OnboardingScreen(
-                                            yourDetailsSection: true)),
-                              );
-                            },
-                          )
-                        : MyForm.submitButton("Submit", () async {
-                            onSubmitCallback(model);
-                          }),
-                    const SizedBox(height: 40),
-                  ],
-                ),
-              )),
+                  ),
+                ))
+          ]),
         ),
       ),
     );

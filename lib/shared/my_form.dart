@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:maison_mate/constants.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
@@ -300,53 +297,6 @@ class MyForm {
           ),
         ),
       ],
-    );
-  }
-
-  static Widget uploadImageSection(dynamic model) {
-    return Column(children: [
-      uploadImageButton(() async {
-        FilePickerResult? result = await FilePicker.platform.pickFiles(
-          type: FileType.image,
-        );
-        if (result != null) {
-          model.setSelectedFile(File(result.files.single.path!));
-        }
-      }),
-      if (model.selectedFile != null) showSelectedImage(model.selectedFile!)
-    ]);
-  }
-
-  static Widget showSelectedImage(File file) {
-    return Container(
-      padding: const EdgeInsets.all(10),
-      alignment: Alignment.topLeft,
-      child: Image.file(
-        file,
-        width: 100,
-        height: 100,
-        fit: BoxFit.cover,
-      ),
-    );
-  }
-
-  static Widget uploadImageButton(VoidCallback callback) {
-    return Container(
-      padding: const EdgeInsets.only(left: 10),
-      alignment: Alignment.centerLeft,
-      child: ElevatedButton.icon(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.white70,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(5),
-          ),
-        ),
-        onPressed: () {
-          callback();
-        },
-        icon: const Icon(Icons.upload_file),
-        label: const Text('Upload Image'),
-      ),
     );
   }
 

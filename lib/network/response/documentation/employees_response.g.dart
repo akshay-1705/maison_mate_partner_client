@@ -12,6 +12,8 @@ EmployeesResponse _$EmployeesResponseFromJson(Map<String, dynamic> json) =>
       json['liability_insurance'] as bool?,
       json['insurance_expiry_date'] as int?,
       ImageResponse.fromJson(json['image'] as Map<String, dynamic>),
+      json['status'] as String?,
+      json['reason_for_rejection'] as String?,
     );
 
 Map<String, dynamic> _$EmployeesResponseToJson(EmployeesResponse instance) =>
@@ -20,4 +22,6 @@ Map<String, dynamic> _$EmployeesResponseToJson(EmployeesResponse instance) =>
       'liability_insurance': instance.liabilityInsurance,
       'insurance_expiry_date': instance.insuranceExpiryDate,
       'image': instance.image,
+      'status': instance.status,
+      'reason_for_rejection': instance.reasonForRejection,
     };

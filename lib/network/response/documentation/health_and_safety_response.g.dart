@@ -19,6 +19,8 @@ HealthAndSafetyResponse _$HealthAndSafetyResponseFromJson(
       json['damage_by_company_employee_details'] as String?,
       json['ever_bankrupt'] as bool?,
       json['ever_bankrupt_details'] as String?,
+      json['status'] as String?,
+      json['reason_for_rejection'] as String?,
     );
 
 Map<String, dynamic> _$HealthAndSafetyResponseToJson(
@@ -35,4 +37,6 @@ Map<String, dynamic> _$HealthAndSafetyResponseToJson(
           instance.damageByCompanyEmployeeDetails,
       'ever_bankrupt': instance.everBankrupt,
       'ever_bankrupt_details': instance.everBankruptDetails,
+      'status': instance.status,
+      'reason_for_rejection': instance.reasonForRejection,
     };

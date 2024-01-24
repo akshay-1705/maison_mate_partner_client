@@ -49,6 +49,12 @@ class YourDetailsResponse {
   @JsonKey(name: "services_available", required: true, defaultValue: [])
   final List<String>? servicesAvailable;
 
+  @JsonKey(required: true)
+  final String? status;
+
+  @JsonKey(name: "reason_for_rejection", required: true)
+  final String? reasonForRejection;
+
   YourDetailsResponse(
     this.firstName,
     this.lastName,
@@ -65,6 +71,8 @@ class YourDetailsResponse {
     this.country,
     this.servicesOffered,
     this.servicesAvailable,
+    this.status,
+    this.reasonForRejection,
   );
 
   factory YourDetailsResponse.fromJson(Map<String, dynamic> json) =>

@@ -10,26 +10,17 @@ OnboardingStatusResponse _$OnboardingStatusResponseFromJson(
     Map<String, dynamic> json) {
   $checkKeys(
     json,
-    requiredKeys: const [
-      'your_details_section',
-      'documentation',
-      'email_verified',
-      'account_verified'
-    ],
+    requiredKeys: const ['email_verified', 'status'],
   );
   return OnboardingStatusResponse(
-    json['your_details_section'] as bool? ?? false,
-    json['documentation'] as bool? ?? false,
     json['email_verified'] as bool? ?? false,
-    json['account_verified'] as bool? ?? false,
+    json['status'] as String?,
   );
 }
 
 Map<String, dynamic> _$OnboardingStatusResponseToJson(
         OnboardingStatusResponse instance) =>
     <String, dynamic>{
-      'your_details_section': instance.yourDetailsSection,
-      'documentation': instance.documentation,
       'email_verified': instance.emailVerified,
-      'account_verified': instance.accountVerified,
+      'status': instance.status,
     };

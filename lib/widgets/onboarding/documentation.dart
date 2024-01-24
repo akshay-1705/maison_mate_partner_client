@@ -3,8 +3,11 @@ import 'package:maison_mate/constants.dart';
 import 'package:maison_mate/network/client/get_client.dart';
 import 'package:maison_mate/network/client/put_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
+import 'package:maison_mate/network/response/documentation/documentation_response.dart';
 import 'package:maison_mate/provider/documentation_model.dart';
 import 'package:maison_mate/screens/home_screen.dart';
+import 'package:maison_mate/services/verification_status_service.dart';
+import 'package:maison_mate/shared/custom_app_bar.dart';
 import 'package:maison_mate/shared/my_form.dart';
 import 'package:maison_mate/shared/my_snackbar.dart';
 import 'package:maison_mate/widgets/onboarding/documentation/banking.dart';
@@ -31,6 +34,24 @@ class _DocumentationState extends State<Documentation> {
   void initState() {
     super.initState();
     getFutureData = GetClient.fetchData(apiUrl);
+    getFutureData.then((apiResponse) {
+      if (mounted) {
+        var stateModel =
+            Provider.of<DocumentationModel>(context, listen: false);
+
+        stateModel.canWorkInUK = apiResponse.data.canWorkInUk;
+        stateModel.agree = apiResponse.data.agreeToTnc;
+        stateModel.notHaveCriminalOffence =
+            apiResponse.data.notHaveCriminalOffence;
+      }
+    });
+  }
+
+  Future<void> refreshData() async {
+    final response = await GetClient.fetchData(apiUrl);
+    setState(() {
+      getFutureData = Future.value(response);
+    });
   }
 
   @override
@@ -48,39 +69,39 @@ class _DocumentationState extends State<Documentation> {
     ));
   }
 
-  SingleChildScrollView renderForm(
-      DocumentationModel model, data, BuildContext context) {
+  SingleChildScrollView renderForm(DocumentationModel model,
+      DocumentationResponse data, BuildContext context) {
     bool limited = data.isLimited;
     List<DocumentationPart> documentationParts = [
       DocumentationPart(
           title: 'Banking',
           page: const Banking(),
-          status: data.status.banking,
+          status: data.sectionWiseStatus.banking ?? 'pending',
           hide: false),
       DocumentationPart(
           title: 'Insurance',
           page: const Insurance(),
-          status: data.status.insurance,
+          status: data.sectionWiseStatus.insurance ?? 'pending',
           hide: data.hideInsurance),
       DocumentationPart(
           title: 'Owner identification',
           page: OwnerIdentification(limited: limited),
-          status: data.status.ownerIdentification,
+          status: data.sectionWiseStatus.ownerIdentification ?? 'pending',
           hide: false),
       DocumentationPart(
           title: 'Employees',
           page: const Employees(),
-          status: data.status.employees,
+          status: data.sectionWiseStatus.employees ?? 'pending',
           hide: false),
       DocumentationPart(
           title: 'Profile picture',
           page: const ProfilePicture(),
-          status: data.status.profilePicture,
+          status: data.sectionWiseStatus.profilePicture ?? 'pending',
           hide: false),
       DocumentationPart(
           title: 'Health and safety',
           page: const HealthAndSafety(),
-          status: data.status.healthAndSafety,
+          status: data.sectionWiseStatus.healthAndSafety ?? 'pending',
           hide: !limited),
     ];
 
@@ -100,12 +121,13 @@ class _DocumentationState extends State<Documentation> {
                         title: Text(part.title,
                             style: const TextStyle(fontSize: 17)),
                         trailing: icon,
-                        onTap: () {
-                          Navigator.of(context).push(
+                        onTap: () async {
+                          await Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (context) => part.page,
                             ),
                           );
+                          refreshData();
                         },
                       ),
                       const Divider(
@@ -139,7 +161,16 @@ class _DocumentationState extends State<Documentation> {
                       futureData!,
                       "Submit",
                       () async {
-                        onSubmitCallback(model);
+                        String message =
+                            VerificationStatusService.getPromptMessage(
+                                data.onboardingStatus ?? '',
+                                'Documentation Details');
+                        bool confirm =
+                            await CustomAppBar.showConfirmationDialog(
+                                context, message);
+                        if (confirm) {
+                          onSubmitCallback(model);
+                        }
                       },
                       () {
                         Navigator.of(context).pushAndRemoveUntil(
@@ -150,7 +181,14 @@ class _DocumentationState extends State<Documentation> {
                       },
                     )
                   : MyForm.submitButton("Submit", () async {
-                      onSubmitCallback(model);
+                      String message =
+                          VerificationStatusService.getPromptMessage(
+                              data.onboardingStatus ?? '', 'details');
+                      bool confirm = await CustomAppBar.showConfirmationDialog(
+                          context, message);
+                      if (confirm) {
+                        onSubmitCallback(model);
+                      }
                     }),
               const SizedBox(height: 50),
             ],
@@ -185,12 +223,14 @@ class _DocumentationState extends State<Documentation> {
 
   Icon getIcon(String status, DocumentationModel model) {
     switch (status) {
-      case 'completed':
+      case 'verified':
         return const Icon(Icons.verified, color: Colors.green);
+      case 'submitted':
+        return const Icon(Icons.verified, color: Colors.grey);
       case 'pending':
         model.pendingDocuments = true;
-        return const Icon(Icons.edit_note, color: Colors.orange);
-      case 'failed':
+        return const Icon(Icons.pending_actions_rounded, color: Colors.orange);
+      case 'rejected':
         model.pendingDocuments = true;
         return const Icon(Icons.error, color: Colors.red);
       default:

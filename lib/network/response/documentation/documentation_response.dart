@@ -11,9 +11,29 @@ class DocumentationResponse {
   @JsonKey(name: "hide_insurance", defaultValue: false)
   final bool hideInsurance;
 
-  SectionStatusResponse status;
+  @JsonKey(name: "section_wise_status")
+  SectionStatusResponse sectionWiseStatus;
 
-  DocumentationResponse(this.status, this.isLimited, this.hideInsurance);
+  @JsonKey(name: "onboarding_status")
+  final String? onboardingStatus;
+
+  @JsonKey(name: "agree_to_tnc", defaultValue: false)
+  final bool agreeToTnc;
+
+  @JsonKey(name: "can_work_in_uk", defaultValue: false)
+  final bool canWorkInUk;
+
+  @JsonKey(name: "not_have_criminal_offence", defaultValue: false)
+  final bool notHaveCriminalOffence;
+
+  DocumentationResponse(
+      this.sectionWiseStatus,
+      this.onboardingStatus,
+      this.isLimited,
+      this.hideInsurance,
+      this.agreeToTnc,
+      this.canWorkInUk,
+      this.notHaveCriminalOffence);
   factory DocumentationResponse.fromJson(Map<String, dynamic> json) =>
       _$DocumentationResponseFromJson(json);
   Map<String, dynamic> toJson() => _$DocumentationResponseToJson(this);

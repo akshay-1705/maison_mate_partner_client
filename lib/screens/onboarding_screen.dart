@@ -8,16 +8,13 @@ import 'package:provider/provider.dart';
 import 'package:maison_mate/provider/your_details_model.dart';
 
 class OnboardingScreen extends StatefulWidget {
-  final bool yourDetailsSection;
-  const OnboardingScreen({Key? key, required this.yourDetailsSection})
-      : super(key: key);
+  const OnboardingScreen({Key? key}) : super(key: key);
 
   @override
   State<OnboardingScreen> createState() => _OnboardingScreenState();
 }
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
-  bool tabClicked = false;
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -50,10 +47,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Widget buildBody() {
     return Consumer<OnboardingModel>(builder: (context, onboarding, child) {
       final OnboardingModel model = Provider.of<OnboardingModel>(context);
-
-      if (!tabClicked && widget.yourDetailsSection) {
-        model.currentIndex = 1;
-      }
 
       return Column(
         children: [
@@ -100,22 +93,13 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   Widget _buildTabItem(
       int index, IconData icon, String label, OnboardingModel model) {
     final isSelected = index == model.currentIndex;
-    Icon secondaryIcon = const Icon(
-      Icons.verified,
-      color: Colors.green,
-    );
+
     return GestureDetector(
       onTap: () async {
-        if (model.currentIndex == 0 &&
-            index == 1 &&
-            !widget.yourDetailsSection) {
-          await CustomAppBar.warning(
-              context, "Please complete this section first");
-        } else if (model.currentIndex != index) {
+        if (model.currentIndex != index) {
           bool confirm = await CustomAppBar.showConfirmationDialog(
               context, "Are you sure you want to go to '$label' section?");
           if (confirm) {
-            tabClicked = true;
             model.setCurrentIndex(index);
           }
         }
@@ -143,9 +127,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 color: isSelected ? const Color(themeColor) : Colors.grey,
               ),
             ),
-            if (label == 'Your Details' &&
-                (widget.yourDetailsSection || model.currentIndex == 1))
-              secondaryIcon
           ],
         ),
       ),

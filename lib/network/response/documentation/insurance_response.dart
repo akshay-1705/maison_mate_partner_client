@@ -6,7 +6,7 @@ part 'insurance_response.g.dart';
 @JsonSerializable()
 class InsuranceResponse {
   InsuranceResponse(this.twoMillionInsurance, this.oneMillionInsurance,
-      this.expiryDate, this.image);
+      this.expiryDate, this.image, this.status, this.reasonForRejection);
 
   @JsonKey(name: "two_million_insurance")
   final bool? twoMillionInsurance;
@@ -18,6 +18,14 @@ class InsuranceResponse {
   final int? expiryDate;
 
   ImageResponse image;
+
+  @JsonKey()
+  final String? status;
+
+  @JsonKey(
+    name: "reason_for_rejection",
+  )
+  final String? reasonForRejection;
 
   factory InsuranceResponse.fromJson(Map<String, dynamic> json) =>
       _$InsuranceResponseFromJson(json);

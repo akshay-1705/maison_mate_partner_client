@@ -38,12 +38,12 @@ class _HomeWidgetState extends State<HomeWidget> {
             );
           });
           return Container();
-        } else if (data.accountVerified) {
+        } else if (data.status == 'verified') {
           return const DashboardWidget();
         } else {
           return Column(
             children: [
-              if (data.documentation == true) ...[
+              if (data.status == 'submitted') ...[
                 SizedBox(height: screenHeight * 0.15),
                 onboardingComplete(),
                 Container(
@@ -72,7 +72,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                 ),
               ] else ...[
                 SizedBox(height: screenHeight * 0.3),
-                completeOnboarding(data.yourDetailsSection, screenHeight)
+                completeOnboarding(screenHeight)
               ],
             ],
           );
@@ -92,8 +92,8 @@ class _HomeWidgetState extends State<HomeWidget> {
         ));
   }
 
-  Column completeOnboarding(yourDetailsSection, double screenHeight) {
-    String buttonText = yourDetailsSection ? 'Resume' : 'Proceed';
+  Column completeOnboarding(double screenHeight) {
+    String buttonText = 'Proceed';
     return Column(
       children: [
         Container(
@@ -117,9 +117,7 @@ class _HomeWidgetState extends State<HomeWidget> {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                      OnboardingScreen(yourDetailsSection: yourDetailsSection)),
+              MaterialPageRoute(builder: (context) => const OnboardingScreen()),
             ).then((value) {
               setState(() {
                 futureData = GetClient.fetchData(apiUrl);
