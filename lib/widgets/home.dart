@@ -44,7 +44,7 @@ class _HomeWidgetState extends State<HomeWidget> {
           return Column(
             children: [
               if (data.status == 'submitted') ...[
-                SizedBox(height: screenHeight * 0.15),
+                SizedBox(height: screenHeight * 0.24),
                 onboardingComplete(),
                 Container(
                   padding: const EdgeInsets.all(10),
@@ -85,10 +85,10 @@ class _HomeWidgetState extends State<HomeWidget> {
     return Container(
         padding: const EdgeInsets.all(10),
         alignment: Alignment.center,
-        child: Image.asset(
-          'assets/analysing_documents.jpg',
-          width: 250,
-          height: 250,
+        child: const Icon(
+          Icons.hourglass_bottom_rounded,
+          color: Colors.green,
+          size: 100.0,
         ));
   }
 
