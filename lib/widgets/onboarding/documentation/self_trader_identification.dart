@@ -131,7 +131,8 @@ class _SelfTraderIdentificationState extends State<SelfTraderIdentification> {
                         context,
                         model,
                         DateTime.fromMillisecondsSinceEpoch(
-                            int.parse(model.epochString))),
+                            int.parse(model.epochString)),
+                        DateTime(1960)),
                     MyForm.formFieldHeader(
                         'Attach proof of ID, a photo or scan of your DRIVING LICENCE or PASSPORT (only jpeg and png file types are supported)'),
                     Column(children: [

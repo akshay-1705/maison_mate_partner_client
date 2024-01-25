@@ -319,7 +319,14 @@ class MyForm {
       TextEditingController controller,
       BuildContext context,
       dynamic model,
-      DateTime initialDate) {
+      DateTime initialDate,
+      [DateTime? startDate]) {
+    startDate ??= DateTime.now();
+
+    if (initialDate.isBefore(startDate)) {
+      startDate = initialDate;
+    }
+
     return Opacity(
       opacity: 0.5,
       child: Container(
@@ -338,7 +345,7 @@ class MyForm {
             final DateTime? pickedDate = await showDatePicker(
               context: context,
               initialDate: initialDate,
-              firstDate: DateTime.now(),
+              firstDate: startDate ?? DateTime.now(),
               lastDate: DateTime(2101),
               builder: (BuildContext context, Widget? child) {
                 return Theme(
