@@ -46,6 +46,5 @@ flutter:
   assets:
     - assets/terms.html
     - assets/privacy.html
-    - assets/analysing_documents.jpg
     - .env/development.env
     - .env/production.env
