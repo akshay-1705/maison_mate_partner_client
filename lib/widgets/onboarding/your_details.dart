@@ -195,7 +195,7 @@ class _YourDetailsSectionState extends State<YourDetailsSection> {
               ? PostClient.futureBuilder(
                   model,
                   postFutureData!,
-                  "Submit",
+                  "Save",
                   () async {
                     String message = VerificationStatusService.getPromptMessage(
                         data.status ?? '', 'details');
@@ -209,7 +209,7 @@ class _YourDetailsSectionState extends State<YourDetailsSection> {
                     widget.onboardingModel.setCurrentIndex(1);
                   },
                 )
-              : MyForm.submitButton("Submit", () async {
+              : MyForm.submitButton("Save", () async {
                   String message = VerificationStatusService.getPromptMessage(
                       data.status ?? '', 'details');
                   bool confirm = await CustomAppBar.showConfirmationDialog(

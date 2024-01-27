@@ -15,6 +15,8 @@ SectionStatusResponse _$SectionStatusResponseFromJson(
       json['profile_picture'] as String?,
       json['health_and_safety'] as String?,
       json['owner_identification'] as String?,
+      json['contract'] as String?,
+      json['personal'] as String?,
     );
 
 Map<String, dynamic> _$SectionStatusResponseToJson(
@@ -26,4 +28,6 @@ Map<String, dynamic> _$SectionStatusResponseToJson(
       'profile_picture': instance.profilePicture,
       'health_and_safety': instance.healthAndSafety,
       'owner_identification': instance.ownerIdentification,
+      'contract': instance.contract,
+      'personal': instance.personal,
     };

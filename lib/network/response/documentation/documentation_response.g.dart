@@ -14,6 +14,7 @@ DocumentationResponse _$DocumentationResponseFromJson(
       json['onboarding_status'] as String?,
       json['is_limited'] as bool? ?? false,
       json['hide_insurance'] as bool? ?? false,
+      json['hide_contract'] as bool? ?? false,
       json['agree_to_tnc'] as bool? ?? false,
       json['can_work_in_uk'] as bool? ?? false,
       json['not_have_criminal_offence'] as bool? ?? false,
@@ -24,6 +25,7 @@ Map<String, dynamic> _$DocumentationResponseToJson(
     <String, dynamic>{
       'is_limited': instance.isLimited,
       'hide_insurance': instance.hideInsurance,
+      'hide_contract': instance.hideContract,
       'section_wise_status': instance.sectionWiseStatus.toJson(),
       'onboarding_status': instance.onboardingStatus,
       'agree_to_tnc': instance.agreeToTnc,

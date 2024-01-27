@@ -11,6 +11,7 @@ import 'package:maison_mate/shared/custom_app_bar.dart';
 import 'package:maison_mate/shared/my_form.dart';
 import 'package:maison_mate/shared/my_snackbar.dart';
 import 'package:maison_mate/widgets/onboarding/documentation/banking.dart';
+import 'package:maison_mate/widgets/onboarding/documentation/contract.dart';
 import 'package:maison_mate/widgets/onboarding/documentation/employees.dart';
 import 'package:maison_mate/widgets/onboarding/documentation/health_and_safety.dart';
 import 'package:maison_mate/widgets/onboarding/documentation/insurance.dart';
@@ -71,6 +72,9 @@ class _DocumentationState extends State<Documentation> {
 
   SingleChildScrollView renderForm(DocumentationModel model,
       DocumentationResponse data, BuildContext context) {
+    if (['pending', 'rejected'].contains(data.sectionWiseStatus.personal)) {
+      model.pendingDocuments = true;
+    }
     bool limited = data.isLimited;
     List<DocumentationPart> documentationParts = [
       DocumentationPart(
@@ -103,6 +107,11 @@ class _DocumentationState extends State<Documentation> {
           page: const HealthAndSafety(),
           status: data.sectionWiseStatus.healthAndSafety ?? 'pending',
           hide: !limited),
+      DocumentationPart(
+          title: 'Contract',
+          page: const Contract(),
+          status: data.sectionWiseStatus.contract ?? 'pending',
+          hide: data.hideContract),
     ];
 
     return SingleChildScrollView(
@@ -159,7 +168,7 @@ class _DocumentationState extends State<Documentation> {
                   ? PutClient.futureBuilder(
                       model,
                       futureData!,
-                      "Submit",
+                      "Final submit",
                       () async {
                         String message =
                             VerificationStatusService.getPromptMessage(
@@ -180,7 +189,7 @@ class _DocumentationState extends State<Documentation> {
                         );
                       },
                     )
-                  : MyForm.submitButton("Submit", () async {
+                  : MyForm.submitButton("Final submit", () async {
                       String message =
                           VerificationStatusService.getPromptMessage(
                               data.onboardingStatus ?? '', 'details');
@@ -215,7 +224,8 @@ class _DocumentationState extends State<Documentation> {
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(MySnackBar(
-              message: 'Kindly complete all the documentation steps',
+              message:
+                  'Please complete all the pending steps before submitting',
               error: true)
           .getSnackbar());
     }

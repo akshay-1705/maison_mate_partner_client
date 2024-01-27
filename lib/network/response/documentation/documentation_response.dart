@@ -11,6 +11,9 @@ class DocumentationResponse {
   @JsonKey(name: "hide_insurance", defaultValue: false)
   final bool hideInsurance;
 
+  @JsonKey(name: "hide_contract", defaultValue: false)
+  final bool hideContract;
+
   @JsonKey(name: "section_wise_status")
   SectionStatusResponse sectionWiseStatus;
 
@@ -31,6 +34,7 @@ class DocumentationResponse {
       this.onboardingStatus,
       this.isLimited,
       this.hideInsurance,
+      this.hideContract,
       this.agreeToTnc,
       this.canWorkInUk,
       this.notHaveCriminalOffence);

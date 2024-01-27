@@ -4,8 +4,15 @@ part 'section_status_response.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class SectionStatusResponse {
-  SectionStatusResponse(this.banking, this.insurance, this.employees,
-      this.profilePicture, this.healthAndSafety, this.ownerIdentification);
+  SectionStatusResponse(
+      this.banking,
+      this.insurance,
+      this.employees,
+      this.profilePicture,
+      this.healthAndSafety,
+      this.ownerIdentification,
+      this.contract,
+      this.personal);
 
   @JsonKey(name: "banking")
   final String? banking;
@@ -24,6 +31,12 @@ class SectionStatusResponse {
 
   @JsonKey(name: "owner_identification")
   final String? ownerIdentification;
+
+  @JsonKey(name: "contract")
+  final String? contract;
+
+  @JsonKey(name: "personal")
+  final String? personal;
 
   factory SectionStatusResponse.fromJson(Map<String, dynamic> json) =>
       _$SectionStatusResponseFromJson(json);

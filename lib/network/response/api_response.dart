@@ -1,6 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:maison_mate/network/response/chat_response.dart';
 import 'package:maison_mate/network/response/documentation/banking_response.dart';
+import 'package:maison_mate/network/response/documentation/contract_response.dart';
 import 'package:maison_mate/network/response/documentation/employees_response.dart';
 import 'package:maison_mate/network/response/documentation/health_and_safety_response.dart';
 import 'package:maison_mate/network/response/documentation/documentation_response.dart';
@@ -79,6 +80,8 @@ class _Converter<T> implements JsonConverter<T, Object> {
     } else if (map.containsKey('accidents_in_five_years') &&
         map.containsKey('notice_in_five_years')) {
       return HealthAndSafetyResponse.fromJson(map) as T;
+    } else if (map.containsKey('image') && map.containsKey('signature')) {
+      return ContractResponse.fromJson(map) as T;
     } else if (map.containsKey('image') && map.containsKey('status')) {
       return ProfilePictureResponse.fromJson(map) as T;
     } else if (map.containsKey('image_url') && map.containsKey('image_name')) {
