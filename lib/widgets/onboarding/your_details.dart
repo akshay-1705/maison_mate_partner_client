@@ -263,7 +263,7 @@ class _YourDetailsSectionState extends State<YourDetailsSection> {
               dense: true, // Reduce vertical spacing
               controlAffinity: ListTileControlAffinity
                   .leading, // Position checkbox to the start
-              title: Text(service),
+              title: Text(service, style: TextStyle(fontSize: 12)),
               value: model.selectedServices.contains(service),
               onChanged: (value) {
                 if (value != null && value == true) {
