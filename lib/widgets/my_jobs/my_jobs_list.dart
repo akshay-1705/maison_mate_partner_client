@@ -29,7 +29,12 @@ class MyJobsList extends StatelessWidget {
         return const Icon(Icons.pest_control, color: Colors.black);
       case 'Electrician':
         return const Icon(Icons.electrical_services, color: Colors.purple);
-
+      case 'Windows':
+        return const Icon(Icons.window, color: Colors.purple);
+      case 'Doors & porches':
+        return const Icon(Icons.door_sliding, color: Colors.purple);
+      case 'Roofline & conservatories':
+        return const Icon(Icons.roofing, color: Colors.purple);
       default:
         return const Icon(Icons.home_repair_service, color: Colors.green);
     }
