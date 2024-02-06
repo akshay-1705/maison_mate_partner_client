@@ -85,19 +85,11 @@ class _DashboardWidgetState extends State<DashboardWidget> {
       String url =
           '$apiUrl/?latitude=${position!.latitude}&longitude=${position!.longitude}';
       final response = await GetClient.fetchData(url);
-      setState(() {
-        futureData = Future.value(response);
-      });
-    }
-  }
-
-  void fetchAndUpdateJobData() {
-    if (position != null) {
-      String url =
-          '$apiUrl/?latitude=${position!.latitude}&longitude=${position!.latitude}';
-      setState(() {
-        futureData = GetClient.fetchData(url);
-      });
+      if (mounted) {
+        setState(() {
+          futureData = Future.value(response);
+        });
+      }
     }
   }
 
@@ -110,10 +102,12 @@ class _DashboardWidgetState extends State<DashboardWidget> {
 
     if (placemarks.isNotEmpty) {
       Placemark firstPlacemark = placemarks.first;
-      setState(() {
-        address =
-            '${firstPlacemark.street} ${firstPlacemark.subLocality} ${firstPlacemark.locality} ${firstPlacemark.postalCode}';
-      });
+      if (mounted) {
+        setState(() {
+          address =
+              '${firstPlacemark.street} ${firstPlacemark.subLocality} ${firstPlacemark.locality} ${firstPlacemark.postalCode}';
+        });
+      }
     }
   }
 

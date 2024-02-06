@@ -5,10 +5,13 @@ part 'receipt_response.g.dart';
 
 @JsonSerializable()
 class ReceiptResponse {
-  ReceiptResponse(this.receipt);
+  ReceiptResponse(this.receipt, this.discount);
 
   @JsonKey()
   final List<ReceiptItemResponse> receipt;
+
+  @JsonKey(defaultValue: false)
+  final bool discount;
 
   factory ReceiptResponse.fromJson(Map<String, dynamic> json) =>
       _$ReceiptResponseFromJson(json);

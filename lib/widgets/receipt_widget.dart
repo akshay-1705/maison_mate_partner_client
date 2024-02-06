@@ -115,8 +115,14 @@ class _ReceiptWidgetState extends State<ReceiptWidget> {
 
   Column total(ReceiptResponse data) {
     double? totalAmount = 0;
+    double? partnerShare = 0;
     for (var element in data.receipt) {
       totalAmount = totalAmount! + element.price;
+    }
+    if (data.discount) {
+      partnerShare = (totalAmount! * 0.9);
+    } else {
+      partnerShare = (totalAmount! * 0.8);
     }
 
     return Column(children: [
@@ -128,14 +134,26 @@ class _ReceiptWidgetState extends State<ReceiptWidget> {
         Text(totalAmount.toString(),
             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500))
       ]),
-      Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        const Text(
-          'Maison Mate Share',
-          style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
-        ),
-        Text('-20% (${(totalAmount! * 0.2).toStringAsFixed(1)})',
-            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500))
-      ]),
+      if (data.discount) ...[
+        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          const Text(
+            'Maison Mate Share (DISCOUNT APPLIED)',
+            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+          ),
+          Text('-10% (${(totalAmount * 0.1).toStringAsFixed(1)})',
+              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500))
+        ]),
+      ],
+      if (!data.discount) ...[
+        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          const Text(
+            'Maison Mate Share',
+            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+          ),
+          Text('-20% (${(totalAmount * 0.2).toStringAsFixed(1)})',
+              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500))
+        ]),
+      ],
       const SizedBox(height: 20),
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         Text(
@@ -145,7 +163,7 @@ class _ReceiptWidgetState extends State<ReceiptWidget> {
               fontWeight: FontWeight.w600,
               color: Colors.green.shade500),
         ),
-        Text((totalAmount * 0.8).toStringAsFixed(1),
+        Text(partnerShare.toStringAsFixed(1),
             style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,

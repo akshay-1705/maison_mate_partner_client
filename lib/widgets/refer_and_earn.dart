@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:maison_mate/constants.dart';
+import 'package:maison_mate/network/client/get_client.dart';
+import 'package:maison_mate/network/response/api_response.dart';
 
 class ReferAndEarn extends StatefulWidget {
   const ReferAndEarn({super.key});
@@ -8,26 +11,41 @@ class ReferAndEarn extends StatefulWidget {
 }
 
 class _ReferAndEarnState extends State<ReferAndEarn> {
+  late Future<ApiResponse> futureData;
+  static String apiUrl = '$baseApiUrl/partners/discount';
+
   @override
-  Widget build(BuildContext context) {
-    return renderData();
+  void initState() {
+    super.initState();
+    futureData = GetClient.fetchData(apiUrl);
   }
 
-  Widget renderData() {
+  @override
+  Widget build(BuildContext context) {
+    return GetRequestFutureBuilder<dynamic>(
+      apiUrl: apiUrl,
+      future: futureData,
+      builder: (context, data) {
+        return renderData(data);
+      },
+    );
+  }
+
+  Widget renderData(data) {
     return SingleChildScrollView(
         child: Padding(
             padding: const EdgeInsets.only(top: 0.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                discountedJobs(),
-                summary(),
+                discountedJobs(data),
+                summary(data),
                 howItWorks(),
               ],
             )));
   }
 
-  Widget discountedJobs() {
+  Widget discountedJobs(data) {
     return Container(
       padding: const EdgeInsets.all(16),
       margin: const EdgeInsets.all(15),
@@ -63,16 +81,16 @@ class _ReferAndEarnState extends State<ReferAndEarn> {
           ),
           const SizedBox(height: 8),
           RichText(
-            text: const TextSpan(
+            text: TextSpan(
               text: 'Left in purse: ',
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 16,
                 color: Colors.black,
               ),
               children: [
                 TextSpan(
-                  text: '3',
-                  style: TextStyle(
+                  text: data['count'].toString(),
+                  style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
                     color: Colors.green,
@@ -83,7 +101,7 @@ class _ReferAndEarnState extends State<ReferAndEarn> {
           ),
           const SizedBox(height: 15),
           Text(
-            'Refer more friends to get more discounts on commission. Discounts are automatically calculated upon job completion.',
+            'Refer more friends to get FLAT 50% discount on commission. Discount is automatically applied upon job completion.',
             style: TextStyle(
               fontSize: 14,
               color: Colors.grey.shade600,
@@ -117,9 +135,9 @@ class _ReferAndEarnState extends State<ReferAndEarn> {
           buildStepText('1. Share referral code with your friends.'),
           buildStepText('2. Your friend signs up using your referral code.'),
           buildStepText(
-              '3. Your friend gets up to 100% discount on the commission for one job they do.'),
+              '3. Your friend gets ONE discounted job credited in their purse.'),
           buildStepText(
-              '4. You get upto 100% discount on the commission for one job.'),
+              '4. You get ONE discounted job credited in your purse once your friend completes a job.'),
         ],
       ),
     );
@@ -141,7 +159,7 @@ class _ReferAndEarnState extends State<ReferAndEarn> {
     );
   }
 
-  Widget summary() {
+  Widget summary(data) {
     return Container(
       padding: const EdgeInsets.all(16),
       margin: const EdgeInsets.all(15),
@@ -157,7 +175,7 @@ class _ReferAndEarnState extends State<ReferAndEarn> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Refer and Get Up to 100% off',
+            'Refer and get FLAT 50% off',
             style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 10),
@@ -168,7 +186,7 @@ class _ReferAndEarnState extends State<ReferAndEarn> {
               Expanded(
                 flex: 3,
                 child: Text(
-                  'Refer your friends to Maison Mate and get up to 100% discount on commission. Share the referral code.',
+                  'Refer your friends to Maison Mate and get FLAT 50% discount on commission. Share the referral code.',
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.grey.shade600,
@@ -184,17 +202,17 @@ class _ReferAndEarnState extends State<ReferAndEarn> {
             ],
           ),
           const SizedBox(height: 15),
-          const Row(
+          Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text(
+              const Text(
                 'Referral Code:',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
               ),
-              SizedBox(width: 5),
+              const SizedBox(width: 5),
               Text(
-                'HJAURASR',
-                style: TextStyle(
+                data['referral_code'] ?? '',
+                style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: Colors.green),
