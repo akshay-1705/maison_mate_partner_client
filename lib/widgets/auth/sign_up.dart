@@ -26,6 +26,7 @@ class _SignUpWidgetState extends State<SignUpWidget> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
+  TextEditingController referralCodeController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   static const storage = FlutterSecureStorage();
   Future<ApiResponse>? futureData;
@@ -61,6 +62,8 @@ class _SignUpWidgetState extends State<SignUpWidget> {
                           nameFields(),
                           MyForm.requiredEmailField('Email*', emailController),
                           passwordFields(),
+                          MyForm.optionalTextField(
+                              'Referral code', referralCodeController),
                           const SizedBox(height: 10),
                           termsAndConditions(model),
                           const SizedBox(height: 10),
@@ -99,7 +102,8 @@ class _SignUpWidgetState extends State<SignUpWidget> {
           'last_name': lastNameController.text,
           'email': emailController.text,
           'password': passwordController.text,
-          'password_confirmation': confirmPasswordController.text
+          'password_confirmation': confirmPasswordController.text,
+          'referral_code': referralCodeController.text,
         };
         futureData =
             PostClient.request(signUpUrl, formData, model, (response) async {

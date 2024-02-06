@@ -28,7 +28,7 @@ class ServiceChargeWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Maximize your earnings with us! We only take a small 20% service fee – your success is our priority.',
+                  'Maximize your earnings with us! We only take a small 20% commission – your success is our priority. Any eligible discount on the commission will be calculated upon job completion.',
                   style: TextStyle(fontSize: 13),
                 ),
               ],

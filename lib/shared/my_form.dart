@@ -47,6 +47,24 @@ class MyForm {
         ));
   }
 
+  static Opacity optionalTextField(
+      String label, TextEditingController controller,
+      [bool? obscure, TextInputType? keyboardType]) {
+    keyboardType ??= TextInputType.text;
+    obscure ??= false;
+    return Opacity(
+        opacity: 0.8,
+        child: Container(
+          padding: const EdgeInsets.all(6),
+          child: TextFormField(
+            controller: controller,
+            obscureText: obscure,
+            keyboardType: keyboardType,
+            decoration: customInputDecoration(label),
+          ),
+        ));
+  }
+
   static Opacity requiredTextField(
       String label, TextEditingController controller,
       [bool? obscure, TextInputType? keyboardType]) {

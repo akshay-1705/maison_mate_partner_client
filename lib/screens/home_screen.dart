@@ -7,9 +7,9 @@ import 'package:maison_mate/services/on_duty_service.dart';
 import 'package:maison_mate/shared/custom_app_bar.dart';
 import 'package:maison_mate/shared/my_snackbar.dart';
 import 'package:maison_mate/widgets/account_widget.dart';
-import 'package:maison_mate/widgets/favourites.dart';
 import 'package:maison_mate/widgets/home.dart';
 import 'package:maison_mate/widgets/my_jobs/my_jobs.dart';
+import 'package:maison_mate/widgets/refer_and_earn.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -25,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<Widget> pages = [
     const HomeWidget(),
     const MyJobsWidget(),
-    const FavouritesWidget(),
+    const ReferAndEarn(),
     const AccountWidget(),
   ];
   late Future<ApiResponse> futureData;
@@ -82,8 +82,8 @@ class _HomeScreenState extends State<HomeScreen> {
           label: 'My Jobs',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.favorite),
-          label: 'Favorites',
+          icon: Icon(Icons.currency_pound),
+          label: 'Refer & Earn',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.account_circle),
