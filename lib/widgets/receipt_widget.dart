@@ -131,7 +131,7 @@ class _ReceiptWidgetState extends State<ReceiptWidget> {
           'Total (inclusive of all taxes)',
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
         ),
-        Text(totalAmount.toStringAsFixed(2),
+        Text(totalAmount.toStringAsFixed(1),
             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500))
       ]),
       if (data.discount) ...[
@@ -140,7 +140,7 @@ class _ReceiptWidgetState extends State<ReceiptWidget> {
             'Maison Mate Share (DISCOUNT APPLIED)',
             style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
           ),
-          Text('-10% (${(totalAmount * 0.1).toStringAsFixed(0)})',
+          Text('-10% (${(totalAmount * 0.1).toStringAsFixed(1)})',
               style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500))
         ]),
       ],
@@ -150,7 +150,7 @@ class _ReceiptWidgetState extends State<ReceiptWidget> {
             'Maison Mate Share',
             style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
           ),
-          Text('-20% (${(totalAmount * 0.2).toStringAsFixed(2)})',
+          Text('-20% (${(totalAmount * 0.2).toStringAsFixed(1)})',
               style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500))
         ]),
       ],
@@ -163,7 +163,7 @@ class _ReceiptWidgetState extends State<ReceiptWidget> {
               fontWeight: FontWeight.w600,
               color: Colors.green.shade500),
         ),
-        Text(partnerShare.toStringAsFixed(2),
+        Text(partnerShare.toStringAsFixed(1),
             style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
