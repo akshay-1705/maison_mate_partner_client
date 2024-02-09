@@ -1,8 +1,8 @@
-import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:maison_mate/constants.dart';
 import 'package:maison_mate/network/client/get_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
+import 'package:share_plus/share_plus.dart';
 
 class ReferAndEarn extends StatefulWidget {
   const ReferAndEarn({super.key});
@@ -133,7 +133,7 @@ class _ReferAndEarnState extends State<ReferAndEarn> {
             style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 15),
-          buildStepText('1. Share referral code with your friends.'),
+          buildStepText('1. Share referral link with your friends.'),
           buildStepText('2. Your friend signs up using your referral code.'),
           buildStepText(
               '3. Your friend gets ONE discounted job credited in their purse.'),
@@ -187,7 +187,7 @@ class _ReferAndEarnState extends State<ReferAndEarn> {
               Expanded(
                 flex: 3,
                 child: Text(
-                  'Refer your friends to Maison Mate and get FLAT 50% discount on commission. Share the referral code.',
+                  'Refer your friends to Maison Mate and get FLAT 50% discount on commission. Share the referral link.',
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.grey.shade600,
@@ -225,25 +225,18 @@ class _ReferAndEarnState extends State<ReferAndEarn> {
               onTap: () {
                 String text =
                     "Join Maison Mate and get an additional discount of FLAT 50%: https://maisonmate.page.link/ZCg5. To redeem the voucher, please install the app using the link. Use the referral code: ${data['referral_code']} while sign up to get the discount.";
-                FlutterClipboard.copy(text).then((value) {
-                  // Show a message or perform any other action after copying
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Link copied to clipboard'),
-                    ),
-                  );
-                });
+                Share.share(text);
               },
               child: const Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(
-                    'Copy Link',
+                    'Share link',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                   ),
                   SizedBox(width: 5),
                   Icon(
-                    Icons.copy,
+                    Icons.ios_share,
                     color: Colors.blue,
                   ),
                 ],
