@@ -97,7 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  AppBar header(BuildContext context, OnDutyModel model) {
+  PreferredSize header(BuildContext context, OnDutyModel model) {
     if (currentIndex == 0) {
       return onOffDuty(model);
     } else {
@@ -105,90 +105,98 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  AppBar onOffDuty(OnDutyModel model) {
-    return AppBar(
-      backgroundColor: const Color(themeColor),
-      actions: [
-        Expanded(
-          child: Center(
-            child: Container(
-              margin:
-                  const EdgeInsets.only(right: 16.0, left: 16.0, bottom: 10.0),
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              decoration: BoxDecoration(
-                color: Colors.grey[800],
-                borderRadius: BorderRadius.circular(20.0),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  const Icon(
-                    Icons.beach_access,
-                    color: Colors.white,
+  PreferredSize onOffDuty(OnDutyModel model) {
+    return PreferredSize(
+        preferredSize: const Size.fromHeight(50.0),
+        child: AppBar(
+          backgroundColor: const Color(themeColor),
+          actions: [
+            Expanded(
+              child: Center(
+                child: Container(
+                  margin: const EdgeInsets.only(
+                      right: 16.0, left: 16.0, bottom: 10.0),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 8.0),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[800],
+                    borderRadius: BorderRadius.circular(20.0),
                   ),
-                  const SizedBox(width: 8.0),
-                  Switch(
-                    value: model.onDuty,
-                    onChanged: (value) {
-                      String confirmationMessage;
-                      if (value) {
-                        confirmationMessage =
-                            'Do you want to enable work mode?';
-                      } else {
-                        confirmationMessage =
-                            'Do you want to enable vacation mode?';
-                      }
-                      Future<bool> confirm =
-                          CustomAppBar.showConfirmationDialog(
-                              context, confirmationMessage);
-                      confirm.then((confirmed) async {
-                        if (confirmed) {
-                          if (!value && !model.offDutyAllowed) {
-                            ScaffoldMessenger.of(context).showSnackBar(MySnackBar(
-                                    message:
-                                        'Please complete all jobs before enabling vacation mode',
-                                    error: true)
-                                .getSnackbar());
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      const Icon(
+                        Icons.beach_access,
+                        color: Colors.white,
+                      ),
+                      const SizedBox(width: 8.0),
+                      Switch(
+                        value: model.onDuty,
+                        onChanged: (value) {
+                          String confirmationMessage;
+                          if (value) {
+                            confirmationMessage =
+                                'Do you want to enable work mode?';
                           } else {
-                            var response = OnDutyService.toggle(value);
-                            response.then((status) {
-                              if (status) {
-                                setState(() {
-                                  model.setOnDuty(value);
+                            confirmationMessage =
+                                'Do you want to enable vacation mode?';
+                          }
+                          Future<bool> confirm =
+                              CustomAppBar.showConfirmationDialog(
+                                  context, confirmationMessage);
+                          confirm.then((confirmed) async {
+                            if (confirmed) {
+                              if (!value && !model.offDutyAllowed) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    MySnackBar(
+                                            message:
+                                                'Please complete all jobs before enabling vacation mode',
+                                            error: true)
+                                        .getSnackbar());
+                              } else {
+                                var response = OnDutyService.toggle(value);
+                                response.then((status) {
+                                  if (status) {
+                                    setState(() {
+                                      model.setOnDuty(value);
+                                    });
+                                  }
                                 });
                               }
-                            });
-                          }
-                        }
-                      });
-                    },
-                    activeColor: Colors.green,
-                    inactiveThumbColor: Colors.red,
+                            }
+                          });
+                        },
+                        activeColor: Colors.green,
+                        inactiveThumbColor: Colors.red,
+                      ),
+                      const SizedBox(width: 8.0),
+                      const Icon(
+                        Icons.work,
+                        color: Colors.white,
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 8.0),
-                  const Icon(
-                    Icons.work,
-                    color: Colors.white,
-                  ),
-                ],
+                ),
               ),
             ),
-          ),
-        ),
-      ],
-    );
+          ],
+        ));
   }
 
-  AppBar logo() {
-    return AppBar(
-      backgroundColor: const Color(themeColor), // Header background color
-      title: const Text(
-        'Maison Mate',
-        style: TextStyle(
-          color: Color(secondaryColor), // Text color
-          fontSize: 24,
-          fontWeight: FontWeight.bold,
+  PreferredSize logo() {
+    return PreferredSize(
+      preferredSize: const Size.fromHeight(50.0),
+      child: AppBar(
+        backgroundColor: Colors.black,
+        centerTitle: true,
+        title: Container(
+          margin: const EdgeInsets.only(bottom: 10),
+          width: 100,
+          height: 100,
+          child: Image.asset(
+            'assets/logo.png',
+            fit: BoxFit.contain,
+          ),
         ),
       ),
     );
