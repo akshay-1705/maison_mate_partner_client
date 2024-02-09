@@ -1,3 +1,4 @@
+import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:maison_mate/constants.dart';
 import 'package:maison_mate/network/client/get_client.dart';
@@ -201,24 +202,52 @@ class _ReferAndEarnState extends State<ReferAndEarn> {
               ),
             ],
           ),
-          const SizedBox(height: 15),
+          const SizedBox(height: 10),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               const Text(
                 'Referral Code:',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
               ),
               const SizedBox(width: 5),
               Text(
                 data['referral_code'] ?? '',
                 style: const TextStyle(
-                    fontSize: 16,
+                    fontSize: 13,
                     fontWeight: FontWeight.w600,
                     color: Colors.green),
               ),
             ],
           ),
+          const SizedBox(height: 5),
+          GestureDetector(
+              onTap: () {
+                String text =
+                    "Join Maison Mate and get an additional discount of FLAT 50%: https://maisonmate.page.link/ZCg5. To redeem the voucher, please install the app using the link. Use the referral code: ${data['referral_code']} while sign up to get the discount.";
+                FlutterClipboard.copy(text).then((value) {
+                  // Show a message or perform any other action after copying
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Link copied to clipboard'),
+                    ),
+                  );
+                });
+              },
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                    'Copy Link',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                  ),
+                  SizedBox(width: 5),
+                  Icon(
+                    Icons.copy,
+                    color: Colors.blue,
+                  ),
+                ],
+              )),
         ],
       ),
     );
