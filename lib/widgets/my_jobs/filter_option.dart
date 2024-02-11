@@ -69,7 +69,7 @@ class _FilterOptionState extends State<FilterOption> {
   @override
   Widget build(BuildContext context) {
     return ChoiceChip(
-      label: Text(widget.label, style: TextStyle(fontSize: 13)),
+      label: Text(widget.label, style: const TextStyle(fontSize: 13)),
       selected: widget.selectedFilter == widget.filter,
       onSelected: (selected) {
         if (selected) {

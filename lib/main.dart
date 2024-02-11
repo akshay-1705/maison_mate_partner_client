@@ -39,7 +39,7 @@ Future<void> main() async {
   if (authToken != null) {
     FirebaseService.enable();
   }
-  await dotenv.load(fileName: ".env/production.env");
+  await dotenv.load(fileName: ".env/development.env");
   runApp(MyApp(authToken: authToken));
 }
 

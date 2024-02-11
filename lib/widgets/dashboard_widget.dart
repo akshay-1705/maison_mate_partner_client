@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:maison_mate/constants.dart';
+import 'package:maison_mate/network/client/get_client.dart';
+import 'package:maison_mate/network/response/api_response.dart';
+import 'package:maison_mate/widgets/earnings_widget.dart';
 import 'package:maison_mate/widgets/my_jobs/my_jobs.dart';
 
 class DashboardWidget extends StatefulWidget {
@@ -9,17 +13,32 @@ class DashboardWidget extends StatefulWidget {
 }
 
 class _DashboardWidgetState extends State<DashboardWidget> {
+  late Future<ApiResponse> futureData;
+  static String apiUrl = '$baseApiUrl/partners/dashboard';
+
   @override
-  Widget build(BuildContext context) {
-    return renderData();
+  void initState() {
+    super.initState();
+    futureData = GetClient.fetchData(apiUrl);
   }
 
-  SingleChildScrollView renderData() {
+  @override
+  Widget build(BuildContext context) {
+    return GetRequestFutureBuilder<dynamic>(
+      apiUrl: apiUrl,
+      future: futureData,
+      builder: (context, data) {
+        return renderData(data);
+      },
+    );
+  }
+
+  SingleChildScrollView renderData(data) {
     return SingleChildScrollView(
         child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(children: [
-              earningsSummary(),
+              earningsSummary(data),
               const SizedBox(height: 40),
               Container(
                 height: 1,
@@ -55,27 +74,34 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                 color: Colors.black12,
               ),
               const SizedBox(height: 40),
-              jobsSummary()
+              jobsSummary(data)
             ])));
   }
 
-  Widget earningsSummary() {
+  Widget earningsSummary(data) {
     return Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Row(
+          Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Payments',
+                const Text('Payments',
                     style:
                         TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                Text('View All',
-                    style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.blue,
-                        fontWeight: FontWeight.bold))
+                GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const EarningsWidget()));
+                    },
+                    child: const Text('View Earnings',
+                        style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.blue,
+                            fontWeight: FontWeight.bold)))
               ]),
           Row(children: [
             Expanded(
@@ -93,22 +119,22 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Column(
+                          Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('Total Earnings',
+                                const Text('Total',
                                     style: TextStyle(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w600)),
-                                SizedBox(height: 10),
-                                Text('200 pounds',
-                                    style: TextStyle(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w600))
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400)),
+                                const SizedBox(height: 10),
+                                Text(data['payments']['total'] ?? '',
+                                    style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400))
                               ]),
                           const SizedBox(width: 15),
                           Flexible(
-                              child: Icon(Icons.currency_pound,
+                              child: Icon(Icons.payment,
                                   color: Colors.purple.shade300, size: 24)),
                         ]))),
             const SizedBox(width: 15),
@@ -127,18 +153,18 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Column(
+                          Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('Completed',
+                                const Text('Paid',
                                     style: TextStyle(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w600)),
-                                SizedBox(height: 10),
-                                Text('30',
-                                    style: TextStyle(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w600))
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400)),
+                                const SizedBox(height: 10),
+                                Text(data['payments']['paid'] ?? '',
+                                    style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400))
                               ]),
                           const SizedBox(width: 15),
                           Flexible(
@@ -163,18 +189,18 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Column(
+                          Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('Pending',
+                                const Text('Pending',
                                     style: TextStyle(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w600)),
-                                SizedBox(height: 10),
-                                Text('10',
-                                    style: TextStyle(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w600))
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400)),
+                                const SizedBox(height: 10),
+                                Text(data['payments']['pending'] ?? '',
+                                    style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400))
                               ]),
                           const SizedBox(width: 15),
                           Flexible(
@@ -194,32 +220,32 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                         width: 1.0,
                       ),
                     ),
-                    child: const Row(
+                    child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('Failed',
+                                const Text('Failed',
                                     style: TextStyle(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w600)),
-                                SizedBox(height: 10),
-                                Text('5',
-                                    style: TextStyle(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w600))
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400)),
+                                const SizedBox(height: 10),
+                                Text(data['payments']['failed'] ?? '',
+                                    style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400))
                               ]),
-                          SizedBox(width: 15),
+                          const SizedBox(width: 15),
                           Flexible(
                               child: Icon(Icons.payment,
-                                  color: Color(0xffFFAB9C), size: 24)),
+                                  color: Colors.red.shade300, size: 24)),
                         ]))),
           ])
         ]);
   }
 
-  Widget jobsSummary() {
+  Widget jobsSummary(data) {
     return Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -260,18 +286,18 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Column(
+                          Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('Total',
+                                const Text('Total',
                                     style: TextStyle(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w600)),
-                                SizedBox(height: 10),
-                                Text('50',
-                                    style: TextStyle(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w600))
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400)),
+                                const SizedBox(height: 10),
+                                Text(data['jobs']['total'] ?? '',
+                                    style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400))
                               ]),
                           const SizedBox(width: 15),
                           Flexible(
@@ -294,18 +320,18 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Column(
+                          Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('Completed',
+                                const Text('Completed',
                                     style: TextStyle(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w600)),
-                                SizedBox(height: 10),
-                                Text('30',
-                                    style: TextStyle(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w600))
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400)),
+                                const SizedBox(height: 10),
+                                Text(data['jobs']['completed'] ?? '',
+                                    style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400))
                               ]),
                           const SizedBox(width: 15),
                           Flexible(
@@ -330,18 +356,18 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Column(
+                          Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('Pending',
+                                const Text('Pending',
                                     style: TextStyle(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w600)),
-                                SizedBox(height: 10),
-                                Text('10',
-                                    style: TextStyle(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w600))
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400)),
+                                const SizedBox(height: 10),
+                                Text(data['jobs']['pending'] ?? '',
+                                    style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400))
                               ]),
                           const SizedBox(width: 15),
                           Flexible(
@@ -361,26 +387,26 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                         width: 1.0,
                       ),
                     ),
-                    child: const Row(
+                    child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('Cancelled',
+                                const Text('Cancelled',
                                     style: TextStyle(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w600)),
-                                SizedBox(height: 10),
-                                Text('10',
-                                    style: TextStyle(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w600))
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400)),
+                                const SizedBox(height: 10),
+                                Text(data['jobs']['cancelled'] ?? '',
+                                    style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400))
                               ]),
-                          SizedBox(width: 15),
+                          const SizedBox(width: 15),
                           Flexible(
                               child: Icon(Icons.home_repair_service,
-                                  color: Color(0xffFFAB9C), size: 24)),
+                                  color: Colors.red.shade300, size: 24)),
                         ]))),
           ])
         ]);
