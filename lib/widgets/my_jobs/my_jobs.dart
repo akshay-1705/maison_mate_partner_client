@@ -34,14 +34,18 @@ class _MyJobsWidgetState extends State<MyJobsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return renderData();
+    return Scaffold(
+        appBar: AppBar(
+          title: const Text('My Jobs'),
+        ),
+        body: renderData());
   }
 
   SingleChildScrollView renderData() {
     final MyJobsModel model = Provider.of<MyJobsModel>(context);
     return SingleChildScrollView(
         child: Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.only(left: 16.0, right: 16),
             child: Column(
               children: [
                 GetRequestFutureBuilder<dynamic>(

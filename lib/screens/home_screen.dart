@@ -7,8 +7,8 @@ import 'package:maison_mate/services/on_duty_service.dart';
 import 'package:maison_mate/shared/custom_app_bar.dart';
 import 'package:maison_mate/shared/my_snackbar.dart';
 import 'package:maison_mate/widgets/account_widget.dart';
-import 'package:maison_mate/widgets/home.dart';
-import 'package:maison_mate/widgets/my_jobs/my_jobs.dart';
+import 'package:maison_mate/widgets/dashboard_widget.dart';
+import 'package:maison_mate/widgets/find_jobs.dart';
 import 'package:maison_mate/widgets/refer_and_earn.dart';
 import 'package:provider/provider.dart';
 
@@ -23,8 +23,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   var currentIndex = 0;
   final List<Widget> pages = [
-    const HomeWidget(),
-    const MyJobsWidget(),
+    const DashboardWidget(),
+    const FindJobsWidget(),
     const ReferAndEarn(),
     const AccountWidget(),
   ];
@@ -74,12 +74,12 @@ class _HomeScreenState extends State<HomeScreen> {
       },
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
-          icon: Icon(Icons.search),
-          label: 'Find Jobs',
+          icon: Icon(Icons.dashboard),
+          label: 'Dashboard',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.home_repair_service),
-          label: 'My Jobs',
+          icon: Icon(Icons.search),
+          label: 'Find Jobs',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.currency_pound),
@@ -98,7 +98,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   PreferredSize header(BuildContext context, OnDutyModel model) {
-    if (currentIndex == 0) {
+    if (currentIndex == 1) {
       return onOffDuty(model);
     } else {
       return logo();

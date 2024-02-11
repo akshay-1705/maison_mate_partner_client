@@ -10,14 +10,14 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class DashboardWidget extends StatefulWidget {
-  const DashboardWidget({Key? key}) : super(key: key);
+class FindJobsListWidget extends StatefulWidget {
+  const FindJobsListWidget({Key? key}) : super(key: key);
 
   @override
-  State<DashboardWidget> createState() => _DashboardWidgetState();
+  State<FindJobsListWidget> createState() => FindJobsListWidgetState();
 }
 
-class _DashboardWidgetState extends State<DashboardWidget> {
+class FindJobsListWidgetState extends State<FindJobsListWidget> {
   String? address;
   Position? position;
   Future<ApiResponse>? futureData;

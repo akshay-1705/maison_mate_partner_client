@@ -4,16 +4,16 @@ import 'package:maison_mate/network/client/get_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/screens/email_verification_screen.dart';
 import 'package:maison_mate/screens/onboarding_screen.dart';
-import 'package:maison_mate/widgets/dashboard.dart';
+import 'package:maison_mate/widgets/find_jobs_list.dart';
 
-class HomeWidget extends StatefulWidget {
-  const HomeWidget({Key? key}) : super(key: key);
+class FindJobsWidget extends StatefulWidget {
+  const FindJobsWidget({Key? key}) : super(key: key);
 
   @override
-  State<HomeWidget> createState() => _HomeWidgetState();
+  State<FindJobsWidget> createState() => FindJobsWidgetState();
 }
 
-class _HomeWidgetState extends State<HomeWidget> {
+class FindJobsWidgetState extends State<FindJobsWidget> {
   late Future<ApiResponse> futureData;
   static String apiUrl = '$baseApiUrl/partners/onboarding/status';
 
@@ -39,7 +39,7 @@ class _HomeWidgetState extends State<HomeWidget> {
           });
           return Container();
         } else if (data.status == 'verified') {
-          return const DashboardWidget();
+          return const FindJobsListWidget();
         } else {
           return Column(
             children: [
