@@ -36,7 +36,7 @@ class _MyJobsWidgetState extends State<MyJobsWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('My Jobs', style: TextStyle(fontSize: 18)),
+          title: const Text('My Jobs', style: TextStyle(fontSize: 20)),
         ),
         body: renderData());
   }

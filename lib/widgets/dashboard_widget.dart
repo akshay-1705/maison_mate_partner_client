@@ -89,7 +89,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
               children: [
                 const Text('Payments',
                     style:
-                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 GestureDetector(
                     onTap: () {
                       Navigator.push(
@@ -99,7 +99,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                     },
                     child: const Text('View Earnings',
                         style: TextStyle(
-                            fontSize: 12,
+                            fontSize: 13,
                             color: Colors.blue,
                             fontWeight: FontWeight.bold)))
               ]),
@@ -124,12 +124,12 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                               children: [
                                 const Text('Total',
                                     style: TextStyle(
-                                        fontSize: 14,
+                                        fontSize: 16,
                                         fontWeight: FontWeight.w400)),
                                 const SizedBox(height: 10),
                                 Text(data['payments']['total'] ?? '',
                                     style: const TextStyle(
-                                        fontSize: 14,
+                                        fontSize: 16,
                                         fontWeight: FontWeight.w400))
                               ]),
                           const SizedBox(width: 15),
@@ -158,12 +158,12 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                               children: [
                                 const Text('Paid',
                                     style: TextStyle(
-                                        fontSize: 14,
+                                        fontSize: 16,
                                         fontWeight: FontWeight.w400)),
                                 const SizedBox(height: 10),
                                 Text(data['payments']['paid'] ?? '',
                                     style: const TextStyle(
-                                        fontSize: 14,
+                                        fontSize: 16,
                                         fontWeight: FontWeight.w400))
                               ]),
                           const SizedBox(width: 15),
@@ -194,12 +194,12 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                               children: [
                                 const Text('Pending',
                                     style: TextStyle(
-                                        fontSize: 14,
+                                        fontSize: 16,
                                         fontWeight: FontWeight.w400)),
                                 const SizedBox(height: 10),
                                 Text(data['payments']['pending'] ?? '',
                                     style: const TextStyle(
-                                        fontSize: 14,
+                                        fontSize: 16,
                                         fontWeight: FontWeight.w400))
                               ]),
                           const SizedBox(width: 15),
@@ -228,12 +228,12 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                               children: [
                                 const Text('Failed',
                                     style: TextStyle(
-                                        fontSize: 14,
+                                        fontSize: 16,
                                         fontWeight: FontWeight.w400)),
                                 const SizedBox(height: 10),
                                 Text(data['payments']['failed'] ?? '',
                                     style: const TextStyle(
-                                        fontSize: 14,
+                                        fontSize: 16,
                                         fontWeight: FontWeight.w400))
                               ]),
                           const SizedBox(width: 15),
@@ -256,7 +256,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
               children: [
                 const Text('My Jobs',
                     style:
-                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 GestureDetector(
                     onTap: () {
                       Navigator.push(
@@ -266,7 +266,7 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                     },
                     child: const Text('View All',
                         style: TextStyle(
-                            fontSize: 12,
+                            fontSize: 13,
                             color: Colors.blue,
                             fontWeight: FontWeight.bold)))
               ]),
@@ -291,12 +291,12 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                               children: [
                                 const Text('Total',
                                     style: TextStyle(
-                                        fontSize: 14,
+                                        fontSize: 16,
                                         fontWeight: FontWeight.w400)),
                                 const SizedBox(height: 10),
                                 Text(data['jobs']['total'] ?? '',
                                     style: const TextStyle(
-                                        fontSize: 14,
+                                        fontSize: 16,
                                         fontWeight: FontWeight.w400))
                               ]),
                           const SizedBox(width: 15),
@@ -325,12 +325,12 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                               children: [
                                 const Text('Completed',
                                     style: TextStyle(
-                                        fontSize: 14,
+                                        fontSize: 16,
                                         fontWeight: FontWeight.w400)),
                                 const SizedBox(height: 10),
                                 Text(data['jobs']['completed'] ?? '',
                                     style: const TextStyle(
-                                        fontSize: 14,
+                                        fontSize: 16,
                                         fontWeight: FontWeight.w400))
                               ]),
                           const SizedBox(width: 15),
@@ -361,12 +361,12 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                               children: [
                                 const Text('Pending',
                                     style: TextStyle(
-                                        fontSize: 14,
+                                        fontSize: 16,
                                         fontWeight: FontWeight.w400)),
                                 const SizedBox(height: 10),
                                 Text(data['jobs']['pending'] ?? '',
                                     style: const TextStyle(
-                                        fontSize: 14,
+                                        fontSize: 16,
                                         fontWeight: FontWeight.w400))
                               ]),
                           const SizedBox(width: 15),
@@ -395,12 +395,12 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                               children: [
                                 const Text('Cancelled',
                                     style: TextStyle(
-                                        fontSize: 14,
+                                        fontSize: 16,
                                         fontWeight: FontWeight.w400)),
                                 const SizedBox(height: 10),
                                 Text(data['jobs']['cancelled'] ?? '',
                                     style: const TextStyle(
-                                        fontSize: 14,
+                                        fontSize: 16,
                                         fontWeight: FontWeight.w400))
                               ]),
                           const SizedBox(width: 15),

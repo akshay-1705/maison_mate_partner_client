@@ -109,7 +109,7 @@ class MyJobsList extends StatelessWidget {
                       leading: getServiceIcon(job.serviceName ?? ''),
                       title: Text(
                         job.address ?? '',
-                        style: const TextStyle(fontSize: 13),
+                        style: const TextStyle(fontSize: 14),
                       ),
                       subtitle: Row(children: [
                         Text(

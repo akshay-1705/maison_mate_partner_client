@@ -8,6 +8,8 @@ class EarningsWidget extends StatefulWidget {
 }
 
 class _EarningsWidgetState extends State<EarningsWidget> {
+  String selectedDateRange = 'This week';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,21 +36,28 @@ class _EarningsWidgetState extends State<EarningsWidget> {
         body: renderData());
   }
 
-  SingleChildScrollView renderData() {
-    return SingleChildScrollView(
-        child:
-            Column(children: [totalEarnings(context), filters(), payments()]));
+  Column renderData() {
+    return Column(children: [
+      totalEarnings(context),
+      filters(),
+      Expanded(
+        child: SingleChildScrollView(
+          child: payments(),
+        ),
+      ),
+    ]);
   }
 
   Widget payments() {
-    return SizedBox(
-        height: MediaQuery.of(context).size.height,
-        child: CustomScrollView(slivers: <Widget>[
-          SliverList(
-              delegate: SliverChildBuilderDelegate((context, index) {
-            return list();
-          }, childCount: 1))
-        ]));
+    return SingleChildScrollView(
+        child: SizedBox(
+            height: MediaQuery.of(context).size.height,
+            child: CustomScrollView(slivers: <Widget>[
+              SliverList(
+                  delegate: SliverChildBuilderDelegate((context, index) {
+                return list();
+              }, childCount: 1))
+            ])));
   }
 
   Widget list() {
@@ -117,7 +126,8 @@ class _EarningsWidgetState extends State<EarningsWidget> {
           ]),
           const SizedBox(height: 10),
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            const Text('Plumbing', style: TextStyle(fontSize: 15)),
+            const Expanded(
+                child: Text('Plumbing', style: TextStyle(fontSize: 15))),
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
@@ -181,23 +191,96 @@ class _EarningsWidgetState extends State<EarningsWidget> {
     );
   }
 
+  void showDateRangeSelector(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                title: const Text('This week'),
+                onTap: () {
+                  setState(() {
+                    selectedDateRange = 'This week';
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: const Text('Last week'),
+                onTap: () {
+                  setState(() {
+                    selectedDateRange = 'Last week';
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: const Text('This month'),
+                onTap: () {
+                  setState(() {
+                    selectedDateRange = 'This month';
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: const Text('Custom date range'),
+                onTap: () async {
+                  final DateTimeRange? pickedRange = await showDateRangePicker(
+                    context: context,
+                    firstDate: DateTime(2024),
+                    lastDate: DateTime.now(),
+                    initialDateRange: DateTimeRange(
+                      start: DateTime.now().subtract(
+                          const Duration(days: 6)), // Default start date
+                      end: DateTime.now(), // Default end date
+                    ),
+                  );
+                  setState(() {
+                    selectedDateRange = pickedRange != null
+                        ? '${pickedRange.start.day}/${pickedRange.start.month}/${pickedRange.start.year} - ${pickedRange.end.day}/${pickedRange.end.month}/${pickedRange.end.year}'
+                        : 'This week';
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      Navigator.pop(context);
+                    });
+                  });
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   Widget totalEarnings(BuildContext context) {
     return Container(
       padding: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
         color: Colors.green.shade500,
       ),
-      child: const Column(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          GestureDetector(
+              onTap: () {
+                showDateRangeSelector(context);
+              },
+              child:
+                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                const Icon(Icons.calendar_month,
+                    color: Colors.white70, size: 20),
+                const SizedBox(width: 5),
+                Text(selectedDateRange,
+                    style: const TextStyle(color: Colors.white70, fontSize: 16))
+              ])),
+          const SizedBox(height: 5),
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Icon(Icons.calendar_month, color: Colors.white70, size: 20),
-            SizedBox(width: 5),
-            Text('This month',
-                style: TextStyle(color: Colors.white70, fontSize: 16))
-          ]),
-          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Text(
+            const Text(
               '\u00A3230',
               style: TextStyle(
                 fontSize: 32,
@@ -205,9 +288,78 @@ class _EarningsWidgetState extends State<EarningsWidget> {
                 color: Colors.white,
               ),
             ),
-            SizedBox(width: 10),
-            Icon(Icons.info, color: Colors.white, size: 20)
+            IconButton(
+              icon: const Icon(Icons.info),
+              color: Colors.white,
+              iconSize: 20,
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text(
+                        'Earnings Breakdown',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blue, // Change title color
+                        ),
+                      ),
+                      content: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          buildInfoRow('Total Earnings', '\u00A3300'),
+                          buildInfoRow('Our Commission', '-\u00A370'),
+                          buildInfoRow('Your Share', '\u00A3230'),
+                        ],
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text(
+                            'Close',
+                            style: TextStyle(
+                              color: Colors.blue, // Change close button color
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+            ),
           ]),
+        ],
+      ),
+    );
+  }
+
+  Widget buildInfoRow(String title, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: Colors.black87,
+            ),
+          ),
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+              color: Colors.black87,
+            ),
+          ),
         ],
       ),
     );
