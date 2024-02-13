@@ -4,9 +4,8 @@ import 'package:maison_mate/network/client/get_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/network/response/earnings_response.dart';
 import 'package:maison_mate/network/response/payment_response.dart';
-import 'package:maison_mate/provider/my_job_details_model.dart';
-import 'package:maison_mate/widgets/my_jobs/my_job_details.dart';
-import 'package:provider/provider.dart';
+import 'package:maison_mate/widgets/earnings/earnings_breakdown.dart';
+import 'package:maison_mate/widgets/earnings/payment_card.dart';
 
 class EarningsWidget extends StatefulWidget {
   const EarningsWidget({Key? key}) : super(key: key);
@@ -16,27 +15,36 @@ class EarningsWidget extends StatefulWidget {
 }
 
 class _EarningsWidgetState extends State<EarningsWidget> {
-  String selectedDateRange = 'This week';
-  late Future<ApiResponse> futureData;
+  String? selectedDateRange;
+  Future<ApiResponse>? futureData;
   static String apiUrl = '$baseApiUrl/partners/payments';
-  int endTime = DateTime.now().millisecondsSinceEpoch ~/ 1000;
-  DateTime startDate = DateTime.now().toUtc().subtract(const Duration(days: 6));
-  late int startTime;
-  String selectedFilter = 'All';
+  int? endTime;
+  int? startTime;
+  String? selectedFilter;
   List<PaymentResponse> paymentsData = [];
   List<PaymentResponse> filteredPayments = [];
 
   @override
   void initState() {
-    startTime = DateTime.utc(startDate.year, startDate.month, startDate.day)
-            .millisecondsSinceEpoch ~/
-        1000;
+    selectedFilter = 'All';
+    selectedDateRange = 'This week';
+    DateTime now = DateTime.now().toUtc();
+    DateTime startOfThisWeek = now.subtract(Duration(days: now.weekday - 1));
+    DateTime startOfThisWeekDay = DateTime.utc(
+        startOfThisWeek.year, startOfThisWeek.month, startOfThisWeek.day);
+    startTime = startOfThisWeekDay.millisecondsSinceEpoch ~/ 1000;
+    endTime = DateTime.now().millisecondsSinceEpoch ~/ 1000;
     super.initState();
+    refreshData();
+  }
+
+  Future<void> refreshData() async {
     var completeApiUrl = '$apiUrl?start_time=$startTime&end_time=$endTime';
-    futureData = GetClient.fetchData(completeApiUrl);
-    futureData.then((value) {
+    final response = await GetClient.fetchData(completeApiUrl);
+    setState(() {
       if (mounted) {
-        var data = value.data as EarningsResponse;
+        futureData = Future.value(response);
+        var data = response.data as EarningsResponse;
         paymentsData = data.payments;
         filteredPayments = paymentsData;
       }
@@ -46,6 +54,7 @@ class _EarningsWidgetState extends State<EarningsWidget> {
   @override
   Widget build(BuildContext context) {
     var completeApiUrl = '$apiUrl?start_time=$startTime&end_time=$endTime';
+
     return Scaffold(
         appBar: PreferredSize(
             preferredSize: const Size.fromHeight(50.0),
@@ -87,6 +96,46 @@ class _EarningsWidgetState extends State<EarningsWidget> {
     ]);
   }
 
+  Widget payments(EarningsResponse data) {
+    return SingleChildScrollView(
+        child: SizedBox(
+            height: MediaQuery.of(context).size.height,
+            child: CustomScrollView(slivers: <Widget>[
+              SliverList(
+                  delegate: SliverChildBuilderDelegate((context, index) {
+                return list(data);
+              }, childCount: 1))
+            ])));
+  }
+
+  Widget list(EarningsResponse data) {
+    if (2 != 2) {
+      return Container(
+        height: MediaQuery.of(context).size.height * 0.50,
+        alignment: Alignment.center,
+        child: const Center(
+          child: Text(
+            'No payments found',
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.grey,
+            ),
+          ),
+        ),
+      );
+    } else {
+      return Container(
+          margin: const EdgeInsets.only(top: 20),
+          child: Column(children: [
+            Column(
+                children: filteredPayments.map((payment) {
+              return PaymentCard(context: context, payment: payment);
+            }).toList()),
+            const SizedBox(height: 300),
+          ]));
+    }
+  }
+
   Widget filters() {
     return Container(
       padding: const EdgeInsets.only(top: 16, left: 8, right: 8),
@@ -94,6 +143,7 @@ class _EarningsWidgetState extends State<EarningsWidget> {
         scrollDirection: Axis.horizontal,
         child: Row(
           children: [
+            // Fetch filter from API
             filterOption('All', selectedFilter == 'All'),
             const SizedBox(width: 10),
             filterOption('Paid', selectedFilter == 'Paid'),
@@ -143,109 +193,6 @@ class _EarningsWidgetState extends State<EarningsWidget> {
     );
   }
 
-  Widget payments(EarningsResponse data) {
-    return SingleChildScrollView(
-        child: SizedBox(
-            height: MediaQuery.of(context).size.height,
-            child: CustomScrollView(slivers: <Widget>[
-              SliverList(
-                  delegate: SliverChildBuilderDelegate((context, index) {
-                return list(data);
-              }, childCount: 1))
-            ])));
-  }
-
-  Widget list(EarningsResponse data) {
-    if (2 != 2) {
-      return Container(
-        height: MediaQuery.of(context).size.height * 0.50,
-        alignment: Alignment.center,
-        child: const Center(
-          child: Text(
-            'No payments found',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey,
-            ),
-          ),
-        ),
-      );
-    } else {
-      return Container(
-          margin: const EdgeInsets.only(top: 20),
-          child: Column(children: [
-            Column(
-                children: filteredPayments.map((payment) {
-              return paymentCard(payment);
-            }).toList()),
-            const SizedBox(height: 300),
-          ]));
-    }
-  }
-
-  GestureDetector paymentCard(PaymentResponse payment) {
-    return GestureDetector(
-        onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return ChangeNotifierProvider(
-              create: (context) => MyJobDetailsModel(),
-              child: MyJobDetails(jobId: payment.jobAssignmentId),
-            );
-          }));
-        },
-        child: Container(
-            margin:
-                const EdgeInsets.only(bottom: 5, top: 5, left: 10, right: 10),
-            padding:
-                const EdgeInsets.only(left: 10, right: 20, top: 10, bottom: 12),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(
-                color: Colors.grey.shade300,
-                width: 1.0,
-              ),
-              // color: Colors.grey.shade100,
-            ),
-            child: Column(children: [
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                Text(
-                  payment.jobCompletedAt,
-                  style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.grey),
-                ),
-                Text('\u00A3${payment.totalAmount}',
-                    style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.bold))
-              ]),
-              Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                Text(payment.paymentStatus ?? '',
-                    style: const TextStyle(
-                        fontSize: 13, fontWeight: FontWeight.w400))
-              ]),
-              const SizedBox(height: 10),
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                Expanded(
-                    child: Text(payment.serviceName,
-                        style: const TextStyle(fontSize: 15))),
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFE9F5F2),
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  child: Text(
-                    'Commission: ${payment.commission}%',
-                    style: const TextStyle(
-                      fontSize: 13,
-                    ),
-                  ),
-                ),
-              ]),
-            ])));
-  }
-
   void showDateRangeSelector(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -255,12 +202,24 @@ class _EarningsWidgetState extends State<EarningsWidget> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              // Fetch dates from API or think of a better approach
               ListTile(
                 title: const Text('This week'),
                 onTap: () {
                   setState(() {
                     selectedDateRange = 'This week';
+                    DateTime now = DateTime.now().toUtc();
+                    DateTime startOfThisWeek =
+                        now.subtract(Duration(days: now.weekday - 1));
+                    DateTime startOfThisWeekDay = DateTime.utc(
+                        startOfThisWeek.year,
+                        startOfThisWeek.month,
+                        startOfThisWeek.day);
+                    startTime =
+                        startOfThisWeekDay.millisecondsSinceEpoch ~/ 1000;
+                    endTime = DateTime.now().millisecondsSinceEpoch ~/ 1000;
                   });
+                  refreshData();
                   Navigator.pop(context);
                 },
               ),
@@ -269,7 +228,23 @@ class _EarningsWidgetState extends State<EarningsWidget> {
                 onTap: () {
                   setState(() {
                     selectedDateRange = 'Last week';
+                    DateTime now = DateTime.now().toUtc();
+                    DateTime startOfLastWeek =
+                        now.subtract(Duration(days: now.weekday + 6));
+                    DateTime startOfLastWeekDay = DateTime.utc(
+                        startOfLastWeek.year,
+                        startOfLastWeek.month,
+                        startOfLastWeek.day);
+                    startTime =
+                        startOfLastWeekDay.millisecondsSinceEpoch ~/ 1000;
+
+                    DateTime endOfLastWeek =
+                        startOfLastWeek.add(const Duration(days: 6));
+                    DateTime endOfLastWeekDay = DateTime.utc(endOfLastWeek.year,
+                        endOfLastWeek.month, endOfLastWeek.day, 23, 59, 59);
+                    endTime = endOfLastWeekDay.millisecondsSinceEpoch ~/ 1000;
                   });
+                  refreshData();
                   Navigator.pop(context);
                 },
               ),
@@ -278,7 +253,13 @@ class _EarningsWidgetState extends State<EarningsWidget> {
                 onTap: () {
                   setState(() {
                     selectedDateRange = 'This month';
+                    DateTime now = DateTime.now().toUtc();
+                    DateTime startOfThisMonth =
+                        DateTime.utc(now.year, now.month, 1);
+                    startTime = startOfThisMonth.millisecondsSinceEpoch ~/ 1000;
+                    endTime = DateTime.now().millisecondsSinceEpoch ~/ 1000;
                   });
+                  refreshData();
                   Navigator.pop(context);
                 },
               ),
@@ -299,19 +280,25 @@ class _EarningsWidgetState extends State<EarningsWidget> {
           firstDate: DateTime(2024),
           lastDate: DateTime.now(),
           initialDateRange: DateTimeRange(
-            start: DateTime.now()
-                .subtract(const Duration(days: 6)), // Default start date
-            end: DateTime.now(), // Default end date
+            start: DateTime.fromMillisecondsSinceEpoch(startTime! * 1000,
+                isUtc: true),
+            end: DateTime.fromMillisecondsSinceEpoch(endTime! * 1000,
+                isUtc: true),
           ),
         );
         setState(() {
           selectedDateRange = pickedRange != null
               ? '${pickedRange.start.day}/${pickedRange.start.month}/${pickedRange.start.year} - ${pickedRange.end.day}/${pickedRange.end.month}/${pickedRange.end.year}'
               : 'This week';
+          if (pickedRange != null) {
+            startTime = pickedRange.start.millisecondsSinceEpoch ~/ 1000;
+            endTime = pickedRange.end.millisecondsSinceEpoch ~/ 1000;
+          }
           WidgetsBinding.instance.addPostFrameCallback((_) {
             Navigator.pop(context);
           });
         });
+        refreshData();
       },
     );
   }
@@ -333,7 +320,7 @@ class _EarningsWidgetState extends State<EarningsWidget> {
                   Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 const Icon(Icons.calendar_month, color: Colors.white, size: 20),
                 const SizedBox(width: 5),
-                Text(selectedDateRange,
+                Text(selectedDateRange ?? '',
                     style: const TextStyle(color: Colors.white, fontSize: 16))
               ])),
           const SizedBox(height: 5),
@@ -365,68 +352,8 @@ class _EarningsWidgetState extends State<EarningsWidget> {
     return showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text(
-            'Earnings Breakdown',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.blue, // Change title color
-            ),
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              buildInfoRow('Total Earnings', '\u00A3${data.totalEarnings}'),
-              buildInfoRow('Our Commission', '-\u00A3${data.totalCommission}'),
-              buildInfoRow('Your Share', '\u00A3${data.partnerShare}'),
-              const Text(
-                  'Payments may take upto 5 business days to reflect in your account.'),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text(
-                'Close',
-                style: TextStyle(
-                  color: Colors.blue, // Change close button color
-                ),
-              ),
-            ),
-          ],
-        );
+        return EarningsBreakdown(data: data);
       },
-    );
-  }
-
-  Widget buildInfoRow(String title, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-              color: Colors.black87,
-            ),
-          ),
-          Text(
-            value,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-              color: Colors.black87,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
