@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:maison_mate/constants.dart';
 import 'package:maison_mate/network/client/get_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
-import 'package:maison_mate/widgets/earnings_widget.dart';
+import 'package:maison_mate/widgets/earnings/earnings_widget.dart';
 import 'package:maison_mate/widgets/my_jobs/my_jobs.dart';
 
 class DashboardWidget extends StatefulWidget {

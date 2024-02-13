@@ -7,6 +7,7 @@ import 'package:maison_mate/network/response/documentation/health_and_safety_res
 import 'package:maison_mate/network/response/documentation/documentation_response.dart';
 import 'package:maison_mate/network/response/documentation/profile_picture_response.dart';
 import 'package:maison_mate/network/response/documentation/self_trader_response.dart';
+import 'package:maison_mate/network/response/earnings_response.dart';
 import 'package:maison_mate/network/response/favourites_response.dart';
 import 'package:maison_mate/network/response/find_jobs_response.dart';
 import 'package:maison_mate/network/response/get_quote_response.dart';
@@ -106,6 +107,9 @@ class _Converter<T> implements JsonConverter<T, Object> {
       return ChatResponse.fromJson(map) as T;
     } else if (map.containsKey('receipt')) {
       return ReceiptResponse.fromJson(map) as T;
+    } else if (map.containsKey('payments') &&
+        map.containsKey('total_earnings')) {
+      return EarningsResponse.fromJson(map) as T;
     } else {
       return map as T;
     }
