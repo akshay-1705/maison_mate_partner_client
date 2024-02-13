@@ -91,26 +91,24 @@ class _ReceiptWidgetState extends State<ReceiptWidget> {
                       ),
                     )),
                 const SizedBox(height: 20),
-                paymentStatus(),
+                paymentStatus(data),
                 const SizedBox(height: 50)
               ]),
             ])));
   }
 
-  Column paymentStatus() {
-    return const Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Payment Status',
-            style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
-          ),
-          SizedBox(height: 5),
-          Text(
-            'Pending',
-            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w300),
-          ),
-        ]);
+  Column paymentStatus(ReceiptResponse data) {
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      const Text(
+        'Payment Status',
+        style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
+      ),
+      const SizedBox(height: 5),
+      Text(
+        data.paymentStatus ?? '',
+        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w300),
+      ),
+    ]);
   }
 
   Column total(ReceiptResponse data) {
