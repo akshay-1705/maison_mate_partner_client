@@ -18,6 +18,7 @@ import 'package:maison_mate/provider/favourites_model.dart';
 import 'package:maison_mate/provider/my_jobs_model.dart';
 import 'package:maison_mate/provider/nearby_job_details_model.dart';
 import 'package:maison_mate/provider/on_duty_model.dart';
+import 'package:maison_mate/provider/phone_verification_model.dart';
 import 'package:maison_mate/screens/home_screen.dart';
 import 'package:maison_mate/services/firebase_service.dart';
 import 'package:maison_mate/widgets/auth/sign_in.dart';
@@ -72,6 +73,7 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(create: (_) => MyJobsModel()),
           ChangeNotifierProvider(create: (_) => OnDutyModel()),
           ChangeNotifierProvider(create: (_) => NearbyJobDetailsModel()),
+          ChangeNotifierProvider(create: (_) => PhoneVerificationModel()),
           ChangeNotifierProvider(
               create: (_) => SelfTraderIdentificationModel()),
         ],

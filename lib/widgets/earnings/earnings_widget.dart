@@ -218,6 +218,7 @@ class _EarningsWidgetState extends State<EarningsWidget> {
                     startTime =
                         startOfThisWeekDay.millisecondsSinceEpoch ~/ 1000;
                     endTime = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+                    selectedFilter = 'All';
                   });
                   refreshData();
                   Navigator.pop(context);
@@ -243,6 +244,7 @@ class _EarningsWidgetState extends State<EarningsWidget> {
                     DateTime endOfLastWeekDay = DateTime.utc(endOfLastWeek.year,
                         endOfLastWeek.month, endOfLastWeek.day, 23, 59, 59);
                     endTime = endOfLastWeekDay.millisecondsSinceEpoch ~/ 1000;
+                    selectedFilter = 'All';
                   });
                   refreshData();
                   Navigator.pop(context);
@@ -258,6 +260,7 @@ class _EarningsWidgetState extends State<EarningsWidget> {
                         DateTime.utc(now.year, now.month, 1);
                     startTime = startOfThisMonth.millisecondsSinceEpoch ~/ 1000;
                     endTime = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+                    selectedFilter = 'All';
                   });
                   refreshData();
                   Navigator.pop(context);
@@ -297,6 +300,7 @@ class _EarningsWidgetState extends State<EarningsWidget> {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             Navigator.pop(context);
           });
+          selectedFilter = 'All';
         });
         refreshData();
       },
