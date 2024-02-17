@@ -7,7 +7,7 @@ import 'package:maison_mate/provider/phone_verification_model.dart';
 import 'package:maison_mate/services/logout_service.dart';
 import 'package:maison_mate/shared/my_form.dart';
 import 'package:maison_mate/shared/my_snackbar.dart';
-import 'package:maison_mate/widgets/auth/verify_otp.dart';
+import 'package:maison_mate/screens/verify_otp.dart';
 import 'package:provider/provider.dart';
 
 class PhoneVerificationScreen extends StatefulWidget {
@@ -142,8 +142,9 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
         'phone_number': phoneNumberController.text,
       };
       postFutureData =
-          PostClient.request(apiUrl, formData, model, (response) async {});
-      model.setOtpSent(true);
+          PostClient.request(apiUrl, formData, model, (response) async {
+        model.setOtpSent(true);
+      });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
           MySnackBar(message: 'Invalid phone number', error: true)
