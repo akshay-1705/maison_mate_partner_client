@@ -168,7 +168,7 @@ class _YourDetailsSectionState extends State<YourDetailsSection> {
             firstNameController,
             lastNameController,
           ),
-          MyForm.requiredTextField("Phone Number", phoneNumberController),
+          MyForm.disabledTextField("Phone Number", phoneNumberController),
           MyForm.disabledTextField("Email", emailController),
           const SizedBox(height: 12.0),
           MyForm.formFieldHeader('Which postcodes or towns do you cover?*'),

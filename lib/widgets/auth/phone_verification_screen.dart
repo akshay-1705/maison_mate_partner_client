@@ -113,9 +113,15 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
                                     model.setOtpSent(false);
                                     Navigator.of(context).push(
                                       MaterialPageRoute(
-                                          builder: (context) =>
-                                              const VerifyOtp()),
+                                          builder: (context) => VerifyOtp(
+                                              phoneNumber:
+                                                  phoneNumberController.text)),
                                     );
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        MySnackBar(
+                                                message: 'OTP sent',
+                                                error: false)
+                                            .getSnackbar());
                                   }
                                 },
                               )
@@ -129,11 +135,11 @@ class _PhoneVerificationScreenState extends State<PhoneVerificationScreen> {
   }
 
   void onSubmitCallback(PhoneVerificationModel model) {
-    model.setIsSubmitting(true);
     var phoneNumber = phoneNumberController.text;
     if (phoneNumber.length == 10) {
+      model.setIsSubmitting(true);
       var formData = {
-        'phone_number_with_country_code': '+91${phoneNumberController.text}',
+        'phone_number': phoneNumberController.text,
       };
       postFutureData =
           PostClient.request(apiUrl, formData, model, (response) async {});

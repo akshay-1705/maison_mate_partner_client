@@ -4,6 +4,7 @@ import 'package:maison_mate/network/client/get_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/screens/email_verification_screen.dart';
 import 'package:maison_mate/screens/onboarding_screen.dart';
+import 'package:maison_mate/widgets/auth/phone_verification_screen.dart';
 import 'package:maison_mate/widgets/find_jobs_list.dart';
 
 class FindJobsWidget extends StatefulWidget {
@@ -35,6 +36,14 @@ class FindJobsWidgetState extends State<FindJobsWidget> {
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(
                   builder: (context) => const EmailVerificationScreen()),
+            );
+          });
+          return Container();
+        } else if (!data.phoneNumberVerified) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                  builder: (context) => const PhoneVerificationScreen()),
             );
           });
           return Container();

@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:maison_mate/constants.dart';
+import 'package:maison_mate/network/client/post_client.dart';
+import 'package:maison_mate/network/response/api_response.dart';
+import 'package:maison_mate/provider/verify_otp_model.dart';
+import 'package:maison_mate/screens/home_screen.dart';
 import 'package:maison_mate/shared/my_form.dart';
+import 'package:maison_mate/shared/my_snackbar.dart';
+import 'package:provider/provider.dart';
 
 class VerifyOtp extends StatefulWidget {
-  const VerifyOtp({super.key});
+  const VerifyOtp({super.key, required this.phoneNumber});
+
+  final String phoneNumber;
 
   @override
   State<VerifyOtp> createState() => _VerifyOtpState();
@@ -11,6 +19,9 @@ class VerifyOtp extends StatefulWidget {
 
 class _VerifyOtpState extends State<VerifyOtp> {
   final TextEditingController otpController = TextEditingController();
+  Future<ApiResponse>? postFutureData;
+  static String apiUrl = '$baseApiUrl/partners/register_number';
+  var snackbarShown = false;
 
   AppBar appBar(BuildContext context) {
     return AppBar();
@@ -18,6 +29,7 @@ class _VerifyOtpState extends State<VerifyOtp> {
 
   @override
   Widget build(BuildContext context) {
+    final VerifyOtpModel model = Provider.of<VerifyOtpModel>(context);
     return Scaffold(
       appBar: appBar(context),
       body: Padding(
@@ -64,12 +76,45 @@ class _VerifyOtpState extends State<VerifyOtp> {
                   TextInputType.number,
                 ),
                 const SizedBox(height: 20),
-                MyForm.submitButton("Verify", () async {}),
+                (postFutureData != null)
+                    ? PostClient.futureBuilder(
+                        model,
+                        postFutureData!,
+                        "Verify",
+                        () async {
+                          onSubmitCallback(model);
+                        },
+                        () {
+                          if (!snackbarShown) {
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              Navigator.of(context)
+                                  .pushReplacement(MaterialPageRoute(
+                                builder: (context) => const HomeScreen(),
+                              ));
+                            });
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                MySnackBar(message: 'Verified', error: false)
+                                    .getSnackbar());
+                            snackbarShown = true;
+                          }
+                        },
+                      )
+                    : MyForm.submitButton("Verify", () async {
+                        onSubmitCallback(model);
+                      }),
               ],
             ),
           ),
         ),
       ),
     );
+  }
+
+  void onSubmitCallback(VerifyOtpModel model) {
+    var otp = otpController.text;
+    snackbarShown = false;
+    var formData = {'otp': otp, 'phone_number': widget.phoneNumber};
+    postFutureData =
+        PostClient.request(apiUrl, formData, model, (response) async {});
   }
 }
