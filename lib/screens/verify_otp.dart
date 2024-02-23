@@ -61,9 +61,9 @@ class _VerifyOtpState extends State<VerifyOtp> {
                 const SizedBox(height: 20),
                 Container(
                     padding: const EdgeInsets.all(6),
-                    child: const Text(
-                      'We have sent an OTP to +44 740271181. Please enter the OTP to verify your phone number.',
-                      style: TextStyle(
+                    child: Text(
+                      'We have sent an OTP to +44 ${widget.phoneNumber}. Please enter the OTP to verify your phone number.',
+                      style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w200,
                         color: Color(themeColor),
