@@ -6,6 +6,7 @@ import 'package:maison_mate/network/response/profile_details_response.dart';
 import 'package:maison_mate/screens/area_covered_screen.dart';
 import 'package:maison_mate/screens/change_password_screen.dart';
 import 'package:maison_mate/screens/delete_account_screen.dart';
+import 'package:maison_mate/screens/my_rating_screen.dart';
 import 'package:maison_mate/screens/onboarding_screen.dart';
 import 'package:maison_mate/services/logout_service.dart';
 
@@ -96,6 +97,16 @@ class _AccountWidgetState extends State<AccountWidget> {
           ),
           const Divider(),
           customListTile(
+            icon: Icons.star,
+            title: 'My Rating',
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => const MyRatingScreen(),
+              ));
+            },
+          ),
+          const Divider(),
+          customListTile(
             icon: Icons.lock,
             title: 'Change Password',
             onTap: () {
@@ -116,7 +127,7 @@ class _AccountWidgetState extends State<AccountWidget> {
           const Divider(),
           customListTile(
             icon: Icons.delete,
-            title: 'Delete account',
+            title: 'Delete Account',
             onTap: () {
               Navigator.push(
                   context,
