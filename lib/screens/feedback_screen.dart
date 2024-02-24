@@ -155,15 +155,14 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Expanded(
-            flex: 2,
+            flex: 3,
             child: Text(
               title,
               style: const TextStyle(fontSize: 16),
             ),
           ),
-          const SizedBox(width: 15),
           Expanded(
-            flex: 4,
+            flex: 7,
             child: Row(
               children: List.generate(
                 5,
