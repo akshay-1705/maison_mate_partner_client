@@ -14,11 +14,13 @@ class MyJobDetailsResponse {
       this.details,
       this.userName,
       this.userId,
+      this.jobId,
       this.status,
       this.acceptedAt,
       this.quoteFinal,
       this.statusToSearch,
-      this.userPhoneNumber);
+      this.userPhoneNumber,
+      this.userRating);
 
   @JsonKey()
   final int? id;
@@ -31,6 +33,9 @@ class MyJobDetailsResponse {
 
   @JsonKey(name: 'user_id')
   final int? userId;
+
+  @JsonKey(name: 'job_id')
+  final int? jobId;
 
   @JsonKey(defaultValue: '')
   final String? kind;
@@ -61,6 +66,9 @@ class MyJobDetailsResponse {
 
   @JsonKey(name: 'user_phone_number')
   final String? userPhoneNumber;
+
+  @JsonKey(name: 'user_rating')
+  final int? userRating;
 
   factory MyJobDetailsResponse.fromJson(Map<String, dynamic> json) =>
       _$MyJobDetailsResponseFromJson(json);

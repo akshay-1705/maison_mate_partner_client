@@ -6,8 +6,10 @@ import 'package:maison_mate/network/client/get_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/network/response/my_job_details_response.dart';
 import 'package:maison_mate/provider/cancel_job_model.dart';
+import 'package:maison_mate/provider/feedback_model.dart';
 import 'package:maison_mate/provider/my_job_details_model.dart';
 import 'package:maison_mate/screens/customer_chat_screen.dart';
+import 'package:maison_mate/screens/feedback_screen.dart';
 import 'package:maison_mate/widgets/my_jobs/cancel_job.dart';
 import 'package:maison_mate/widgets/my_jobs/dynamic_buttons.dart';
 import 'package:maison_mate/widgets/my_jobs/description.dart';
@@ -142,7 +144,7 @@ class _MyJobDetailsState extends State<MyJobDetails> {
             height: 4,
             color: Colors.black12,
           ),
-          if (![5, 6].contains(data.statusToSearch)) ...[userWidget(data)],
+          if (![6].contains(data.statusToSearch)) ...[userWidget(data)],
           const SizedBox(height: 10),
           Description(data: data),
           const SizedBox(height: 10),
@@ -218,6 +220,20 @@ class _MyJobDetailsState extends State<MyJobDetails> {
                               child: Icon(Icons.chat,
                                   size: 20, color: Colors.blue.shade700)))
                     ])
+                  ] else ...[
+                    if (data.userRating != null) ...[
+                      Row(children: [
+                        const Text(
+                          'You rated ',
+                          style: TextStyle(fontSize: 15),
+                        ),
+                        const Icon(Icons.star, size: 15),
+                        const SizedBox(width: 5),
+                        Text(data.userRating.toString())
+                      ])
+                    ] else ...[
+                      ratingSection(data)
+                    ]
                   ]
                 ]),
           ]),
@@ -227,6 +243,61 @@ class _MyJobDetailsState extends State<MyJobDetails> {
             color: Colors.black12,
           ),
         ]);
+  }
+
+  GestureDetector ratingSection(MyJobDetailsResponse data) {
+    return GestureDetector(
+        onTap: () async {
+          await Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ChangeNotifierProvider(
+                      create: (context) => FeedbackModel(),
+                      child: FeedbackScreen(
+                          userId: data.userId, jobId: data.jobId))));
+          refreshData();
+        },
+        child: Column(
+          children: [
+            Row(children: [
+              const Text('Rate customer',
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16)),
+              const SizedBox(width: 10),
+              Icon(
+                Icons.star_border,
+                size: 20,
+                color: Colors.grey.shade900,
+              ),
+              const SizedBox(width: 3),
+              Icon(
+                Icons.star_border,
+                size: 20,
+                color: Colors.grey.shade900,
+              ),
+              const SizedBox(width: 3),
+              Icon(
+                Icons.star_border,
+                size: 20,
+                color: Colors.grey.shade900,
+              ),
+              const SizedBox(width: 3),
+              Icon(
+                Icons.star_border,
+                size: 20,
+                color: Colors.grey.shade900,
+              ),
+              const SizedBox(width: 3),
+              Icon(
+                Icons.star_border,
+                size: 20,
+                color: Colors.grey.shade900,
+              ),
+            ]),
+          ],
+        ));
   }
 
   Padding jobDetails(MyJobDetailsResponse data, MyJobDetailsModel model) {

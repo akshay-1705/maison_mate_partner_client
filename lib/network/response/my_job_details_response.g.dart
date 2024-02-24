@@ -18,11 +18,13 @@ MyJobDetailsResponse _$MyJobDetailsResponseFromJson(
       json['details'] as String? ?? '',
       json['user_name'] as String? ?? '',
       json['user_id'] as int?,
+      json['job_id'] as int?,
       json['status'] as String?,
       json['accepted_at'] as int?,
       json['quote_final'] as bool? ?? false,
       json['status_to_search'] as int?,
       json['user_phone_number'] as String?,
+      json['user_rating'] as int?,
     );
 
 Map<String, dynamic> _$MyJobDetailsResponseToJson(
@@ -32,6 +34,7 @@ Map<String, dynamic> _$MyJobDetailsResponseToJson(
       'service_name': instance.serviceName,
       'user_name': instance.userName,
       'user_id': instance.userId,
+      'job_id': instance.jobId,
       'kind': instance.kind,
       'latitude': instance.latitude,
       'longitude': instance.longitude,
@@ -42,4 +45,5 @@ Map<String, dynamic> _$MyJobDetailsResponseToJson(
       'accepted_at': instance.acceptedAt,
       'quote_final': instance.quoteFinal,
       'user_phone_number': instance.userPhoneNumber,
+      'user_rating': instance.userRating,
     };
