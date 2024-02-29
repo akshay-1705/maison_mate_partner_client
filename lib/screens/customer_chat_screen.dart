@@ -1,14 +1,21 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+import 'package:image_picker/image_picker.dart';
 import 'package:maison_mate/constants.dart';
 import 'package:maison_mate/network/client/get_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/network/response/message_response.dart';
 import 'package:maison_mate/network/response/my_job_details_response.dart';
 import 'package:maison_mate/provider/send_quote_model.dart';
+import 'package:maison_mate/screens/image_view_screen.dart';
 import 'package:maison_mate/screens/send_quote_screen.dart';
 import 'package:maison_mate/services/web_socket_service.dart';
+import 'package:maison_mate/shared/my_snackbar.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:web_socket_channel/io.dart';
 
@@ -29,6 +36,7 @@ class _CustomerChatScreenState extends State<CustomerChatScreen> {
   late Future<ApiResponse> futureData;
   late String apiUrl;
   bool scrollOnce = false;
+  OverlayEntry? overlayEntry;
 
   @override
   void initState() {
@@ -41,12 +49,41 @@ class _CustomerChatScreenState extends State<CustomerChatScreen> {
         List<MessageResponse> chat = apiResponse.data.messages;
         for (var message in chat) {
           String messageType = message.isSender ? 'sender' : 'receiver';
-          messages.add(ChatMessage(
-              messageContent: message.text, messageType: messageType));
+          ChatMessage cM = ChatMessage(
+              messageContent: message.text, messageType: messageType);
+          if (message.imageUrl != null) {
+            cM.imageUrl = message.imageUrl ?? '';
+          }
+
+          messages.add(cM);
         }
       }
     });
     initializeWebSocket();
+  }
+
+  void showOverlay() {
+    overlayEntry = OverlayEntry(
+      builder: (context) => Stack(
+        children: [
+          Positioned.fill(
+            child: Container(
+              color: Colors.black.withOpacity(0.5),
+            ),
+          ),
+          const Center(
+            child: CircularProgressIndicator(),
+          ),
+        ],
+      ),
+    );
+
+    Overlay.of(context).insert(overlayEntry!);
+  }
+
+  void hideOverlay() {
+    overlayEntry?.remove();
+    overlayEntry = null;
   }
 
   Future<void> initializeWebSocket() async {
@@ -81,14 +118,93 @@ class _CustomerChatScreenState extends State<CustomerChatScreen> {
       var data = jsonDecode(snapshot.data);
       var message = data['message'];
 
-      if (message is Map && message['chat'] != null) {
+      if (message is Map && message['text'] != null) {
         messages.add(ChatMessage(
-            messageContent: message['chat'], messageType: 'receiver'));
+            messageContent: message['text'],
+            messageType: 'receiver',
+            imageUrl: message['image_url']));
         WidgetsBinding.instance.addPostFrameCallback((_) {
           scrollController.jumpTo(scrollController.position.maxScrollExtent);
         });
       }
     }
+  }
+
+  Future<void> getImage(BuildContext context, ImageSource source) async {
+    final picker = ImagePicker();
+    showOverlay();
+    final pickedFile = await picker.pickImage(source: source);
+    hideOverlay();
+
+    if (pickedFile != null) {
+      File file = File(pickedFile.path);
+      sendToServer(file);
+    }
+  }
+
+  void sendToServer(File pickedFile) {
+    const int maxFileSize = 10 * 1024 * 1024;
+    if (pickedFile.lengthSync() <= maxFileSize) {
+      messages.add(ChatMessage(
+          messageContent: '', messageType: 'sender', file: pickedFile));
+      String base64String =
+          base64Encode(File(pickedFile.path).readAsBytesSync());
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        scrollController.jumpTo(scrollController.position.maxScrollExtent);
+      });
+      setState(() {});
+      channel?.sink.add(jsonEncode({
+        'data': jsonEncode({
+          'text': '',
+          'file': base64String,
+          'receiver_type': 'User',
+          'receiver_id': widget.data?.userId,
+          'identifier_id': widget.data?.id,
+          'identifier_type': 'JobAssignment'
+        }),
+        'command': 'message',
+        'identifier': jsonEncode({'channel': 'ChatChannel'})
+      }));
+    } else {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ScaffoldMessenger.of(context).showSnackBar(MySnackBar(
+                message:
+                    'File size exceeds the maximum allowed size of ${maxFileSize ~/ (1024 * 1024)} MB.',
+                error: true)
+            .getSnackbar());
+      });
+    }
+  }
+
+  void openImagePicker(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return SafeArea(
+          child: Wrap(
+            children: [
+              ListTile(
+                leading: const Icon(Icons.camera_alt),
+                title: const Text('Take a picture'),
+                onTap: () {
+                  getImage(context, ImageSource.camera);
+                  Navigator.of(context).pop();
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.photo_library),
+                title: const Text('Choose from gallery'),
+                onTap: () {
+                  getImage(context, ImageSource.gallery);
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   Stack renderElements() {
@@ -119,6 +235,14 @@ class _CustomerChatScreenState extends State<CustomerChatScreen> {
                 ),
                 const SizedBox(
                   width: 15,
+                ),
+                GestureDetector(
+                    onTap: () async {
+                      openImagePicker(context);
+                    },
+                    child: const Icon(Icons.camera_alt)),
+                const SizedBox(
+                  width: 20,
                 ),
                 FloatingActionButton(
                   onPressed: () {
@@ -171,7 +295,6 @@ class _CustomerChatScreenState extends State<CustomerChatScreen> {
     });
     return GestureDetector(
         onTap: () {
-          // Dismiss the keyboard when tapped on a non-actionable item
           FocusScope.of(context).unfocus();
         },
         child: Container(
@@ -191,18 +314,80 @@ class _CustomerChatScreenState extends State<CustomerChatScreen> {
                         ? Alignment.topLeft
                         : Alignment.topRight),
                     child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: (messages[index].messageType == "receiver"
-                            ? Colors.grey.shade200
-                            : Colors.blue[200]),
-                      ),
-                      padding: const EdgeInsets.all(16),
-                      child: Text(
-                        messages[index].messageContent,
-                        style: const TextStyle(fontSize: 15),
-                      ),
-                    ),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: (messages[index].messageType == "receiver"
+                              ? Colors.grey.shade200
+                              : Colors.blue[200]),
+                        ),
+                        padding: const EdgeInsets.all(16),
+                        child: Column(children: [
+                          if (messages[index].messageContent.isNotEmpty) ...[
+                            Text(
+                              messages[index].messageContent,
+                              style: const TextStyle(fontSize: 15),
+                            ),
+                          ] else if (messages[index].file != null) ...[
+                            messages[index].file!.lengthSync() > 1000
+                                ? GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => ImageViewScreen(
+                                              imagePath:
+                                                  messages[index].file!.path),
+                                        ),
+                                      );
+                                    },
+                                    child: Image.file(
+                                      File(messages[index].file!.path),
+                                      width: 100,
+                                      height: 100,
+                                    ),
+                                  )
+                                : const Icon(
+                                    Icons.error,
+                                    color: Colors.red,
+                                  ),
+                          ] else if (messages[index].imageUrl != null) ...[
+                            GestureDetector(
+                                onTap: () async {
+                                  setState(() {
+                                    messages[index].downloading = true;
+                                  });
+                                  File? tempFile;
+                                  Directory tempDir =
+                                      await getTemporaryDirectory();
+                                  String tempFilePath =
+                                      '${tempDir.path}/temp_image_$index.jpg';
+                                  http.Response response = await http.get(
+                                      Uri.parse(
+                                          messages[index].imageUrl ?? ''));
+                                  if (response.statusCode == 200) {
+                                    tempFile = File(tempFilePath);
+                                    await tempFile
+                                        .writeAsBytes(response.bodyBytes);
+                                  } else {
+                                    throw Exception('Failed to download image');
+                                  }
+                                  setState(() {
+                                    messages[index].file = tempFile;
+                                    messages[index].downloading = false;
+                                  });
+                                },
+                                child: SizedBox(
+                                    width: 20.0,
+                                    height: 20.0,
+                                    child: messages[index].downloading ?? false
+                                        ? const CircularProgressIndicator(
+                                            valueColor:
+                                                AlwaysStoppedAnimation<Color>(
+                                                    Colors.black38),
+                                          )
+                                        : const Icon(Icons.downloading)))
+                          ],
+                        ])),
                   ),
                 );
               },
@@ -284,5 +469,13 @@ class _CustomerChatScreenState extends State<CustomerChatScreen> {
 class ChatMessage {
   String messageContent;
   String messageType;
-  ChatMessage({required this.messageContent, required this.messageType});
+  String? imageUrl;
+  File? file;
+  bool? downloading = false;
+  ChatMessage(
+      {required this.messageContent,
+      required this.messageType,
+      this.imageUrl,
+      this.file,
+      this.downloading});
 }
