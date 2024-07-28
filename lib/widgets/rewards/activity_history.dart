@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:maison_mate/widgets/rewards/history_tile.dart';
 
 class ActivityHistory extends StatelessWidget {
-  final List<Map<String, dynamic>> activityHistory;
+  final List<dynamic> activityHistory;
 
   const ActivityHistory({
     Key? key,
@@ -11,10 +11,9 @@ class ActivityHistory extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<Map<String, dynamic>> displayedActivities =
-        activityHistory.length > 3
-            ? activityHistory.sublist(0, 3)
-            : activityHistory;
+    final List<dynamic> displayedActivities = activityHistory.length > 3
+        ? activityHistory.sublist(0, 3)
+        : activityHistory;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -26,7 +25,7 @@ class ActivityHistory extends StatelessWidget {
             return HistoryTile(
               date: activity['date'],
               hours: activity['hours'],
-              target: activity['target'],
+              target: 6,
             );
           }).toList(),
         ),

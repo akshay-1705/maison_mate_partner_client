@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:maison_mate/constants.dart';
+import 'package:maison_mate/network/client/get_client.dart';
+import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/widgets/rewards/activity_history.dart';
 import 'package:maison_mate/widgets/rewards/coupon_section.dart';
 
@@ -10,12 +13,20 @@ class DetailsScreen extends StatefulWidget {
 }
 
 class _DetailsScreenState extends State<DetailsScreen> {
-  final List<Map<String, dynamic>> activityHistory = [
-    {'date': 'Today', 'hours': 4, 'target': 6},
-    {'date': 'Yesterday', 'hours': 6, 'target': 6},
-    {'date': 'Monday', 'hours': 5, 'target': 6},
-    {'date': 'Sunday', 'hours': 7, 'target': 6},
-  ];
+  late Future<ApiResponse> futureData;
+  static String apiUrl = '$baseApiUrl/partners/latest_activity';
+  List<dynamic>? activityHistory;
+
+  @override
+  void initState() {
+    super.initState();
+    futureData = GetClient.fetchData(apiUrl);
+    futureData.then((value) {
+      setState(() {
+        activityHistory = value.data['latest_activity'];
+      });
+    });
+  }
 
   final List<String> mealDealCoupons = [
     'Meal Deal - 01/07/2024',
@@ -66,7 +77,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                   'Activity History',
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
-                if (activityHistory.length > 3)
+                if (activityHistory != null && activityHistory!.length > 3)
                   TextButton(
                     onPressed: () {
                       // Implement the functionality to show all activity history
@@ -76,7 +87,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
               ]),
               const SizedBox(height: 16),
               ActivityHistory(
-                activityHistory: activityHistory,
+                activityHistory: activityHistory ?? [],
               ),
               const SizedBox(height: 32),
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [

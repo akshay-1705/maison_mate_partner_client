@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class HistoryTile extends StatelessWidget {
   final String date;
-  final int hours;
+  final double hours;
   final int target;
 
   const HistoryTile({
