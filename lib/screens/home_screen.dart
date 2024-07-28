@@ -7,6 +7,7 @@ import 'package:maison_mate/services/on_duty_service.dart';
 import 'package:maison_mate/shared/custom_app_bar.dart';
 import 'package:maison_mate/shared/my_snackbar.dart';
 import 'package:maison_mate/widgets/account_widget.dart';
+import 'package:maison_mate/widgets/activity_timer_widget.dart';
 import 'package:maison_mate/widgets/dashboard_widget.dart';
 import 'package:maison_mate/widgets/find_jobs.dart';
 import 'package:maison_mate/widgets/refer_and_earn.dart';
@@ -41,6 +42,8 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         stateModel.setOnDuty(value.data['on_duty']);
         stateModel.setOffDutyAllowed(value.data['off_duty_allowed']);
+        stateModel.originalActivity = value.data['today_activity'];
+        stateModel.setTodayActivity(value.data['today_activity']);
       });
     });
   }
@@ -154,9 +157,24 @@ class _HomeScreenState extends State<HomeScreen> {
                                             error: true)
                                         .getSnackbar());
                               } else {
-                                var response = OnDutyService.toggle(value);
+                                int activity = 0;
+
+                                if (!value) {
+                                  activity = model.todayActivity;
+                                } else {
+                                  activity = model.originalActivity;
+                                }
+                                var response =
+                                    OnDutyService.toggle(value, activity);
                                 response.then((status) {
                                   if (status) {
+                                    if (!value) {
+                                      model.setOriginalActivity(
+                                          model.todayActivity);
+                                    } else {
+                                      model.setTodayActivity(
+                                          model.originalActivity);
+                                    }
                                     setState(() {
                                       model.setOnDuty(value);
                                     });
@@ -174,6 +192,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         Icons.work,
                         color: Colors.white,
                       ),
+                      const SizedBox(width: 16.0),
+                      ActivityTimerWidget(onDutyModel: model),
                     ],
                   ),
                 ),

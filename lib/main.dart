@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -22,6 +23,7 @@ import 'package:maison_mate/provider/phone_verification_model.dart';
 import 'package:maison_mate/provider/verify_otp_model.dart';
 import 'package:maison_mate/screens/home_screen.dart';
 import 'package:maison_mate/services/firebase_service.dart';
+import 'package:maison_mate/services/on_duty_service.dart';
 import 'package:maison_mate/widgets/auth/sign_in.dart';
 import 'package:maison_mate/provider/auth/sign_in_model.dart';
 import 'package:maison_mate/provider/auth/sign_up_model.dart';
@@ -79,16 +81,79 @@ class MyApp extends StatelessWidget {
           ChangeNotifierProvider(
               create: (_) => SelfTraderIdentificationModel()),
         ],
-        child: MaterialApp(
-          title: _title,
-          home: isUserLoggedIn ? const HomeScreen() : const SignInWidget(),
-          theme: ThemeData(
-            useMaterial3: true,
-            colorScheme: ColorScheme.fromSeed(
-              seedColor: const Color(secondaryColor),
-              primary: const Color(themeColor),
+        child: LifecycleHandler(
+          child: MaterialApp(
+            title: _title,
+            home: isUserLoggedIn ? const HomeScreen() : const SignInWidget(),
+            theme: ThemeData(
+              useMaterial3: true,
+              colorScheme: ColorScheme.fromSeed(
+                seedColor: const Color(secondaryColor),
+                primary: const Color(themeColor),
+              ),
             ),
           ),
         ));
+  }
+}
+
+class LifecycleHandler extends StatefulWidget {
+  final Widget child;
+  const LifecycleHandler({Key? key, required this.child}) : super(key: key);
+
+  @override
+  State<LifecycleHandler> createState() => _LifecycleHandlerState();
+}
+
+class _LifecycleHandlerState extends State<LifecycleHandler>
+    with WidgetsBindingObserver {
+  Timer? timer;
+
+  @override
+  void initState() {
+    super.initState();
+    startTimer();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused || state == AppLifecycleState.inactive) {
+      var model = Provider.of<OnDutyModel>(context, listen: false);
+      int activity = 0;
+
+      if (model.onDuty) {
+        activity = model.todayActivity;
+      } else {
+        activity = model.originalActivity;
+      }
+      OnDutyService.toggle(model.onDuty, activity);
+    }
+  }
+
+  void startTimer() {
+    var model = Provider.of<OnDutyModel>(context, listen: false);
+    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        int seconds = model.todayActivity + 1;
+        model.setTodayActivity(seconds);
+      });
+    });
+  }
+
+  void stopTimer() {
+    timer?.cancel();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.child;
   }
 }

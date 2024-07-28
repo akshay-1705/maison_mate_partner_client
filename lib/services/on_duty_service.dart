@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 class OnDutyService {
   static String serverUrl = '$baseApiUrl/partners';
 
-  static Future<bool> toggle(bool value) async {
+  static Future<bool> toggle(bool value, int activity) async {
     String apiUrl = '$serverUrl/on_duty';
 
     try {
@@ -21,9 +21,7 @@ class OnDutyService {
           'Content-Type': 'application/json; charset=UTF-8',
           'Partner-Authorization': authToken
         },
-        body: jsonEncode({
-          'on_duty': value,
-        }),
+        body: jsonEncode({'on_duty': value, 'activity': activity}),
       );
 
       final Map<String, dynamic> data = json.decode(response.body);
