@@ -26,6 +26,7 @@ class ActivityHistory extends StatelessWidget {
               date: activity['date'],
               hours: activity['hours'],
               target: 6,
+              iconText: activity['icon']
             );
           }).toList(),
         ),

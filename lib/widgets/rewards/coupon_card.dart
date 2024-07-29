@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class CouponCard extends StatelessWidget {
-  final String coupon;
+  final dynamic coupon;
 
   const CouponCard({
     Key? key,
@@ -25,7 +25,7 @@ class CouponCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    coupon,
+                    coupon['offer_summary'],
                     style: const TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
@@ -34,7 +34,7 @@ class CouponCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Expiry date: 13/12/2024',
+                    '${coupon['brand']} - ${coupon['denomination']} pounds',
                     style: TextStyle(
                       fontSize: 13,
                       color: Colors.grey[600],
@@ -55,7 +55,9 @@ class CouponCard extends StatelessWidget {
       onTap: () {
         // Add redeem functionality here
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Redeemed $coupon')),
+          const SnackBar(
+              content:
+                  Text('We have sent you an email with the offer details')),
         );
       },
       borderRadius: BorderRadius.circular(12.0),

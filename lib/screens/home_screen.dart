@@ -44,6 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
         stateModel.setOffDutyAllowed(value.data['off_duty_allowed']);
         stateModel.originalActivity = value.data['today_activity'];
         stateModel.setTodayActivity(value.data['today_activity']);
+        stateModel.setShowOffer(value.data['show_offer']);
       });
     });
   }
@@ -192,8 +193,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         Icons.work,
                         color: Colors.white,
                       ),
-                      const SizedBox(width: 16.0),
-                      ActivityTimerWidget(onDutyModel: model),
+                      if (model.showOffer) ...[
+                        const SizedBox(width: 16.0),
+                        ActivityTimerWidget(onDutyModel: model),
+                      ]
                     ],
                   ),
                 ),

@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:maison_mate/constants.dart';
 import 'package:maison_mate/network/client/get_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
+import 'package:maison_mate/provider/on_duty_model.dart';
 import 'package:maison_mate/widgets/earnings/earnings_widget.dart';
 import 'package:maison_mate/widgets/my_jobs/my_jobs.dart';
 import 'package:maison_mate/widgets/rewards/details_screen.dart';
 import 'package:maison_mate/widgets/rewards/offer_banner.dart';
+import 'package:provider/provider.dart';
 
 class DashboardWidget extends StatefulWidget {
   const DashboardWidget({Key? key}) : super(key: key);
@@ -26,30 +28,35 @@ class _DashboardWidgetState extends State<DashboardWidget> {
 
   @override
   Widget build(BuildContext context) {
+    var stateModel = Provider.of<OnDutyModel>(context, listen: false);
     return GetRequestFutureBuilder<dynamic>(
       apiUrl: apiUrl,
       future: futureData,
       builder: (context, data) {
-        return renderData(data);
+        return renderData(data, stateModel);
       },
     );
   }
 
-  SingleChildScrollView renderData(data) {
+  SingleChildScrollView renderData(data, OnDutyModel stateModel) {
     return SingleChildScrollView(
         child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(children: [
-              const OfferBanner(),
-              const SizedBox(height: 40),
+              if (stateModel.showOffer) ...[
+                const OfferBanner(),
+                const SizedBox(height: 40),
+              ],
               earningsSummary(data),
               const SizedBox(height: 40),
               banner(),
               const SizedBox(height: 40),
               jobsSummary(data),
               const SizedBox(height: 40),
-              rewardsSummary(),
-              const SizedBox(height: 40),
+              // if (stateModel.showOffer) ...[
+              //   rewardsSummary(),
+              //   const SizedBox(height: 40),
+              // ]
             ])));
   }
 

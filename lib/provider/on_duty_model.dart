@@ -5,6 +5,7 @@ class OnDutyModel extends ChangeNotifier {
   bool offDutyAllowed = false;
   int todayActivity = 0;
   int originalActivity = 0;
+  bool showOffer = false;
 
   void setOnDuty(bool value) {
     onDuty = value;
@@ -23,6 +24,11 @@ class OnDutyModel extends ChangeNotifier {
 
   void setOriginalActivity(int value) {
     originalActivity = value;
+    notifyListeners();
+  }
+
+  void setShowOffer(bool value) {
+    showOffer = value;
     notifyListeners();
   }
 }

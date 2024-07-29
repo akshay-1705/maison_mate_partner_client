@@ -16,6 +16,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
   late Future<ApiResponse> futureData;
   static String apiUrl = '$baseApiUrl/partners/latest_activity';
   List<dynamic>? activityHistory;
+  List<dynamic>? couponsHistory;
+  int? totalActivities;
+  int? totalCoupons;
 
   @override
   void initState() {
@@ -24,20 +27,12 @@ class _DetailsScreenState extends State<DetailsScreen> {
     futureData.then((value) {
       setState(() {
         activityHistory = value.data['latest_activity'];
+        couponsHistory = value.data['coupons'];
+        totalActivities = value.data['total_activities'];
+        totalCoupons = value.data['total_coupons'];
       });
     });
   }
-
-  final List<String> mealDealCoupons = [
-    'Meal Deal - 01/07/2024',
-    'Meal Deal - 02/07/2024'
-  ];
-  final List<String> pizzaCoupons = [
-    'Pizza - Week 1',
-    'Pizza - Week 2',
-    'Pizza - Week 3',
-    'Pizza - Week 4'
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -77,12 +72,12 @@ class _DetailsScreenState extends State<DetailsScreen> {
                   'Activity History',
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
-                if (activityHistory != null && activityHistory!.length > 3)
+                if (totalActivities != null && totalActivities! > 3)
                   TextButton(
                     onPressed: () {
                       // Implement the functionality to show all activity history
                     },
-                    child: const Text('Show all (7)'),
+                    child: Text('Show all ($totalActivities)'),
                   ),
               ]),
               const SizedBox(height: 16),
@@ -95,17 +90,17 @@ class _DetailsScreenState extends State<DetailsScreen> {
                   'Coupons Earned',
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
-                if (mealDealCoupons.length > 1)
+                if (totalCoupons != null && totalCoupons! > 3)
                   TextButton(
                     onPressed: () {
                       // Implement the functionality to show all activity history
                     },
-                    child: const Text('Show all (10)'),
+                    child: Text('Show all ($totalCoupons)'),
                   ),
               ]),
               const SizedBox(height: 16),
               CouponSection(
-                coupons: mealDealCoupons + pizzaCoupons,
+                coupons: couponsHistory ?? [],
               ),
             ],
           ),
