@@ -3,7 +3,9 @@ import 'package:maison_mate/constants.dart';
 import 'package:maison_mate/network/client/get_client.dart';
 import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/widgets/rewards/activity_history.dart';
+import 'package:maison_mate/widgets/rewards/activity_history_page.dart';
 import 'package:maison_mate/widgets/rewards/coupon_section.dart';
+import 'package:maison_mate/widgets/rewards/coupons_history_page.dart';
 
 class DetailsScreen extends StatefulWidget {
   const DetailsScreen({Key? key}) : super(key: key);
@@ -75,7 +77,12 @@ class _DetailsScreenState extends State<DetailsScreen> {
                 if (totalActivities != null && totalActivities! > 3)
                   TextButton(
                     onPressed: () {
-                      // Implement the functionality to show all activity history
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ActivityHistoryPage(),
+                        ),
+                      );
                     },
                     child: Text('Show all ($totalActivities)'),
                   ),
@@ -93,7 +100,12 @@ class _DetailsScreenState extends State<DetailsScreen> {
                 if (totalCoupons != null && totalCoupons! > 3)
                   TextButton(
                     onPressed: () {
-                      // Implement the functionality to show all activity history
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const CouponsHistoryPage(),
+                        ),
+                      );
                     },
                     child: Text('Show all ($totalCoupons)'),
                   ),

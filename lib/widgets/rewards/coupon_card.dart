@@ -1,4 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:maison_mate/constants.dart';
+import 'package:http/http.dart' as http;
 
 class CouponCard extends StatelessWidget {
   final dynamic coupon;
@@ -43,21 +48,40 @@ class CouponCard extends StatelessWidget {
                 ],
               ),
             ),
-            buildRedeemButton(context),
+            buildRedeemButton(context, coupon['id'].toString()),
           ],
         ),
       ),
     );
   }
 
-  Widget buildRedeemButton(BuildContext context) {
+  Widget buildRedeemButton(BuildContext context, String couponId) {
     return InkWell(
       onTap: () {
-        // Add redeem functionality here
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Confirm Redemption'),
               content:
-                  Text('We have sent you an email with the offer details')),
+                  const Text('Are you sure you want to redeem this coupon?'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Close the dialog
+                  },
+                  child: const Text('Cancel'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Close the dialog
+                    redeemCoupon(context, couponId); // Call the redeem function
+                  },
+                  child: const Text('Confirm'),
+                ),
+              ],
+            );
+          },
         );
       },
       borderRadius: BorderRadius.circular(12.0),
@@ -86,5 +110,47 @@ class CouponCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> redeemCoupon(BuildContext context, String couponId) async {
+    final String apiUrl = '$baseApiUrl/partners/redeem_coupon/$couponId';
+    const storage = FlutterSecureStorage();
+    var authToken = await storage.read(key: authTokenKey);
+    authToken ??= '';
+
+    final response = await http.post(
+      Uri.parse(apiUrl),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Secret-Header': secretHeader,
+        'Partner-Authorization': authToken
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final responseBody = jsonDecode(response.body);
+      if (responseBody['success']) {
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(responseBody['message']),
+          ),
+        );
+      } else {
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(responseBody['message']),
+          ),
+        );
+      }
+    } else {
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Failed to redeem coupon'),
+        ),
+      );
+    }
   }
 }

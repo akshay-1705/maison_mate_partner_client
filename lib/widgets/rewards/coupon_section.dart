@@ -11,11 +11,12 @@ class CouponSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return SingleChildScrollView(
+        child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ...coupons.map((coupon) => CouponCard(coupon: coupon)).toList(),
       ],
-    );
+    ));
   }
 }

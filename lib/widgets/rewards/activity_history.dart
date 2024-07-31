@@ -11,11 +11,10 @@ class ActivityHistory extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<dynamic> displayedActivities = activityHistory.length > 3
-        ? activityHistory.sublist(0, 3)
-        : activityHistory;
+    final List<dynamic> displayedActivities = activityHistory;
 
-    return Column(
+    return SingleChildScrollView(
+        child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ListView(
@@ -23,14 +22,13 @@ class ActivityHistory extends StatelessWidget {
           physics: const NeverScrollableScrollPhysics(),
           children: displayedActivities.map((activity) {
             return HistoryTile(
-              date: activity['date'],
-              hours: activity['hours'],
-              target: 6,
-              iconText: activity['icon']
-            );
+                date: activity['date'],
+                hours: activity['hours'],
+                target: 6,
+                iconText: activity['icon']);
           }).toList(),
         ),
       ],
-    );
+    ));
   }
 }
