@@ -88,9 +88,17 @@ class _DetailsScreenState extends State<DetailsScreen> {
                   ),
               ]),
               const SizedBox(height: 16),
-              ActivityHistory(
-                activityHistory: activityHistory ?? [],
-              ),
+              if (activityHistory == null || activityHistory!.isEmpty)
+                const Center(
+                  child: Text(
+                    'No activity to show',
+                    style: TextStyle(fontSize: 18, color: Colors.grey),
+                  ),
+                )
+              else
+                ActivityHistory(
+                  activityHistory: activityHistory ?? [],
+                ),
               const SizedBox(height: 32),
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                 const Text(
@@ -111,9 +119,17 @@ class _DetailsScreenState extends State<DetailsScreen> {
                   ),
               ]),
               const SizedBox(height: 16),
-              CouponSection(
-                coupons: couponsHistory ?? [],
-              ),
+              if (couponsHistory == null || couponsHistory!.isEmpty)
+                const Center(
+                  child: Text(
+                    'No coupons available',
+                    style: TextStyle(fontSize: 18, color: Colors.grey),
+                  ),
+                )
+              else
+                CouponSection(
+                  coupons: couponsHistory!,
+                ),
             ],
           ),
         ),
