@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class OnDutyModel extends ChangeNotifier {
   bool onDuty = true;
@@ -6,6 +7,7 @@ class OnDutyModel extends ChangeNotifier {
   int todayActivity = 0;
   int originalActivity = 0;
   bool showOffer = false;
+  final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
 
   void setOnDuty(bool value) {
     onDuty = value;
@@ -17,9 +19,10 @@ class OnDutyModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setTodayActivity(int value) {
+  void setTodayActivity(int value) async {
     todayActivity = value;
     notifyListeners();
+    await secureStorage.write(key: 'todayActivity', value: value.toString());
   }
 
   void setOriginalActivity(int value) {

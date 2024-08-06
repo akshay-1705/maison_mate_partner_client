@@ -130,6 +130,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                 CouponSection(
                   coupons: couponsHistory!,
                 ),
+              const SizedBox(height: 26),
             ],
           ),
         ),

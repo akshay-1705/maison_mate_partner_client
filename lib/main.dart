@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:ui';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:maison_mate/firebase_options.dart';
 import 'package:maison_mate/provider/area_covered_model.dart';
@@ -44,7 +46,44 @@ Future<void> main() async {
     FirebaseService.enable();
   }
   await dotenv.load(fileName: ".env/production.env");
+  initializeService();
   runApp(MyApp(authToken: authToken));
+}
+
+Future<void> initializeService() async {
+  final service = FlutterBackgroundService();
+  await service.configure(
+    androidConfiguration: AndroidConfiguration(
+      onStart: onStart,
+      autoStart: false,
+      isForegroundMode: false,
+    ),
+    iosConfiguration: IosConfiguration(
+      autoStart: false,
+      onForeground: onStart,
+    ),
+  );
+}
+
+@pragma('vm:entry-point')
+void onStart(ServiceInstance service) async {
+  DartPluginRegistrant.ensureInitialized();
+  // bring to foreground
+  Timer? timer;
+  const storage = FlutterSecureStorage();
+  timer = Timer.periodic(const Duration(seconds: 1), (timer) async {
+    String? activityHours = await storage.read(key: "todayActivity");
+    if (activityHours != null) {
+      int seconds = int.tryParse(activityHours) ?? 0;
+      seconds += 1;
+      await storage.write(key: 'todayActivity', value: seconds.toString());
+    }
+  });
+
+  service.on("stop").listen((event) {
+    timer?.cancel();
+    service.stopSelf();
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -108,6 +147,7 @@ class LifecycleHandler extends StatefulWidget {
 class _LifecycleHandlerState extends State<LifecycleHandler>
     with WidgetsBindingObserver {
   Timer? timer;
+  final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
 
   @override
   void initState() {
@@ -124,8 +164,9 @@ class _LifecycleHandlerState extends State<LifecycleHandler>
   }
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused || state == AppLifecycleState.inactive) {
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive) {
       var model = Provider.of<OnDutyModel>(context, listen: false);
       int activity = 0;
 
@@ -135,6 +176,16 @@ class _LifecycleHandlerState extends State<LifecycleHandler>
         activity = model.originalActivity;
       }
       OnDutyService.toggle(model.onDuty, activity);
+      FlutterBackgroundService().startService();
+    } else if (state == AppLifecycleState.resumed) {
+      FlutterBackgroundService().invoke("stop");
+      const storage = FlutterSecureStorage();
+      String? activityHours = await storage.read(key: "todayActivity");
+      int seconds = int.tryParse(activityHours!) ?? 0;
+      seconds += 1;
+      // ignore: use_build_context_synchronously
+      var model = Provider.of<OnDutyModel>(context, listen: false);
+      model.setTodayActivity(seconds);
     }
   }
 
