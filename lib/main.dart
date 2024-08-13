@@ -128,14 +128,6 @@ class _LifecycleHandlerState extends State<LifecycleHandler>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused ||
         state == AppLifecycleState.inactive) {
-      var model = Provider.of<OnDutyModel>(context, listen: false);
-      int activity = 0;
-
-      if (model.onDuty) {
-        activity = model.todayActivity;
-      } else {
-        activity = model.originalActivity;
-      }
       late Future<ApiResponse> futureData;
       String onDutyApiUrl = '$baseApiUrl/partners/on_duty';
       futureData = GetClient.fetchData(onDutyApiUrl);
