@@ -75,74 +75,113 @@ class _ContractState extends State<Contract> {
             VerificationStatusService.showInfoContainer(data.status ?? '',
                 data.reasonForRejection ?? '', 'Contract Details'),
             Form(
-                key: _formKey,
-                child: AbsorbPointer(
-                    absorbing: model.isSubmitting,
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          const SizedBox(height: 10),
-                          MyForm.formFieldHeader(
-                            'Your Commitment, Our Commitment.',
+              key: _formKey,
+              child: AbsorbPointer(
+                absorbing: model.isSubmitting,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const SizedBox(height: 10),
+                    MyForm.formFieldHeader(
+                      'Your Commitment, Our Commitment.',
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 5.0),
+                          child: Checkbox(
+                            value: model.agree,
+                            onChanged: (bool? value) {
+                              model.setAgree(value!);
+                            },
                           ),
-                          Container(
-                              padding:
-                                  const EdgeInsets.only(left: 10, bottom: 18),
-                              alignment: Alignment.bottomLeft,
-                              child: InkWell(
-                                onTap: () async {
-                                  String contractUrl = data.document.imageUrl!;
-                                  final Uri url = Uri.parse(contractUrl);
-                                  if (await canLaunchUrl(url)) {
-                                    await launchUrl(url);
-                                  }
-                                },
-                                child: const Text(
-                                  'View Contract',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors
-                                        .purple, // Set your desired text color
+                        ),
+                        Expanded(
+                          child: InkWell(
+                            onTap: () async {
+                              String contractUrl = data.document.imageUrl!;
+                              final Uri url = Uri.parse(contractUrl);
+                              if (await canLaunchUrl(url)) {
+                                await launchUrl(url);
+                              }
+                            },
+                            child: const Text.rich(
+                              TextSpan(
+                                text:
+                                    'I have read and agree to abide by the terms outlined in ',
+                                style: TextStyle(fontSize: 16),
+                                children: [
+                                  TextSpan(
+                                    text: 'the contract.',
+                                    style: TextStyle(
+                                      color: Colors.purple,
+                                    ),
                                   ),
-                                ),
-                              )),
-                          MyForm.formFieldHeader(
-                              "Please provide company name/your name you'd like to use as signature on the contract"),
-                          MyForm.requiredTextField("Signature", nameController,
-                              false, TextInputType.name),
-                          const SizedBox(height: 20),
-                          (futureData != null)
-                              ? PutClient.futureBuilder(
-                                  model,
-                                  futureData!,
-                                  "Sign",
-                                  () async {
-                                    String message = VerificationStatusService
-                                        .getPromptMessage(data.status ?? '',
-                                            'Contract Details');
-                                    bool confirm = await CustomAppBar
-                                        .showConfirmationDialog(
-                                            context, message);
-                                    if (confirm) {
-                                      onSubmitCallback(model);
-                                    }
-                                  },
-                                  () {
-                                    Navigator.of(context).pop();
-                                  },
-                                )
-                              : MyForm.submitButton("Sign", () async {
-                                  String message = VerificationStatusService
-                                      .getPromptMessage(data.status ?? '',
-                                          'Contract Details');
-                                  bool confirm =
-                                      await CustomAppBar.showConfirmationDialog(
-                                          context, message);
-                                  if (confirm) {
-                                    onSubmitCallback(model);
-                                  }
-                                }),
-                        ])))
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    MyForm.formFieldHeader(
+                        "Please provide company name/your name you'd like to use as signature on the contract"),
+                    MyForm.requiredTextField(
+                        "Signature", nameController, false, TextInputType.name),
+                    const SizedBox(height: 20),
+                    (futureData != null)
+                        ? PutClient.futureBuilder(
+                            model,
+                            futureData!,
+                            "Sign",
+                            () async {
+                              if (model.agree) {
+                                String message =
+                                    VerificationStatusService.getPromptMessage(
+                                        data.status ?? '', 'Contract Details');
+                                bool confirm =
+                                    await CustomAppBar.showConfirmationDialog(
+                                        context, message);
+                                if (confirm) {
+                                  onSubmitCallback(model);
+                                }
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text(
+                                          'Please agree to the contract by checking the box.')),
+                                );
+                              }
+                            },
+                            () {
+                              Navigator.of(context).pop();
+                            },
+                          )
+                        : MyForm.submitButton("Sign", () async {
+                            if (model.agree) {
+                              String message =
+                                  VerificationStatusService.getPromptMessage(
+                                      data.status ?? '', 'Contract Details');
+                              bool confirm =
+                                  await CustomAppBar.showConfirmationDialog(
+                                      context, message);
+                              if (confirm) {
+                                onSubmitCallback(model);
+                              }
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text(
+                                        'Please agree to the contract by checking the box.')),
+                              );
+                            }
+                          }),
+                  ],
+                ),
+              ),
+            )
           ]),
         ),
       ),

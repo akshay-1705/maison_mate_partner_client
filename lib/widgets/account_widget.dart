@@ -180,7 +180,7 @@ class _AccountWidgetState extends State<AccountWidget> {
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  'If you need assistance, please contact us via email:',
+                  'If you need assistance, please contact us via:',
                   style: TextStyle(fontSize: 16.0),
                 ),
               ),
@@ -188,7 +188,18 @@ class _AccountWidgetState extends State<AccountWidget> {
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  'business@maisonmate.co.uk',
+                  'Email: business@maisonmate.co.uk',
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              SizedBox(height: 10.0),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Phone: 02071013523',
                   style: TextStyle(
                     fontSize: 16.0,
                     fontWeight: FontWeight.w600,
