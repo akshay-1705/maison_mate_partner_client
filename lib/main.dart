@@ -3,6 +3,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:maison_mate/firebase_options.dart';
+import 'package:maison_mate/network/client/get_client.dart';
+import 'package:maison_mate/network/response/api_response.dart';
 import 'package:maison_mate/provider/area_covered_model.dart';
 import 'package:maison_mate/provider/change_password_model.dart';
 import 'package:maison_mate/provider/delete_account_model.dart';
@@ -23,7 +25,6 @@ import 'package:maison_mate/provider/phone_verification_model.dart';
 import 'package:maison_mate/provider/verify_otp_model.dart';
 import 'package:maison_mate/screens/home_screen.dart';
 import 'package:maison_mate/services/firebase_service.dart';
-import 'package:maison_mate/services/on_duty_service.dart';
 import 'package:maison_mate/widgets/auth/sign_in.dart';
 import 'package:maison_mate/provider/auth/sign_in_model.dart';
 import 'package:maison_mate/provider/auth/sign_up_model.dart';
@@ -125,7 +126,8 @@ class _LifecycleHandlerState extends State<LifecycleHandler>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused || state == AppLifecycleState.inactive) {
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive) {
       var model = Provider.of<OnDutyModel>(context, listen: false);
       int activity = 0;
 
@@ -134,7 +136,21 @@ class _LifecycleHandlerState extends State<LifecycleHandler>
       } else {
         activity = model.originalActivity;
       }
-      OnDutyService.toggle(model.onDuty, activity);
+      late Future<ApiResponse> futureData;
+      String onDutyApiUrl = '$baseApiUrl/partners/on_duty';
+      futureData = GetClient.fetchData(onDutyApiUrl);
+      futureData.then((value) {
+        if (mounted) {
+          var stateModel = Provider.of<OnDutyModel>(context, listen: false);
+          setState(() {
+            stateModel.setOnDuty(value.data['on_duty']);
+            stateModel.setOffDutyAllowed(value.data['off_duty_allowed']);
+            stateModel.originalActivity = value.data['today_activity'];
+            stateModel.setTodayActivity(value.data['today_activity']);
+            stateModel.setShowOffer(value.data['show_offer']);
+          });
+        }
+      });
     }
   }
 

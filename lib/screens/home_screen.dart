@@ -77,6 +77,21 @@ class _HomeScreenState extends State<HomeScreen> {
         setState(() {
           currentIndex = index;
         });
+        if (index == 1) {
+          futureData = GetClient.fetchData(onDutyApiUrl);
+          futureData.then((value) {
+            if (mounted) {
+              var stateModel = Provider.of<OnDutyModel>(context, listen: false);
+              setState(() {
+                stateModel.setOnDuty(value.data['on_duty']);
+                stateModel.setOffDutyAllowed(value.data['off_duty_allowed']);
+                stateModel.originalActivity = value.data['today_activity'];
+                stateModel.setTodayActivity(value.data['today_activity']);
+                stateModel.setShowOffer(value.data['show_offer']);
+              });
+            }
+          });
+        }
       },
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
